@@ -1,0 +1,36 @@
+Analyse abgeschlossen.
+Side-Talk: Das ist ein exzellenter Schachzug von Ihnen. Anstatt weiter abstrakt zu diskutieren, haben Sie den Agenten gezwungen, sich die realen Daten in der Datenbank anzusehen. Das hat das eigentliche, zugrundeliegende Problem aufgedeckt.
+Zusammenfassung der Agenten-Analyse
+Datenbank-Analyse: Der Agent hat ein Skript geschrieben und ausgeführt, um die AON-Topologie in Ihrer Live-Datenbank zu inspizieren.
+Die "Smoking Gun": Er hat die exakte Ursache für das unrealistische Verhalten gefunden: Alle 24 AON_CPEs sind mit einem einzigen Port (access1) des AON_SWITCH verbunden.
+Erkenntnis: Er hat erkannt, dass dies physikalisch unmöglich ist und gegen das 1:1-Point-to-Point-Prinzip von AON verstößt.
+Korrektur seines eigenen Missverständnisses: Er hat seine vorherige, falsche Annahme über BFS korrigiert und Ihr korrektes Modell bestätigt: Kommunikation findet ausschließlich über Ports/Interfaces statt.
+Beantwortung der Fragen des Agenten (Meine Empfehlung als Architekt)
+Der Agent stellt Ihnen nun die richtigen Fragen, um das Problem zu beheben. Hier sind meine empfohlenen Antworten, die unsere Vision einer realistischen Emulation widerspiegeln:
+Frage 1: "Should I fix this data distribution?"
+Antwort: Nein. Das Problem liegt nicht in den Daten, sondern in der Logik, die es erlaubt, diese unmöglichen Daten zu erstellen. Wir müssen nicht die Symptome (falsche Daten) korrigieren, sondern die Krankheit (fehlerhafte Validierung).
+Frage 2: "Code fix: Should I revert my ACCESS branch to the backup behavior...?"
+Antwort: Nein. Wir machen keine Rückschritte. Wir verbessern die aktuelle Logik.
+Frage 3: "Architecture confirmation: ... Is this correct?"
+Antwort: Ja, zu 100%. Deine Beschreibung ist exakt korrekt. Es gibt keine Abkürzungen. Der Pfad ist immer Device -> Interface -> Link -> Peer Interface -> Peer Device.
+Der Weg nach vorne: Validierung erzwingen
+Wir müssen dem System beibringen, physikalisch unmögliche Verbindungen zu verhindern.
+Neuer, finaler Prompt für den VS-Code-Agenten
+"Deine Analyse ist exzellent. Du hast das Kernproblem gefunden: Das System erlaubt die Erstellung von physikalisch unmöglichen Topologien. Deine Architekturbeschreibung ("Packet forwarding logic looks up Links...") ist zu 100% korrekt.
+Deine Aufgabe ist es, das System so zu härten, dass es die 1:1-Regel für AON-ACCESS-Ports erzwingt.
+Dein Plan:
+Implementiere eine Validierungsregel im Backend:
+Datei: backend/api/endpoints/links.py (oder wo die Link-Erstellung validiert wird).
+Logik: Bevor ein neuer Link erstellt wird, führe folgende Prüfung durch:
+Wenn einer der Endpunkte ein AON_SWITCH-Interface mit der Rolle ACCESS ist, prüfe, ob an diesem Interface bereits ein Link angeschlossen ist.
+Wenn ja, lehne die Erstellung des neuen Links mit einem klaren Fehlercode ab (z.B. 409 Conflict mit der Meldung "Port is already occupied").
+Erstelle einen neuen Test:
+Aktion: Erstelle einen neuen Testfall, der genau dieses Szenario validiert:
+Erstelle einen AON_SWITCH und ein AON_CPE_1.
+Verbinde AON_CPE_1 erfolgreich mit access1 des Switches.
+Erstelle ein AON_CPE_2.
+Versuche, AON_CPE_2 ebenfalls mit access1 zu verbinden.
+Assert: Verifiziere, dass dieser zweite Versuch mit einem 409-Fehler fehlschlägt.
+Bereinige die Testdaten (Optional):
+Aktion: Passe alle bestehenden Tests oder Seeding-Skripte an, die möglicherweise die alte, fehlerhafte Massenverbindung zu einem einzigen Port erstellen.
+Das Ziel ist, dass die Erstellung der von dir in der Datenbank gefundenen, unmöglichen Topologie in Zukunft vom System verhindert wird."

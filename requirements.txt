@@ -1,0 +1,80 @@
+###################################################################################################
+# UNOC requirements.txt
+# Phase A -> pre-populated dependency manifest for upcoming Phase B implementation.
+#
+# Structure:
+#   Core runtime      : Minimal set needed to start FastAPI app with state & DB layer.
+#   Database / storage: SQLModel (on top of SQLAlchemy) + SQLite driver (stdlib) now, extensible later.
+#   Serialization     : Pydantic v2 (comes via FastAPI, but pinned explicitly for determinism).
+#   Web stack         : Uvicorn (ASGI server) + (optional) websockets/broadcast utilities.
+#   Observability     : Logging & tracing hooks (opentelemetry optional commented for later).
+#   Utilities         : Deterministic randomness, timezone, etc. (keep stdlib until needs arise).
+#   Dev/Test          : Kept here under a separator so a single install can fully enable local workflows.
+#
+# Pin style: ~= for major.minor compatibility while permitting patch updates; exact pins only where
+#   cross-package breakage risk is high. Adjust before production freeze.
+#
+# Python: >=3.12 (declared in pyproject.toml)
+###################################################################################################
+
+############################
+# Core Runtime
+############################
+fastapi~=0.115.0            # API framework (includes Starlette)
+uvicorn[standard]~=0.30.0   # ASGI server with uvloop, httptools extras
+gunicorn~=22.0.0            # Production-grade process manager (multi-worker with uvicorn workers)
+sqlmodel~=0.0.16            # Declarative models (bundles SQLAlchemy & Pydantic bridges)
+SQLAlchemy~=2.0.30          # Explicit pin (sqlmodel depends on this); keep aligned with sqlmodel support
+aiosqlite~=0.20.0           # Async SQLite driver used by SQLAlchemy async engine
+psycopg[binary]~=3.2.0      # PostgreSQL driver (sync & async compatible via SQLAlchemy psycopg dialect)
+slowapi~=0.1.9              # Simple rate limiting for FastAPI endpoints
+pydantic~=2.8.0             # Data validation / settings (explicit for stability)
+pydantic-settings~=2.6.0    # Settings management layered on Pydantic v2
+python-dotenv~=1.0.0        # Optional env loading (config endpoint groundwork)
+orjson~=3.10.0              # Fast JSON (FastAPI response_model serialization speed)
+typing-extensions>=4.12,<5  # Forward compatibility for typing features
+networkx~=3.3                # Graph algorithms (pathfinding layer §18)
+
+############################
+# Realtime / Async Utilities
+############################
+anyio~=4.4.0                # Concurrency backend (FastAPI uses; pin for determinism)
+async-timeout~=4.0.3        # Safety around cancellation (if needed in tick loops)
+grpcio==1.68.1              # gRPC core library (latest stable with binary wheels)
+grpcio-tools==1.68.1        # Protocol buffer compiler (matches grpcio version)
+protobuf==5.29.2            # Protocol buffers (compatible with grpcio 1.68.x)
+
+############################
+# Observability (lightweight now)
+############################
+rich~=13.7.0                # Colored logs / diagnostics
+structlog~=24.1.0           # Structured logging (optional – can be integrated Phase B)
+prometheus_client~=0.20.0   # Prometheus metrics exposition
+
+############################
+# Optional Future (commented; enable when implementing tracing/metrics shipping)
+# opentelemetry-api~=1.27.0
+# opentelemetry-sdk~=1.27.0
+# opentelemetry-instrumentation-fastapi~=0.48b0
+
+###################################################################################################
+# Dev / Test Tooling (installable in same environment; remove if using extras or separate file)
+###################################################################################################
+pytest~=8.3.0
+pytest-asyncio~=0.23.0      # Async endpoint & tick loop tests
+httpx~=0.27.0               # Client for integration testing FastAPI
+coverage~=7.6.0             # Coverage reports (tasks reference coverage)
+black~=24.8.0               # Code formatting
+isort~=5.13.0               # Import sorting (profile=black)
+ruff~=0.6.0                 # Fast linting (can later supersede flake8/isort checks)
+mypy~=1.10.0                # Static typing (Phase B tighten: --strict)
+types-orjson==3.6.2 # Stub package for orjson (improves mypy experience)
+pyinstrument~=4.6.0         # Lightweight sampling profiler (used by perf harness)
+
+###################################################################################################
+# Notes
+# - Keep runtime set lean; add only when first feature needs it (avoid speculative bloat).
+# - When adding a new dependency, update ARCHITECTURE.md (Section: 2.x Technology Choices) + TASK.md.
+# - For production hardening later: add uvicorn workers via process manager (e.g., gunicorn) – not needed now.
+# - If moving dev deps elsewhere, split this file into requirements.txt + requirements-dev.txt.
+###################################################################################################

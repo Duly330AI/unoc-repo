@@ -1,0 +1,162 @@
+{
+    "toolsets": [
+        {
+            "name": "UNOC Dev Tools",
+            "description": "Canonical toolset for UNOC local dev on Windows PowerShell.",
+            "cwd": "c:/noc_project/UNOC/unoc",
+            "tools": [
+                // ---------- 🚀 CORE WORKFLOWS 🚀 ----------
+                {
+                    "id": "quality-all-backend",
+                    "label": "✅ Quality Gate: All Backend (Lint + Format + Tests on SQLite)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "& '${workspaceFolder}/.venv/Scripts/python.exe' -m ruff check . --fix; & '${workspaceFolder}/.venv/Scripts/python.exe' -m isort .; & '${workspaceFolder}/.venv/Scripts/python.exe' -m black .; & '${workspaceFolder}/.venv/Scripts/python.exe' -m pytest -q"
+                },
+                {
+                    "id": "quality-all-frontend",
+                    "label": "✅ Quality Gate: All Frontend (Lint + Build + Tests)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "npm run lint --prefix unoc-frontend-v2; npm run build --prefix unoc-frontend-v2; npm test --prefix unoc-frontend-v2"
+                },
+                {
+                    "id": "backend-run-postgres",
+                    "label": "🚀 Run: Backend (with PostgreSQL)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "& '${workspaceFolder}/.venv/Scripts/python.exe' run.py"
+                },
+                {
+                    "id": "frontend-run-dev",
+                    "label": "🚀 Run: Frontend (dev server)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "npm run dev --prefix unoc-frontend-v2"
+                },
+                // ---------- 🐳 DOCKER & DATABASE 🐳 ----------
+                {
+                    "id": "docker-start-db",
+                    "label": "🐳 Docker: Start PostgreSQL Database",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "docker compose up -d"
+                },
+                {
+                    "id": "docker-stop-db",
+                    "label": "🐳 Docker: Stop PostgreSQL Database",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "docker compose down"
+                },
+                {
+                    "id": "docker-status",
+                    "label": "🕵️ Docker: Check Container Status",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "docker ps"
+                },
+                {
+                    "id": "db-reset-seed",
+                    "label": "♻️ DB: Reset and Seed (PostgreSQL)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "& '${workspaceFolder}/.venv/Scripts/python.exe' scripts/reset_dev_db.py --force --seed"
+                },
+                // ---------- 🕵️ DIAGNOSTICS & DEBUGGING 🕵️ ----------
+                {
+                    "id": "check-port-5432",
+                    "label": "🕵️ Diagnostics: Check PostgreSQL Port",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "Test-NetConnection -ComputerName localhost -Port 5432"
+                },
+                {
+                    "id": "backend-test-single-file",
+                    "label": "🧪 Tests: Run Single Backend File",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "& '${workspaceFolder}/.venv/Scripts/python.exe' -m pytest -q backend/tests/FILE_TO_TEST.py"
+                },
+                {
+                    "id": "perf-harness-run",
+                    "label": "⏱️ Perf: Run Performance Harness (with profile)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "$env:UNOC_PERF_PROFILE=1; & '${workspaceFolder}/.venv/Scripts/python.exe' -m pytest -m perf"
+                },
+                {
+                    "id": "kill-stuck-servers",
+                    "label": "🛑 Emergency: Kill Stuck Backend Processes",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match 'run.py|uvicorn|watchfiles' } | ForEach-Object { try { Stop-Process -Id $_.ProcessId -Force -ErrorAction Stop } catch {} }"
+                },
+                // ---------- 🔵 GO ENGINE (HYBRID) 🔵 ----------
+                {
+                    "id": "go-build-engine",
+                    "label": "🔵 Go: Build Traffic Engine",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "cd engine-go; go build -o bin/traffic-engine.exe ./cmd/traffic-engine"
+                },
+                {
+                    "id": "go-test-all",
+                    "label": "🧪 Go: Run All Tests (with race detector)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "cd engine-go; go test -race ./..."
+                },
+                {
+                    "id": "go-bench",
+                    "label": "⏱️ Go: Run Benchmarks (with memory stats)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "cd engine-go; go test -bench=. -benchmem ./..."
+                },
+                {
+                    "id": "go-lint",
+                    "label": "✅ Go: Lint & Format",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "cd engine-go; gofmt -l -w .; go vet ./..."
+                },
+                {
+                    "id": "go-profile-cpu",
+                    "label": "⏱️ Go: CPU Profile (for HGO-014)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "cd engine-go; go test -cpuprofile=cpu.prof -bench=. ./...; go tool pprof -http=:8081 cpu.prof"
+                },
+                {
+                    "id": "go-run-engine",
+                    "label": "🚀 Go: Run Traffic Engine (standalone)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "cd engine-go; $env:GO_ENV='development'; $env:DATABASE_URL='postgresql://unoc:unocpw@localhost:5432/unocdb'; .\\bin\\traffic-engine.exe"
+                },
+                {
+                    "id": "hybrid-integration-test",
+                    "label": "🔗 Hybrid: Python ↔ Go Integration Tests",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "& '${workspaceFolder}/.venv/Scripts/python.exe' -m pytest -q backend/tests/test_traffic_go_integration.py"
+                },
+                {
+                    "id": "perf-load-test-200-go",
+                    "label": "⏱️ Perf: Load Test @ 200 Devices (Go Engine) - HGO-010",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "& '${workspaceFolder}/.venv/Scripts/python.exe' -m pytest -q -m perf backend/tests/perf/test_realistic_200_go.py"
+                },
+                {
+                    "id": "perf-load-test-1000-go",
+                    "label": "⏱️ Perf: Load Test @ 1000 Devices (Go Engine) - HGO-013",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "& '${workspaceFolder}/.venv/Scripts/python.exe' -m pytest -q -m perf backend/tests/perf/test_realistic_1000_go.py"
+                }
+            ]
+        }
+    ]
+}

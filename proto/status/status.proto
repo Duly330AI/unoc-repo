@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+package status;
+
+option go_package = "github.com/unoc/engine-go/proto/status";
+
+// StatusService handles status dependency resolution and propagation
+// Goal: Propagate status changes through dependency tree efficiently
+service StatusService {
+  // Propagate status changes through dependency tree
+  rpc PropagateStatus(PropagateRequest) returns (PropagateResponse);
+  
+  // Get dependency tree for a device (upstream dependencies)
+  rpc GetDependencies(GetDepsRequest) returns (DependencyTree);
+  
+  // Bulk status update (set status for multiple devices)
+  rpc BulkUpdateStatus(BulkStatusRequest) returns (BulkStatusResponse);
+  
+  // Health check endpoint
+  rpc Health(HealthRequest) returns (HealthResponse);
+}
+
+// ============================================================================
+// Propagate Status
+// ============================================================================
+
+message PropagateRequest {
+  // Devices whose status changed
+  repeated string changed_device_ids = 1;
+  
+  // Links whose status changed
+  repeated string changed_link_ids = 2;
+  
+  // Force full propagation (skip smart detection)
+  bool force_full_propagation = 3;
+  
+  // Request ID for tracing
+  optional string request_id = 4;
+}
+
+message PropagateResponse {
+  // Number of devices whose status was updated
+  int32 affected_devices = 1;
+  
+  // List of affected device IDs
+  repeated string device_ids = 2;
+  
+  // Duration in milliseconds
+  int64 duration_ms = 3;
+  
+  // Status: "success" | "partial" | "error"
+  string status = 4;
+  
+  // Error messages if any
+  repeated string errors = 5;
+  
+  // Request ID (echo from request)
+  optional string request_id = 6;
+}
+
+// ============================================================================
+// Get Dependencies
+// ============================================================================
+
+message GetDepsRequest {
+  // Device ID to analyze
+  string device_id = 1;
+  
+  // Max depth to traverse (0 = all)
+  optional int32 max_depth = 2;
+  
+  // Request ID for tracing
+  optional string request_id = 3;
+}
+
+message DependencyTree {
+  // Root device ID
+  string device_id = 1;
+  
+  // Upstream dependencies (devices this one depends on)
+  repeated Dependency dependencies = 2;
+  
+  // Total depth of tree
+  int32 max_depth = 3;
+  
+  // Request ID (echo from request)
+  optional string request_id = 4;
+}
+
+message Dependency {
+  // Dependent device ID
+  string device_id = 1;
+  
+  // Device type (for debugging)
+  string device_type = 2;
+  
+  // Link ID connecting to this dependency
+  string link_id = 3;
+  
+  // Distance from root (0 = direct parent)
+  int32 depth = 4;
+  
+  // Current status of dependent device
+  string status = 5;
+  
+  // Nested dependencies (recursive)
+  repeated Dependency children = 6;
+}
+
+// ============================================================================
+// Bulk Status Update
+// ============================================================================
+
+message BulkStatusRequest {
+  // Status updates to apply
+  repeated StatusUpdate updates = 1;
+  
+  // Skip propagation (just update DB, don't cascade)
+  bool skip_propagation = 2;
+  
+  // Request ID for tracing
+  optional string request_id = 3;
+}
+
+message StatusUpdate {
+  // Device ID
+  string device_id = 1;
+  
+  // New status: "active" | "degraded" | "unreachable" | "provisioned"
+  string status = 2;
+  
+  // Optional reason for status change
+  optional string reason = 3;
+}
+
+message BulkStatusResponse {
+  // Number of statuses successfully updated
+  int32 updated = 1;
+  
+  // Updated device IDs
+  repeated string device_ids = 2;
+  
+  // Failed updates
+  repeated StatusFailure failed = 3;
+  
+  // Duration in milliseconds
+  int64 duration_ms = 4;
+  
+  // Propagation status: "pending" | "complete" | "error" | "skipped"
+  string propagation_status = 5;
+  
+  // Propagation duration in milliseconds (if applicable)
+  optional int64 propagation_duration_ms = 6;
+  
+  // Request ID (echo from request)
+  optional string request_id = 7;
+}
+
+message StatusFailure {
+  // Device ID that failed
+  string device_id = 1;
+  
+  // Error message
+  string error = 2;
+}
+
+// ============================================================================
+// Health Check
+// ============================================================================
+
+message HealthRequest {
+  // Optional: specific component to check
+  optional string component = 1;
+}
+
+message HealthResponse {
+  // Overall status: "ok" | "degraded" | "down"
+  string status = 1;
+  
+  // Service version
+  string version = 2;
+  
+  // Uptime in seconds
+  int64 uptime_seconds = 3;
+  
+  // Database connection status: "ok" | "error"
+  string db_status = 4;
+  
+  // Last propagation timestamp (Unix seconds)
+  optional int64 last_propagation_timestamp = 5;
+  
+  // Total devices in system
+  optional int32 total_devices = 6;
+}

@@ -1,0 +1,170 @@
+[
+  {
+    "id": "olt-mgmt0",
+    "name": "mgmt0",
+    "port_role": null,
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 1000
+  },
+  {
+    "id": "olt-pon1",
+    "name": "pon1",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 1,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon10",
+    "name": "pon10",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon11",
+    "name": "pon11",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon12",
+    "name": "pon12",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon13",
+    "name": "pon13",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon14",
+    "name": "pon14",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon15",
+    "name": "pon15",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon16",
+    "name": "pon16",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon2",
+    "name": "pon2",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon3",
+    "name": "pon3",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon4",
+    "name": "pon4",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon5",
+    "name": "pon5",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon6",
+    "name": "pon6",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon7",
+    "name": "pon7",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon8",
+    "name": "pon8",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-pon9",
+    "name": "pon9",
+    "port_role": "PON",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 64
+  },
+  {
+    "id": "olt-uplink1",
+    "name": "uplink1",
+    "port_role": "UPLINK",
+    "effective_status": "UP",
+    "occupancy": 1,
+    "capacity": 10000
+  },
+  {
+    "id": "olt-uplink2",
+    "name": "uplink2",
+    "port_role": "UPLINK",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 10000
+  },
+  {
+    "id": "olt-uplink3",
+    "name": "uplink3",
+    "port_role": "UPLINK",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 10000
+  },
+  {
+    "id": "olt-uplink4",
+    "name": "uplink4",
+    "port_role": "UPLINK",
+    "effective_status": "UP",
+    "occupancy": 0,
+    "capacity": 10000
+  }
+]

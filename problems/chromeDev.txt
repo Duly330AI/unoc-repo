@@ -1,0 +1,121 @@
+[vite] connecting...
+client:618 [vite] connected.
+main.ts:23 [main] pinia singleton attached? true
+BaseCockpit.vue:54 [BaseCockpit] mounted pop1
+draw.ts:251 [cockpit] mounted sub-app for pop1
+BaseCockpit.vue:54 [BaseCockpit] mounted core1
+RouterCockpit.vue:53 [RouterCockpit] metric core1 undefined undefined undefined undefined
+draw.ts:251 [cockpit] mounted sub-app for core1
+BaseCockpit.vue:54 [BaseCockpit] mounted olt1
+draw.ts:251 [cockpit] mounted sub-app for olt1
+wsClient.ts:67 [wsClient] connected ws://localhost:5001/api/ws
+wsClient.ts:116 [wsClient] recv __ping__ []
+BaseCockpit.vue:54 [BaseCockpit] mounted core_router
+RouterCockpit.vue:53 [RouterCockpit] metric core_router undefined undefined undefined undefined
+draw.ts:251 [cockpit] mounted sub-app for core_router
+BaseCockpit.vue:54 [BaseCockpit] mounted backbone_gateway
+draw.ts:251 [cockpit] mounted sub-app for backbone_gateway
+BaseCockpit.vue:54 [BaseCockpit] mounted edge_router
+RouterCockpit.vue:53 [RouterCockpit] metric edge_router undefined undefined undefined undefined
+draw.ts:251 [cockpit] mounted sub-app for edge_router
+wsClient.ts:116 [wsClient] recv __ping__ []
+linksStore.ts:138 [linksStore] creating link {id: 'backbone_gateway__core_router', a_interface_id: 'backbone_gateway-if0', b_interface_id: 'core_router-if0', kind: 'FIBER', status: 'UP'}
+wsClient.ts:116 [wsClient] recv link.created (5) ['id', 'a_interface_id', 'b_interface_id', 'kind', 'rule_id']
+linksStore.ts:144 [linksStore] POST /api/links status 201
+wsClient.ts:116 [wsClient] recv device.optical.updated (2) ['affected_link_ids', 'reason']
+devicesStore.ts:78 [devicesStore] optical.updated undefined
+linksStore.ts:200 [linksStore] link response body {id: 'backbone_gateway__core_router', a_interface_id: 'backbone_gateway-if0', b_interface_id: 'core_router-if0', status: 'UP', kind: 'P2P', …}
+linksStore.ts:209 [linksStore] link stored, total links 2
+linksStore.ts:138 [linksStore] creating link {id: 'core_router__edge_router', a_interface_id: 'core_router-if0', b_interface_id: 'edge_router-if0', kind: 'FIBER', status: 'UP'}
+linksStore.ts:144 [linksStore] POST /api/links status 201
+linksStore.ts:200 [linksStore] link response body {id: 'core_router__edge_router', a_interface_id: 'core_router-if0', b_interface_id: 'edge_router-if0', status: 'UP', kind: 'P2P', …}
+linksStore.ts:209 [linksStore] link stored, total links 3
+wsClient.ts:116 [wsClient] recv link.created (5) ['id', 'a_interface_id', 'b_interface_id', 'kind', 'rule_id']
+wsClient.ts:116 [wsClient] recv device.optical.updated (2) ['affected_link_ids', 'reason']
+devicesStore.ts:78 [devicesStore] optical.updated undefined
+wsClient.ts:116 [wsClient] recv device.provisioned (3) ['id', 'type', 'ip']
+wsClient.ts:116 [wsClient] recv device.status.changed (3) ['id', 'status', 'admin_override_status']
+devicesStore.ts:46 [devicesStore] status.changed core_router
+wsClient.ts:116 [wsClient] recv device.provisioned (3) ['id', 'type', 'ip']
+wsClient.ts:116 [wsClient] recv device.status.changed (3) ['id', 'status', 'admin_override_status']
+devicesStore.ts:46 [devicesStore] status.changed edge_router
+wsClient.ts:116 [wsClient] recv __ping__ []
+draw.ts:201 [cockpit] unmount sub-app for core1
+draw.ts:201 [cockpit] unmount sub-app for core1
+draw.ts:201 [cockpit] unmount sub-app for pop1
+draw.ts:201 [cockpit] unmount sub-app for pop1
+draw.ts:201 [cockpit] unmount sub-app for olt1
+draw.ts:201 [cockpit] unmount sub-app for olt1
+BaseCockpit.vue:54 [BaseCockpit] mounted pop
+draw.ts:251 [cockpit] mounted sub-app for pop
+BaseCockpit.vue:54 [BaseCockpit] mounted olt
+draw.ts:251 [cockpit] mounted sub-app for olt
+linksStore.ts:138 [linksStore] creating link {id: 'edge_router__olt', a_interface_id: 'edge_router-if0', b_interface_id: 'olt-if0', kind: 'FIBER', status: 'UP'}
+linksStore.ts:144 [linksStore] POST /api/links status 201
+linksStore.ts:200 [linksStore] link response body {id: 'edge_router__olt', a_interface_id: 'edge_router-if0', b_interface_id: 'olt-if0', status: 'UP', kind: 'FIBER', …}
+linksStore.ts:209 [linksStore] link stored, total links 4
+wsClient.ts:116 [wsClient] recv link.created (5) ['id', 'a_interface_id', 'b_interface_id', 'kind', 'rule_id']
+wsClient.ts:116 [wsClient] recv device.optical.updated (2) ['affected_link_ids', 'reason']
+devicesStore.ts:78 [devicesStore] optical.updated undefined
+wsClient.ts:116 [wsClient] recv __ping__ []
+wsClient.ts:116 [wsClient] recv device.provisioned (3) ['id', 'type', 'ip']
+wsClient.ts:116 [wsClient] recv device.optical.updated (2) ['affected_device_ids', 'reason']
+devicesStore.ts:78 [devicesStore] optical.updated undefined
+wsClient.ts:116 [wsClient] recv device.status.changed (3) ['id', 'status', 'admin_override_status']
+devicesStore.ts:46 [devicesStore] status.changed olt
+BaseCockpit.vue:54 [BaseCockpit] mounted ont
+draw.ts:251 [cockpit] mounted sub-app for ont
+linksStore.ts:138 [linksStore] creating link {id: 'olt__ont', a_interface_id: 'olt-if0', b_interface_id: 'ont-if0', kind: 'FIBER', status: 'UP'}
+wsClient.ts:116 [wsClient] recv link.created (5) ['id', 'a_interface_id', 'b_interface_id', 'kind', 'rule_id']
+linksStore.ts:144 [linksStore] POST /api/links status 201
+linksStore.ts:200 [linksStore] link response body {id: 'olt__ont', a_interface_id: 'olt-if0', b_interface_id: 'ont-if0', status: 'UP', kind: 'FIBER', …}
+linksStore.ts:209 [linksStore] link stored, total links 6
+wsClient.ts:116 [wsClient] recv device.optical.updated (4) ['id', 'received_dbm', 'signal_status', 'margin_db']
+devicesStore.ts:78 [devicesStore] optical.updated ont
+wsClient.ts:116 [wsClient] recv device.optical.updated (2) ['affected_link_ids', 'reason']
+devicesStore.ts:78 [devicesStore] optical.updated undefined
+wsClient.ts:116 [wsClient] recv __ping__ []
+BaseCockpit.vue:54 [BaseCockpit] mounted core_router
+RouterCockpit.vue:53 [RouterCockpit] metric core_router undefined undefined undefined undefined
+draw.ts:251 [cockpit] mounted sub-app for core_router
+BaseCockpit.vue:54 [BaseCockpit] mounted backbone_gateway
+draw.ts:251 [cockpit] mounted sub-app for backbone_gateway
+BaseCockpit.vue:54 [BaseCockpit] mounted edge_router
+RouterCockpit.vue:53 [RouterCockpit] metric edge_router undefined undefined undefined undefined
+draw.ts:251 [cockpit] mounted sub-app for edge_router
+BaseCockpit.vue:54 [BaseCockpit] mounted pop
+draw.ts:251 [cockpit] mounted sub-app for pop
+BaseCockpit.vue:54 [BaseCockpit] mounted olt
+draw.ts:251 [cockpit] mounted sub-app for olt
+BaseCockpit.vue:54 [BaseCockpit] mounted ont
+draw.ts:251 [cockpit] mounted sub-app for ont
+wsClient.ts:116 [wsClient] recv device.status.changed (3) ['id', 'status', 'admin_override_status']
+devicesStore.ts:46 [devicesStore] status.changed ont
+wsClient.ts:116 [wsClient] recv device.provisioned (3) ['id', 'type', 'ip']
+wsClient.ts:116 [wsClient] recv device.optical.updated (2) ['affected_device_ids', 'reason']
+devicesStore.ts:78 [devicesStore] optical.updated undefined
+wsClient.ts:116 [wsClient] recv device.status.changed (3) ['id', 'status', 'admin_override_status']
+devicesStore.ts:46 [devicesStore] status.changed ont
+wsClient.ts:116 [wsClient] recv __ping__ []
+wsClient.ts:116 [wsClient] recv __ping__ []
+wsClient.ts:116 [wsClient] recv __ping__ []
+wsClient.ts:116 [wsClient] recv __ping__ []
+wsClient.ts:116 [wsClient] recv __ping__ []
+wsClient.ts:116 [wsClient] recv __ping__ []
+BaseCockpit.vue:54 [BaseCockpit] mounted ont_1
+draw.ts:251 [cockpit] mounted sub-app for ont_1
+linksStore.ts:138 [linksStore] creating link {id: 'olt__ont_1', a_interface_id: 'olt-if0', b_interface_id: 'ont_1-if0', kind: 'FIBER', status: 'UP'}
+wsClient.ts:116 [wsClient] recv link.created (5) ['id', 'a_interface_id', 'b_interface_id', 'kind', 'rule_id']
+linksStore.ts:144 [linksStore] POST /api/links status 201
+linksStore.ts:200 [linksStore] link response body {id: 'olt__ont_1', a_interface_id: 'olt-if0', b_interface_id: 'ont_1-if0', status: 'UP', kind: 'FIBER', …}
+linksStore.ts:209 [linksStore] link stored, total links 6
+wsClient.ts:116 [wsClient] recv device.optical.updated (4) ['id', 'received_dbm', 'signal_status', 'margin_db']
+devicesStore.ts:78 [devicesStore] optical.updated ont_1
+wsClient.ts:116 [wsClient] recv device.optical.updated (2) ['affected_link_ids', 'reason']
+devicesStore.ts:78 [devicesStore] optical.updated undefined
+wsClient.ts:116 [wsClient] recv __ping__ []
+wsClient.ts:116 [wsClient] recv device.provisioned (3) ['id', 'type', 'ip']
+wsClient.ts:116 [wsClient] recv device.optical.updated (2) ['affected_device_ids', 'reason']
+devicesStore.ts:78 [devicesStore] optical.updated undefined
+wsClient.ts:116 [wsClient] recv device.status.changed (3) ['id', 'status', 'admin_override_status']
+devicesStore.ts:46 [devicesStore] status.changed ont_1

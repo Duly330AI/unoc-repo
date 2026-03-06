@@ -1,0 +1,29 @@
+# Local environment overrides
+.env
+node_modules
+
+# Python/JS caches and venvs
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Logs and coverage/debug outputs
+*.log
+*.out
+*.stats
+.coverage
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+
+# Binary artifacts
+*.exe
+
+# Local result/report folders
+load_test_results/
+perf_reports/
+logs/

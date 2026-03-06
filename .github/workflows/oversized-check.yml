@@ -1,0 +1,17 @@
+name: Oversized files check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  oversized:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run oversized files script (threshold 400)
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File scripts/list_long_files.ps1

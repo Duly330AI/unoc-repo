@@ -1,0 +1,235 @@
+{
+  "id": null,
+  "uid": "unoc-perf-simple",
+  "title": "UNOC Performance (Simplified)",
+  "description": "Real-time performance metrics from backend - Traffic Engine & Status Propagation",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "🚀 Traffic Tick Duration (Target: <300ms)",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 300, "color": "yellow" },
+              { "value": 500, "color": "red" }
+            ]
+          },
+          "mappings": []
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(traffic_tick_duration_seconds_sum[1m]) / rate(traffic_tick_duration_seconds_count[1m]) * 1000"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "⚡ Status Recompute Duration",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 200, "color": "yellow" },
+              { "value": 500, "color": "red" }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(status_recompute_duration_seconds_sum[1m]) / rate(status_recompute_duration_seconds_count[1m]) * 1000"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "📊 Traffic Tick Count",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "value": 0, "color": "blue" }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "traffic_tick_duration_seconds_count"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value"
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Traffic Tick Duration (p50/p95/p99)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 10
+          }
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50, sum(rate(traffic_tick_duration_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95, sum(rate(traffic_tick_duration_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99, sum(rate(traffic_tick_duration_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "p99"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Status Recompute Duration (p50/p95/p99)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 10
+          }
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.50, sum(rate(status_recompute_duration_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95, sum(rate(status_recompute_duration_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99, sum(rate(status_recompute_duration_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "p99"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Traffic Tick Phases",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 14 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 0,
+            "stacking": { "mode": "none" }
+          }
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(traffic_tick_phase_seconds_sum{phase=\"status_recompute\"}[1m]) / rate(traffic_tick_phase_seconds_count{phase=\"status_recompute\"}[1m]) * 1000",
+          "legendFormat": "status_recompute"
+        },
+        {
+          "refId": "B",
+          "expr": "rate(traffic_tick_phase_seconds_sum{phase=\"data_setup\"}[1m]) / rate(traffic_tick_phase_seconds_count{phase=\"data_setup\"}[1m]) * 1000",
+          "legendFormat": "data_setup"
+        },
+        {
+          "refId": "C",
+          "expr": "rate(traffic_tick_phase_seconds_sum{phase=\"aggregate_devices\"}[1m]) / rate(traffic_tick_phase_seconds_count{phase=\"aggregate_devices\"}[1m]) * 1000",
+          "legendFormat": "aggregate_devices"
+        },
+        {
+          "refId": "D",
+          "expr": "rate(traffic_tick_phase_seconds_sum{phase=\"aggregate_links_ports\"}[1m]) / rate(traffic_tick_phase_seconds_count{phase=\"aggregate_links_ports\"}[1m]) * 1000",
+          "legendFormat": "aggregate_links"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        }
+      }
+    }
+  ]
+}

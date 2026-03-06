@@ -1,0 +1,351 @@
+10:59AM DBG Found leaf device device_id=aon_cpe_020 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_020 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_003 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_003 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_009 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_009 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_011 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_011 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_015 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_015 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_016 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_016 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_022 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_022 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_023 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_023 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_024 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_024 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_001 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_001 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_002 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_002 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_005 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_005 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_006 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_006 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_008 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_008 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_013 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_013 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_014 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_014 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_021 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_021 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_004 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_004 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_007 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_007 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_010 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_010 max_up_mbps=1000 tariff_id=4
+10:59AM INF Generated traffic flows devices_with_traffic=27 leaves_processed=24 links_with_traffic=26
+10:59AM INF Congestion detection completed congested_devices=0 congested_links=2 state_changes=0
+10:59AM INF Traffic tick completed congested_devices=0 congested_links=2 devices_with_traffic=27 duration_ms=48.5804 leaves=24 links_with_traffic=26 tick=574
+10:59AM INF HTTP request duration_ms=50.4114 method=POST path=/api/v1/tick status=200
+10:59AM INF HTTP request duration_ms=0 method=GET path=/api/v1/snapshot status=200
+10:59AM INF Starting traffic tick tick=575
+10:59AM DBG Fetched devices from database count=27
+10:59AM DBG Fetched links from database count=26
+10:59AM DBG Fetched interfaces from database count=169
+10:59AM DBG Fetched tariffs from database count=4
+10:59AM INF Built topology cache devices=27 interfaces=169 links=26 tariffs=4
+10:59AM INF Built adjacency graph devices_in_graph=27 passable_links=52 skipped_links=0
+10:59AM DBG Processing devices for traffic generation total_devices=27
+10:59AM DBG Found leaf device device_id=aon_cpe_018 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_018 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_003 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_003 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_006 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_006 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_007 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_007 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_009 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_009 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_012 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_012 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_014 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_014 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_020 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_020 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_023 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_023 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_001 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_001 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_015 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_015 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_016 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_016 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_019 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_019 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_024 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_024 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_002 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_002 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_005 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_005 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_021 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_021 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_022 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_022 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_004 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_004 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_008 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_008 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_010 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_010 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_011 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_011 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_013 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_013 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_017 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_017 max_up_mbps=1000 tariff_id=4
+10:59AM INF Generated traffic flows devices_with_traffic=27 leaves_processed=24 links_with_traffic=26
+10:59AM INF Congestion detection completed congested_devices=0 congested_links=2 state_changes=0
+10:59AM INF Traffic tick completed congested_devices=0 congested_links=2 devices_with_traffic=27 duration_ms=49.7375 leaves=24 links_with_traffic=26 tick=575
+10:59AM INF HTTP request duration_ms=50.7818 method=POST path=/api/v1/tick status=200
+10:59AM INF HTTP request duration_ms=0 method=GET path=/api/v1/snapshot status=200
+10:59AM INF HTTP request duration_ms=0 method=GET path=/metrics status=404
+10:59AM INF Starting traffic tick tick=576
+10:59AM DBG Fetched devices from database count=27
+10:59AM DBG Fetched links from database count=26
+10:59AM DBG Fetched interfaces from database count=169
+10:59AM DBG Fetched tariffs from database count=4
+10:59AM INF Built topology cache devices=27 interfaces=169 links=26 tariffs=4
+10:59AM INF Built adjacency graph devices_in_graph=27 passable_links=52 skipped_links=0
+10:59AM DBG Processing devices for traffic generation total_devices=27
+10:59AM DBG Found leaf device device_id=aon_cpe_001 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_001 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_003 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_003 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_006 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_006 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_007 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_007 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_009 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_009 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_010 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_010 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_014 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_014 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_018 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_018 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_008 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_008 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_019 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_019 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_020 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_020 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_022 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_022 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_023 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_023 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_024 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_024 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_002 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_002 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_013 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_013 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_017 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_017 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_021 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_021 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_004 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_004 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_005 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_005 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_011 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_011 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_012 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_012 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_015 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_015 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_016 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_016 max_up_mbps=1000 tariff_id=4
+10:59AM INF Generated traffic flows devices_with_traffic=27 leaves_processed=24 links_with_traffic=26
+10:59AM INF Congestion detection completed congested_devices=0 congested_links=2 state_changes=0
+10:59AM INF Traffic tick completed congested_devices=0 congested_links=2 devices_with_traffic=27 duration_ms=44.9653 leaves=24 links_with_traffic=26 tick=576
+10:59AM INF HTTP request duration_ms=44.9653 method=POST path=/api/v1/tick status=200
+10:59AM INF HTTP request duration_ms=0 method=GET path=/api/v1/snapshot status=200
+10:59AM INF Starting traffic tick tick=577
+10:59AM DBG Fetched devices from database count=27
+10:59AM DBG Fetched links from database count=26
+10:59AM DBG Fetched interfaces from database count=169
+10:59AM DBG Fetched tariffs from database count=4
+10:59AM INF Built topology cache devices=27 interfaces=169 links=26 tariffs=4
+10:59AM INF Built adjacency graph devices_in_graph=27 passable_links=52 skipped_links=0
+10:59AM DBG Processing devices for traffic generation total_devices=27
+10:59AM DBG Found leaf device device_id=aon_cpe_001 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_001 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_006 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_006 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_007 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_007 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_012 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_012 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_018 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_018 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_023 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_023 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_003 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_003 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_011 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_011 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_013 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_013 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_014 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_014 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_017 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_017 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_021 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_021 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_022 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_022 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_004 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_004 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_005 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_005 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_019 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_019 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_024 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_024 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_002 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_002 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_008 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_008 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_009 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_009 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_010 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_010 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_015 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_015 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_016 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_016 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_020 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_020 max_up_mbps=1000 tariff_id=4
+10:59AM INF Generated traffic flows devices_with_traffic=27 leaves_processed=24 links_with_traffic=26
+10:59AM INF Congestion detection completed congested_devices=0 congested_links=2 state_changes=0
+10:59AM INF Traffic tick completed congested_devices=0 congested_links=2 devices_with_traffic=27 duration_ms=2761.054 leaves=24 links_with_traffic=26 tick=577
+10:59AM INF HTTP request duration_ms=2762.0877 method=POST path=/api/v1/tick status=200
+10:59AM INF HTTP request duration_ms=0 method=GET path=/api/v1/snapshot status=200
+10:59AM INF Starting traffic tick tick=578
+10:59AM DBG Fetched devices from database count=27
+10:59AM DBG Fetched links from database count=26
+10:59AM DBG Fetched interfaces from database count=169
+10:59AM DBG Fetched tariffs from database count=4
+10:59AM INF Built topology cache devices=27 interfaces=169 links=26 tariffs=4
+10:59AM INF Built adjacency graph devices_in_graph=27 passable_links=52 skipped_links=0
+10:59AM DBG Processing devices for traffic generation total_devices=27
+10:59AM DBG Found leaf device device_id=aon_cpe_022 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_022 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_005 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_005 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_012 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_012 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_014 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_014 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_021 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_021 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_023 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_023 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_024 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_024 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_002 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_002 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_003 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_003 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_004 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_004 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_006 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_006 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_007 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_007 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_009 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_009 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_010 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_010 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_020 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_020 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_001 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_001 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_011 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_011 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_013 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_013 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_017 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_017 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_018 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_018 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_019 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_019 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_008 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_008 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_015 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_015 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_016 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_016 max_up_mbps=1000 tariff_id=4
+10:59AM INF Generated traffic flows devices_with_traffic=27 leaves_processed=24 links_with_traffic=26
+10:59AM INF Congestion detection completed congested_devices=0 congested_links=2 state_changes=0
+10:59AM INF Traffic tick completed congested_devices=0 congested_links=2 devices_with_traffic=27 duration_ms=46.7295 leaves=24 links_with_traffic=26 tick=578
+10:59AM INF HTTP request duration_ms=48.736 method=POST path=/api/v1/tick status=200
+10:59AM INF HTTP request duration_ms=0 method=GET path=/api/v1/snapshot status=200
+10:59AM INF Starting traffic tick tick=579
+10:59AM DBG Fetched devices from database count=27
+10:59AM DBG Fetched links from database count=26
+10:59AM DBG Fetched interfaces from database count=169
+10:59AM DBG Fetched tariffs from database count=4
+10:59AM INF Built topology cache devices=27 interfaces=169 links=26 tariffs=4
+10:59AM INF Built adjacency graph devices_in_graph=27 passable_links=52 skipped_links=0
+10:59AM DBG Processing devices for traffic generation total_devices=27
+10:59AM DBG Found leaf device device_id=aon_cpe_002 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_002 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_007 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_007 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_010 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_010 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_012 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_012 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_017 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_017 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_024 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_024 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_001 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_001 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_003 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_003 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_015 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_015 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_021 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_021 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_005 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_005 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_006 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_006 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_008 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_008 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_009 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_009 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_013 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_013 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_016 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_016 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_018 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_018 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_019 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_019 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_004 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_004 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_011 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_011 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_014 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_014 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_020 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_020 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_022 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_022 max_up_mbps=1000 tariff_id=4
+10:59AM DBG Found leaf device device_id=aon_cpe_023 provisioned=true tariff_valid=true type=AON_CPE
+10:59AM INF Processing leaf device for traffic generation device_id=aon_cpe_023 max_up_mbps=1000 tariff_id=4
+10:59AM INF Generated traffic flows devices_with_traffic=27 leaves_processed=24 links_with_traffic=26
+10:59AM INF Congestion detection completed congested_devices=0 congested_links=2 state_changes=0
+10:59AM INF Traffic tick completed congested_devices=0 congested_links=2 devices_with_traffic=27 duration_ms=40.236 leaves=24 links_with_traffic=26 tick=579
+10:59AM INF HTTP request duration_ms=42.2504 method=POST path=/api/v1/tick status=200
+10:59AM INF HTTP request duration_ms=0 method=GET path=/api/v1/snapshot status=200

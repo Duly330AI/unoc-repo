@@ -1,0 +1,119 @@
+"""Query helpers for devices endpoints.
+
+Pure read-only utilities used by the FastAPI route handlers in devices.py.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from threading import Lock
+
+from sqlmodel import Session, select
+
+from backend.api.schemas import DeviceOut
+from backend.models import Device
+from backend.services.pathfinding import PATHFINDING_STORE
+
+from .devices_helpers_common import resolve_vrf_name_map, serialize_interfaces_for_device
+
+# Topology-versioned in-process cache for list_devices_impl results.
+# Keyed by (topology_version, include_interfaces)
+_DEVICES_CACHE: dict[tuple[int, bool], list[DeviceOut]] = {}
+_DEVICES_CACHE_LOCK = Lock()
+
+# Pre-serialized JSON cache (bytes) and ETag per (topology_version, include_interfaces)
+_DEVICES_JSON_CACHE: dict[tuple[int, bool], tuple[bytes, str]] = {}
+
+
+def list_devices_impl(s: Session, include_interfaces: bool) -> list[DeviceOut]:
+    tv = PATHFINDING_STORE.version()
+    key = (tv, bool(include_interfaces))
+    cached = _DEVICES_CACHE.get(key)
+    if cached is not None:
+        return cached
+
+    # Build fresh and populate cache under lock (double-checked)
+    with _DEVICES_CACHE_LOCK:
+        cached = _DEVICES_CACHE.get(key)
+        if cached is not None:
+            return cached
+
+        devices = s.exec(select(Device)).all()
+        vrf_name_map = resolve_vrf_name_map(s, devices)
+        out: list[DeviceOut] = []
+        for d in devices:
+            o = DeviceOut.from_model(d)
+            vid = getattr(d, "vrf_id", None)
+            if vid is not None:
+                o.device_default_vrf_name = vrf_name_map.get(int(vid))
+            out.append(o)
+        if include_interfaces:
+            for d_out in out:
+                d_out.interfaces = serialize_interfaces_for_device(s, d_out.id)
+
+        _DEVICES_CACHE[key] = out
+        # Opportunistic cleanup to cap memory: drop entries for older topo versions
+        old_keys = [k for k in _DEVICES_CACHE.keys() if k[0] != tv]
+        for k in old_keys:
+            _DEVICES_CACHE.pop(k, None)
+        return out
+
+
+def _serialize_devices_to_json(devs: list[DeviceOut]) -> bytes:
+    # Use a stable JSON representation; exclude None to match response_model_exclude_none
+    # Convert models to dicts to avoid re-validating with FastAPI; DeviceOut is pydantic model
+    arr = [d.model_dump(exclude_none=True) for d in devs]
+    # Compact separators for smaller payload and deterministic bytes
+    return json.dumps(arr, separators=(",", ":"), sort_keys=False).encode("utf-8")
+
+
+def _compute_etag(tv: int, include_interfaces: bool, payload: bytes) -> str:
+    h = hashlib.sha256()
+    h.update(b"tv=")
+    h.update(str(tv).encode())
+    h.update(b";if=")
+    h.update(b"1" if include_interfaces else b"0")
+    h.update(b";payload=")
+    h.update(payload)
+    # Weak ETag format is fine; include short prefix for readability
+    return 'W/"tv:%d-if:%d-%s"' % (tv, 1 if include_interfaces else 0, h.hexdigest()[:16])
+
+
+def get_devices_json_cached(s: Session, include_interfaces: bool) -> tuple[bytes, str]:
+    """Return (json_bytes, etag) for devices list, cached by topology version.
+
+    Builds from the existing object cache to avoid duplicate DB queries.
+    """
+    tv = PATHFINDING_STORE.version()
+    key = (tv, bool(include_interfaces))
+    cached = _DEVICES_JSON_CACHE.get(key)
+    if cached is not None:
+        return cached
+
+    # Ensure objects exist (will populate _DEVICES_CACHE as needed)
+    objs = list_devices_impl(s, include_interfaces)
+    payload = _serialize_devices_to_json(objs)
+    etag = _compute_etag(tv, bool(include_interfaces), payload)
+    with _DEVICES_CACHE_LOCK:
+        if key not in _DEVICES_JSON_CACHE:
+            _DEVICES_JSON_CACHE[key] = (payload, etag)
+            # Cleanup old versions to bound memory
+            old_keys = [k for k in _DEVICES_JSON_CACHE.keys() if k[0] != tv]
+            for k in old_keys:
+                _DEVICES_JSON_CACHE.pop(k, None)
+    return _DEVICES_JSON_CACHE.get(key, (payload, etag))
+
+
+def get_device_impl(s: Session, device_id: str) -> DeviceOut:
+    d = s.get(Device, device_id)
+    if not d:
+        raise LookupError("Not found")
+    o = DeviceOut.from_model(d)
+    vid = getattr(d, "vrf_id", None)
+    if vid is not None:
+        from backend.models import VRF  # local import to avoid circulars at import time
+
+        v = s.get(VRF, int(vid))
+        o.device_default_vrf_name = v.name if v else None
+    return o

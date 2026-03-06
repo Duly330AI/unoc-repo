@@ -1,0 +1,48 @@
+/* Topology status-driven styling for device nodes.
+   Uses data-status attribute on <g.device-node> inserted by draw.ts.
+   Keeps visual refresh reactive without needing to re-mount cockpit sub-apps. */
+
+svg g.device-node[data-status] {
+  /* transition allows smooth frame color change when status flips */
+  transition:
+    stroke 240ms ease,
+    filter 240ms ease;
+}
+
+/* Base style: cockpit components render their own frames; we now standardize on .frame / .frame-outline
+   applied inside each cockpit component (rect elements). We style both to enable halo + inner frame tint. */
+svg g.device-node[data-status] .frame,
+svg g.device-node[data-status] .frame-outline {
+  stroke-width: 2;
+  transition:
+    stroke 240ms ease,
+    filter 240ms ease;
+}
+
+/* UP state */
+svg g.device-node[data-status='UP'] .frame,
+svg g.device-node[data-status='UP'] .frame-outline {
+  stroke: #66bb6a !important;
+  filter: drop-shadow(0 0 2px rgba(102, 187, 106, 0.35));
+}
+/* DEGRADED */
+svg g.device-node[data-status='DEGRADED'] .frame,
+svg g.device-node[data-status='DEGRADED'] .frame-outline {
+  stroke: #ef6c00 !important;
+  filter: drop-shadow(0 0 2px rgba(239, 108, 0, 0.4));
+}
+/* DOWN */
+svg g.device-node[data-status='DOWN'] .frame,
+svg g.device-node[data-status='DOWN'] .frame-outline {
+  stroke: #ef5350 !important;
+  filter: drop-shadow(0 0 3px rgba(239, 83, 80, 0.55));
+}
+/* UNKNOWN / default */
+svg g.device-node[data-status='UNKNOWN'] .frame,
+svg g.device-node[data-status='UNKNOWN'] .frame-outline {
+  stroke: #90caf9 !important;
+  filter: drop-shadow(0 0 2px rgba(144, 202, 249, 0.35));
+}
+
+/* Optional: if any cockpit omits .frame-outline we still get inner frame stroke; if both exist outline gets same color.
+   Could differentiate by thicker stroke or separate glow later. */

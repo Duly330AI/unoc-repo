@@ -1,0 +1,211 @@
+{
+    // Canonical toolset for UNOC local dev on Windows PowerShell
+    "toolsets": [
+        {
+            "name": "UNOC Dev Tools",
+            "description": "Tasks and commands to run backend/frontend, checks, and tests for UNOC.",
+            // Set your workspace root (use forward slashes)
+            "cwd": "c:/noc_project/UNOC/unoc",
+            // Optional defaults the tools can inherit
+            "env": {
+                "UNOC_ASYNC_MODE": "threading",
+                // Align with VSCode task (backend run uses 5001)
+                "UNOC_PORT": "5001",
+                "UNOC_SHUTDOWN_TOKEN": "dev"
+            },
+            "tools": [
+                // ---------- Checks / CI-lite ----------
+                {
+                    "id": "llm-context-refresh",
+                    "label": "LLM: Context Refresh",
+                    "type": "terminal",
+                    "command": "echo 'Reloading context for AI agent...'"
+                },
+                {
+                    "id": "checks-llm",
+                    "label": "Checks: PowerShell (black, isort, ruff, pytest)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\check-llm.ps1"
+                },
+                {
+                    "id": "checks-all",
+                    "label": "Checks: ruff+isort+black+pytest",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda run -n unoc-env ruff check .; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; conda run -n unoc-env isort .; conda run -n unoc-env black .; conda run -n unoc-env python -m pytest -q"
+                },
+                {
+                    "id": "tests-pytest",
+                    "label": "Tests: pytest -q",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda run -n unoc-env python -m pytest -q"
+                },
+                {
+                    "id": "tests-coverage",
+                    "label": "Tests: coverage run+report",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda run -n unoc-env coverage run -m pytest; conda run -n unoc-env coverage report -m"
+                },
+                {
+                    "id": "format-black",
+                    "label": "Format: black .",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda run -n unoc-env python -m black ."
+                },
+                {
+                    "id": "imports-isort",
+                    "label": "Imports: isort .",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda run -n unoc-env python -m isort ."
+                },
+                {
+                    "id": "lint-ruff",
+                    "label": "Lint: ruff check .",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda run -n unoc-env python -m ruff check ."
+                },
+                {
+                    "id": "frontend-lint",
+                    "label": "Frontend: ESLint",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "npm run lint --prefix unoc-frontend-v2"
+                },
+                {
+                    "id": "frontend-test",
+                    "label": "Frontend: Vitest",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "npm test --prefix unoc-frontend-v2"
+                },
+                {
+                    "id": "frontend-type-check",
+                    "label": "Frontend: TypeScript type-check",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "npm run type-check --prefix unoc-frontend-v2"
+                },
+                {
+                    "id": "frontend-build",
+                    "label": "Frontend: build",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "npm run build --prefix unoc-frontend-v2"
+                },
+                {
+                    "id": "frontend-preview",
+                    "label": "Frontend: preview (dist :8010)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "npx http-server unoc-frontend-v2/dist -p 8010 --cors -c-1"
+                },
+                // ---------- Backend ----------
+                {
+                    "id": "backend-run",
+                    "label": "Backend: run (threading, :5001)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "env": {
+                        "UNOC_ASYNC_MODE": "threading",
+                        "UNOC_PORT": "5001",
+                        "UNOC_SHUTDOWN_TOKEN": "dev",
+                        "UNOC_DEV_FEATURES": "1"
+                    },
+                    "command": "conda run -n unoc-env python run.py"
+                },
+                {
+                    "id": "backend-stop-graceful",
+                    "label": "Backend: stop (graceful, then kill run.py)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "$ProgressPreference='SilentlyContinue'; $port = $env:UNOC_PORT; if (-not $port) { $port = 5001 }; $token = $env:UNOC_SHUTDOWN_TOKEN; if (-not $token) { $token = 'dev' }; try { Invoke-RestMethod -Method Post -Uri \"http://127.0.0.1:$port/api/system/shutdown?token=$token\" -TimeoutSec 5; Write-Host \"Shutdown request sent.\" } catch { Write-Host (\"Graceful shutdown failed: \" + $_.Exception.Message); $p = Get-WmiObject Win32_Process -Filter \"Name='python.exe'\" | Where-Object { $_.CommandLine -match 'run.py' } | Select -First 1; if ($p) { Stop-Process -Id $p.ProcessId -Force; Write-Host (\"Killed PID \" + $p.ProcessId) } else { Write-Host 'No run.py process found.' } }"
+                },
+                {
+                    "id": "backend-restart",
+                    "label": "Backend: restart",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "powershell.exe -NoProfile -Command \"& { $ProgressPreference='SilentlyContinue'; $port = $env:UNOC_PORT; if (-not $port) { $port = 5001 }; $token = $env:UNOC_SHUTDOWN_TOKEN; if (-not $token) { $token = 'dev' }; try { Invoke-RestMethod -Method Post -Uri \\\"http://127.0.0.1:$port/api/system/shutdown?token=$token\\\" -TimeoutSec 5 } catch { }; Start-Sleep -Seconds 1; conda run -n unoc-env python run.py }\""
+                },
+                {
+                    "id": "backend-health",
+                    "label": "Backend: health check",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "$port = $env:UNOC_PORT; if (-not $port) { $port = 5001 }; try { Invoke-RestMethod -Uri \"http://127.0.0.1:$port/api/metadata\" -TimeoutSec 3 | ConvertTo-Json -Depth 5 } catch { Write-Error $_ }"
+                },
+                // ---------- Frontend ----------
+                {
+                    "id": "frontend-serve",
+                    "label": "Frontend: serve (http-server :8010)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "npx http-server unoc-frontend-v2 -p 8010 --cors -c-1"
+                },
+                // ---------- Utility ----------
+                {
+                    "id": "conda-activate-unoc",
+                    "label": "Conda: activate unoc-env",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda activate unoc-env"
+                },
+                {
+                    "id": "conda-deactivate",
+                    "label": "Conda: deactivate",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda deactivate"
+                },
+                {
+                    "id": "conda-info",
+                    "label": "Conda: info (current env)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda info --envs"
+                },
+                {
+                    "id": "pip-install-requirements",
+                    "label": "Pip: install requirements.txt",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "conda run -n unoc-env pip install -r requirements.txt"
+                },
+                {
+                    "id": "open-browser-frontend",
+                    "label": "Browser: open frontend (localhost:8010)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "Start-Process 'http://localhost:8010'"
+                },
+                {
+                    "id": "open-browser-backend-api",
+                    "label": "Browser: open backend API (localhost:5000/api/)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "Start-Process 'http://localhost:5001/api/metadata'"
+                },
+                {
+                    "id": "kill-unoc-servers",
+                    "label": "Emergency: kill UNOC python/node (filtered)",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "Get-Process -Name python,node -ErrorAction SilentlyContinue | Where-Object { $_.Path -like '*unoc*' -or $_.CommandLine -match 'run.py' } | Stop-Process -Force"
+                },
+                {
+                    "id": "open-architecture",
+                    "label": "Docs: open ARCHITECTURE.md",
+                    "type": "terminal",
+                    "shell": "powershell.exe",
+                    "command": "Start-Process 'c:/noc_project/UNOC/unoc/docs/llm/ARCHITECTURE.md'"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,85 @@
+ *  Executing task: C:\noc_project\UNOC\unoc/.venv/Scripts/python.exe run.py 
+
+INFO:     Will watch for changes in these directories: ['C:\\noc_project\\UNOC\\unoc']
+INFO:     Uvicorn running on http://0.0.0.0:5001 (Press CTRL+C to quit)
+INFO:     Started reloader process [14168] using StatReload
+INFO:     Started server process [55220]
+INFO:     Waiting for application startup.
+[2025-09-12 20:44:29,284] [INFO] traffic.TariffTrafficRunner - Starting TrafficEngineV2: interval=1.000s seed=12345
+INFO:     Application startup complete.
+INFO:     ('127.0.0.1', 51142) - "WebSocket /api/ws" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:62954 - "GET /api/optical/fiber-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62952 - "GET /api/links HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62956 - "GET /api/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57066 - "GET /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62953 - "GET /api/tariffs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62955 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58205 - "GET /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64336 - "GET /api/metrics/snapshot HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58241 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+INFO:     ('127.0.0.1', 62947) - "WebSocket /api/ws" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:51061 - "GET /api/links HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59647 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59935 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53743 - "POST /api/devices HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55986 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55343 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62272 - "POST /api/devices HTTP/1.1" 201 Created
+INFO:     127.0.0.1:53101 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49542 - "POST /api/devices HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55227 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54041 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+[2025-09-12 20:45:09,961] [INFO] unoc.links - Link created id=backbone_gateway__core_router (backbone_gateway-if0<->core_router-if0)
+[2025-09-12 20:45:09,964] [INFO] unoc.optical - Optical recomputation triggered for devices=[] links=['backbone_gateway__core_router']
+INFO:     127.0.0.1:61194 - "POST /api/links HTTP/1.1" 201 Created
+[2025-09-12 20:45:11,794] [INFO] unoc.links - Link created id=core_router__edge_router (core_router-if0<->edge_router-if0)
+[2025-09-12 20:45:11,796] [INFO] unoc.optical - Optical recomputation triggered for devices=[] links=['core_router__edge_router']
+INFO:     127.0.0.1:50181 - "POST /api/links HTTP/1.1" 201 Created
+[2025-09-12 20:45:14,614] [INFO] unoc.provision - Provisioned device id=core_router type=DeviceType.CORE_ROUTER ip=10.250.0.1
+INFO:     127.0.0.1:64536 - "POST /api/devices/core_router/provision HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62788 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+[2025-09-12 20:45:16,144] [INFO] unoc.provision - Provisioned device id=edge_router type=DeviceType.EDGE_ROUTER ip=10.250.0.2
+INFO:     127.0.0.1:53139 - "POST /api/devices/edge_router/provision HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51760 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50775 - "DELETE /api/devices/core1 HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:63099 - "DELETE /api/devices/pop1 HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:50879 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50062 - "DELETE /api/devices/olt1 HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:58393 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58313 - "POST /api/devices HTTP/1.1" 201 Created
+INFO:     127.0.0.1:59654 - "POST /api/devices HTTP/1.1" 201 Created
+INFO:     127.0.0.1:58409 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+[2025-09-12 20:45:32,941] [INFO] unoc.links - Link created id=edge_router__olt (edge_router-if0<->olt-if0)
+[2025-09-12 20:45:32,943] [INFO] unoc.optical - Optical recomputation triggered for devices=[] links=['edge_router__olt']
+INFO:     127.0.0.1:53890 - "POST /api/links HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61094 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+[2025-09-12 20:45:35,300] [INFO] unoc.provision - Provisioned device id=olt type=DeviceType.OLT ip=10.250.4.1
+[2025-09-12 20:45:35,302] [INFO] unoc.optical - Optical recomputation triggered for devices=['olt'] links=[]
+INFO:     127.0.0.1:54315 - "POST /api/devices/olt/provision HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63021 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54826 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63995 - "POST /api/devices HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61434 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61836 - "PATCH /api/layout/positions HTTP/1.1" 200 OK
+[2025-09-12 20:45:42,317] [INFO] unoc.links - Link created id=olt__ont (olt-if0<->ont-if0)
+[2025-09-12 20:45:42,320] [INFO] unoc.optical - Optical recomputation triggered for devices=[] links=['olt__ont']
+INFO:     127.0.0.1:56969 - "POST /api/links HTTP/1.1" 201 Created
+INFO:     127.0.0.1:60547 - "GET /api/tariffs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56033 - "POST /api/tariffs HTTP/1.1" 201 Created
+INFO:     127.0.0.1:62179 - "GET /api/optical/fiber-types HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62177 - "GET /api/tariffs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62176 - "GET /api/links HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62175 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62678 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62878 - "PUT /api/devices/ont HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59133 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+[2025-09-12 20:45:57,162] [INFO] unoc.provision - Provisioned device id=ont type=DeviceType.ONT ip=10.250.1.1
+[2025-09-12 20:45:57,164] [INFO] unoc.optical - Optical recomputation triggered for devices=['ont'] links=[]
+INFO:     127.0.0.1:59412 - "POST /api/devices/ont/provision HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49516 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52241 - "PUT /api/devices/ont HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63552 - "GET /api/devices?include_interfaces=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57554 - "PATCH /api/layout/positions HTTP/1.1" 200 OK

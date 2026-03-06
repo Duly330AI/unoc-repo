@@ -1,0 +1,10 @@
+[2025-10-10 14:59:06,456] [INFO] perf - method=POST path=/api/devices/ont_debug/provision status=200 dur_ms=121.12 sql_count=0 sql_ms=0.00
+[2025-10-10 14:59:06,521] [INFO] unoc.optical - Optical recomputation triggered for devices=['ont_debug'] links=[]
+[2025-10-10 14:59:06,575] [INFO] unoc.optical - DEBUG PathFinder response for ont_debug: total_attenuation_db=1.2595 (raw: 1.2595)
+[2025-10-10 14:59:06,576] [INFO] unoc.optical - optical: ont=ont_debug olt=olt loss_db=1.260 tx=5.00 recv_dbm=3.74 sens=-30.00 margin=33.74 -> SignalStatus.OK
+[2025-10-10 14:59:06,576] [INFO] unoc.optical - DEBUG change detection: ont=ont_debug changed=True prev_atten=None new_atten=1.2595
+[2025-10-10 14:59:06,576] [INFO] unoc.optical - DEBUG: Adding ont=ont_debug to updated list
+[2025-10-10 14:59:06,577] [INFO] unoc.optical - DEBUG: Committing 1 ONTs: ['ont_debug']
+[2025-10-10 14:59:06,583] [INFO] unoc.optical - DEBUG: Commit successful!
+[2025-10-10 14:59:06,657] [INFO] unoc.recompute - recompute.coalesced executed=1 scopes=1 keys=1 dur_ms=184.95    
+[2025-10-10 14:59:13,456] [INFO] perf - method=GET path=/api/metrics/prometheus status=200 dur_ms=2.39 sql_count=0 sql_ms=0.00

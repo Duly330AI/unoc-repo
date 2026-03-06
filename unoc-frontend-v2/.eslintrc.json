@@ -1,0 +1,62 @@
+{
+    "root": true,
+    "env": {
+        "browser": true,
+        "es2023": true
+    },
+    "parser": "vue-eslint-parser",
+    "parserOptions": {
+        "parser": "@typescript-eslint/parser",
+        "sourceType": "module",
+        "ecmaVersion": "latest",
+        "extraFileExtensions": [
+            ".vue"
+        ]
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:vue/vue3-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
+    ],
+    "ignorePatterns": [
+        "dist/",
+        "node_modules/"
+    ],
+    "rules": {
+        "vue/multi-word-component-names": "off",
+        "vue/attributes-order": [
+            "warn",
+            {
+                "alphabetical": false
+            }
+        ],
+        "max-lines": [
+            "error",
+            {
+                "max": 400,
+                "skipBlankLines": true,
+                "skipComments": true
+            }
+        ]
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/__tests__/**",
+                "**/*.spec.ts",
+                "tests-e2e/**/*.ts"
+            ],
+            "rules": {
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/no-unused-vars": [
+                    "warn",
+                    {
+                        "argsIgnorePattern": "^_",
+                        "varsIgnorePattern": "^_"
+                    }
+                ]
+            }
+        }
+    ]
+}

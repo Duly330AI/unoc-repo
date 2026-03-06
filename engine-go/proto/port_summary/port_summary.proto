@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package port_summary;
+
+option go_package = "github.com/yourusername/unoc/gen/port_summary";
+
+import "google/protobuf/empty.proto";
+
+// Port Summary Service - Fast interface summary for devices
+// Replaces slow Python bulk queries with in-memory Go service
+service PortSummaryService {
+  // Get port summary for a single device
+  rpc GetPortSummary(DeviceRequest) returns (PortSummaryResponse);
+  
+  // Get port summaries for multiple devices (bulk)
+  rpc GetBulkPortSummary(BulkDeviceRequest) returns (BulkPortSummaryResponse);
+  
+  // Invalidate cache for a device (triggered by events)
+  rpc InvalidateCache(InvalidateCacheRequest) returns (google.protobuf.Empty);
+  
+  // Health check endpoint
+  rpc HealthCheck(google.protobuf.Empty) returns (HealthCheckResponse);
+}
+
+// Request for single device
+message DeviceRequest {
+  string device_id = 1;
+}
+
+// Request for multiple devices (bulk)
+message BulkDeviceRequest {
+  repeated string device_ids = 1;
+}
+
+// Interface summary information
+message InterfaceSummary {
+  string id = 1;
+  string name = 2;
+  string port_role = 3;                    // PON, ACCESS, UPLINK, etc.
+  string effective_status = 4;             // UP, DOWN, DEGRADED
+  int32 occupancy = 5;                     // Number of connected devices
+  optional int32 capacity = 6;             // Max capacity (null for unlimited)
+}
+
+// Response for single device
+message PortSummaryResponse {
+  repeated InterfaceSummary interfaces = 1;
+}
+
+// Response for multiple devices (bulk)
+message BulkPortSummaryResponse {
+  map<string, PortSummaryResponse> summaries = 1;
+}
+
+// Request to invalidate cache
+message InvalidateCacheRequest {
+  string device_id = 1;
+}
+
+// Health check response
+message HealthCheckResponse {
+  bool healthy = 1;
+  int32 cached_devices = 2;
+  int32 cached_interfaces = 3;
+  int32 cached_links = 4;
+  string version = 5;
+}
