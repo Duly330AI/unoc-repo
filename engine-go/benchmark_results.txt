@@ -1,0 +1,4 @@
+FAIL	. [setup failed]
+# .
+no Go files in C:\noc_project\UNOC\unoc\engine-go
+FAIL

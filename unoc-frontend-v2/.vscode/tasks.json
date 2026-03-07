@@ -1,0 +1,88 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "frontend: lint",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "frontend: lint",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "frontend: lint",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "frontend: lint",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "frontend: lint (workspace task)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "frontend: lint",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "frontend: lint (no cache)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"-s",
+				"lint"
+			],
+			"group": "build"
+		}
+	]
+}

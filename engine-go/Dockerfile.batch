@@ -1,0 +1,57 @@
+# Dockerfile for Batch Operations Service
+# Multi-stage build for minimal image size
+
+# Stage 1: Build
+FROM golang:1.23-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache git make
+
+# Set working directory
+WORKDIR /build
+
+# Copy go mod files
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build binary
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags="-w -s" \
+    -o batch-service \
+    ./cmd/batch-service
+
+# Stage 2: Runtime
+FROM alpine:3.19
+
+# Install runtime dependencies
+RUN apk add --no-cache ca-certificates tzdata
+
+# Create non-root user
+RUN addgroup -g 1000 unoc && \
+    adduser -D -u 1000 -G unoc unoc
+
+# Set working directory
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /build/batch-service .
+
+# Change ownership
+RUN chown -R unoc:unoc /app
+
+# Switch to non-root user
+USER unoc
+
+# Expose gRPC port
+EXPOSE 50052
+
+# Health check
+HEALTHCHECK --interval=15s --timeout=5s --retries=3 \
+    CMD /app/batch-service --health || exit 1
+
+# Run
+ENTRYPOINT ["/app/batch-service"]
+CMD ["--port=50052", "--optical-url=optical-service:50051"]

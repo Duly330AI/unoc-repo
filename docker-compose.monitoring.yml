@@ -1,0 +1,99 @@
+# Docker Compose for LOCAL DEVELOPMENT
+# Only runs: PostgreSQL + Prometheus + Grafana
+# Go Services and Backend run LOCALLY outside Docker
+# Usage: docker-compose -f docker-compose.monitoring.yml up -d
+
+services:
+  # ============================================
+  # PostgreSQL Database
+  # ============================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: unoc-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: unoc
+      POSTGRES_PASSWORD: unocpw
+      POSTGRES_DB: unocdb
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U unoc -d unocdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./ops/postgres/initdb:/docker-entrypoint-initdb.d:ro
+      - ./logs/postgres:/var/log/postgresql
+    restart: unless-stopped
+    networks:
+      - unoc-network
+
+  # ============================================
+  # Prometheus (Metrics Collection)
+  # ============================================
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: unoc-prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=30d"
+      - "--web.enable-lifecycle"
+    volumes:
+      - ./ops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./ops/prometheus/alerts:/etc/prometheus/alerts:ro
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - unoc-network
+
+  # ============================================
+  # Grafana (Visualization)
+  # ============================================
+  grafana:
+    image: grafana/grafana:10.4.12
+    container_name: unoc-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: unoc2025
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    volumes:
+      - ./ops/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./ops/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    networks:
+      - unoc-network
+
+# ============================================
+# Volumes (Persistent Data)
+# ============================================
+volumes:
+  pgdata:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# ============================================
+# Networks
+# ============================================
+networks:
+  unoc-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

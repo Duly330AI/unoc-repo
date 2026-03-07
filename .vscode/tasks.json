@@ -1,0 +1,3807 @@
+{
+	"$schema": "vscode://schemas/tasks",
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "backend: run",
+			"type": "shell",
+			"command": "C:\\Users\\duly3\\.conda\\envs\\unoc-env\\python.exe",
+			"args": [
+				"run.py"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"UNOC_ASYNC_MODE": "threading",
+					"UNOC_PORT": "5001",
+					"UNOC_SHUTDOWN_TOKEN": "dev",
+					"UNOC_DEV_FEATURES": "1",
+					"DATABASE_URL": "postgresql+psycopg://unoc:unocpw@localhost:5432/unocdb",
+					"AUTO_ASSIGN_DEFAULT_HARDWARE": "1",
+					"USE_GO_TRAFFIC": "1",
+					"USE_PORT_SUMMARY_SERVICE": "1",
+					"UNOC_DB_POOL_SIZE": "50",
+					"UNOC_DB_MAX_OVERFLOW": "50",
+					"UNOC_DB_POOL_TIMEOUT": "60"
+				}
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "backend: run (no reload)",
+			"type": "shell",
+			"command": "C:\\Users\\duly3\\.conda\\envs\\unoc-env\\python.exe",
+			"args": [
+				"run.py"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"UNOC_ASYNC_MODE": "threading",
+					"UNOC_PORT": "5001",
+					"UNOC_SHUTDOWN_TOKEN": "dev",
+					"UNOC_DEV_FEATURES": "1",
+					"UNOC_DISABLE_RELOAD": "1",
+					"DATABASE_URL": "postgresql+psycopg://unoc:unocpw@localhost:5432/unocdb",
+					"AUTO_ASSIGN_DEFAULT_HARDWARE": "1",
+					"UNOC_DB_POOL_SIZE": "50",
+					"UNOC_DB_MAX_OVERFLOW": "50",
+					"UNOC_DB_POOL_TIMEOUT": "60"
+				}
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "backend: run inmemory (no reload)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"run.py"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"UNOC_ASYNC_MODE": "threading",
+					"UNOC_PORT": "5001",
+					"UNOC_SHUTDOWN_TOKEN": "dev",
+					"UNOC_DEV_FEATURES": "1",
+					"UNOC_DISABLE_RELOAD": "1",
+					"UNOC_PERSISTENCE": "inmemory",
+					"AUTO_ASSIGN_DEFAULT_HARDWARE": "1"
+				}
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "repo: list oversized files",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/list_long_files.ps1"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always"
+			}
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "backend: format",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"black",
+				"."
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "backend: imports",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"isort",
+				"."
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "db: reset dev file (script)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/reset_dev_db.py",
+				"--force",
+				"--seed"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "db: reset empty (catalog only)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/reset_dev_db.py",
+				"--force",
+				"--catalog-only"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "frontend: dev",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/unoc-frontend-v2"
+			},
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "frontend: build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/unoc-frontend-v2"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "frontend: test",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/unoc-frontend-v2"
+			}
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check . --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "frontend: e2e install",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"e2e:install"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/unoc-frontend-v2"
+			}
+		},
+		{
+			"label": "frontend: lint",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/unoc-frontend-v2"
+			},
+			"group": "build"
+		},
+		{
+			"label": "tests: backend quick",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "backend: tests (focused)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (quick)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_link_status_recompute_hooks.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint (focused)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests (all)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "quality: coverage run",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "coverage: report",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"report",
+				"-m"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "coverage: html",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"html"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (targeted)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_endpoint.py",
+				"backend/tests/test_devices_branches.py",
+				"backend/tests/test_links_negative.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (full with coverage)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (new/affected)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_endpoint.py",
+				"backend/tests/test_devices_branches.py",
+				"backend/tests/test_links_negative.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (affected retry)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_links_negative.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: test ws transport",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_endpoint.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: unit tests quick",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_endpoint.py",
+				"backend/tests/test_devices_branches.py",
+				"backend/tests/test_links_negative.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run new ws transport tests",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_transport.py",
+				"backend/tests/test_ws_endpoint.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run full test suite with coverage",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: coverage report + html",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"report",
+				"-m"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: generate coverage html",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"html"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: rerun full coverage after config tweak",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run only ws tests to verify coverage gains",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_transport.py",
+				"backend/tests/test_ws_endpoint.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: final coverage run",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: final coverage report",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"report",
+				"-m"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: run new device branch tests",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_devices_branches_more.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run full tests with coverage (raise to ≥90%)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run targeted failing test",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_devices_list_and_flags.py::test_list_devices_include_interfaces"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run new tests only",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_health_and_layout.py",
+				"backend/tests/test_devices_list_and_flags.py",
+				"backend/tests/test_links_more_branches.py",
+				"backend/tests/test_utils_branches.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run full suite with coverage after new tests",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"coverage",
+				"run",
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (targeted failing)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_devices_list_and_flags.py::test_list_devices_include_interfaces"
+			]
+		},
+		{
+			"label": "backend: test (quick ws fanout)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_fanout_and_correlation.py"
+			]
+		},
+		{
+			"label": "backend: test (ws only)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_fanout_and_correlation.py::test_fanout_to_multiple_clients_on_device_create",
+				"backend/tests/test_ws_fanout_and_correlation.py::test_correlation_id_passthrough_on_publish"
+			]
+		},
+		{
+			"label": "backend: test (full)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			]
+		},
+		{
+			"label": "backend: run tests (task037)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run tests (task037) - retry",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: run tests (task037) - fix ws",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "tools: generate TS types",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"tools/gen_ts_types.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: run backend tests for TASK-034B",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "backend: test resolver after fix",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_optical_path_resolver.py"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "frontend: typecheck quick",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"-s",
+				"test",
+				"--",
+				"-t",
+				"colorScale utilization",
+				"--passWithNoTests"
+			],
+			"isBackground": false,
+			"group": "test"
+		},
+		{
+			"label": "tests: run quick",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_optical_recompute_hook.py",
+				"backend/tests/test_optical_events_on_link_crud.py",
+				"backend/tests/test_provision_status_hooks.py"
+			]
+		},
+		{
+			"label": "tests: run gating suite",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_optical_status_gating.py"
+			]
+		},
+		{
+			"label": "tools: gen ts types",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"tools/gen_ts_types.py"
+			]
+		},
+		{
+			"label": "backend: tests (tariff)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_tariff_model.py"
+			]
+		},
+		{
+			"label": "backend: tests (quick)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_tariffs_api.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "test"
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "ruff: fix and test",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend/api/endpoints/tariffs.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_tariffs_api.py"
+			]
+		},
+		{
+			"label": "backend: run tests for E1.1",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: regenerate types + tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe tools/gen_ts_types.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: lint+tests E1.2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "lint+tests after import sort",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ruff --fix targeted imports",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/api/routes.py backend/services/provisioning_service.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: run after E1.3 endpoints",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe tools/gen_ts_types.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "run tests: interface addresses API",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_interface_addresses_api.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "lint+tests quick",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "lint+tests provisioning",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/provisioning_service.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_provisioning_service.py"
+			]
+		},
+		{
+			"label": "run provisioning tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/tests/test_provisioning_service.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_provisioning_service.py"
+			]
+		},
+		{
+			"label": "run provisioning tests 2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/tests/test_provisioning_service.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_provisioning_service.py"
+			]
+		},
+		{
+			"label": "run provisioning tests 3",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/tests/test_provisioning_service.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_provisioning_service.py"
+			]
+		},
+		{
+			"label": "lint+test provisioning tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/tests/test_provisioning_service.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_provisioning_service.py"
+			]
+		},
+		{
+			"label": "lint+tests all after seed_service change",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/seed_service.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "lint+tests after IPAM seeding + duplicate check",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check . --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "quick re-lint + targeted tests (provision paths)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/*.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_provisioning_service.py::test_parent_required_positive_case backend/tests/test_provisioning_service.py::test_aon_switch_positive_case backend/tests/test_provisioning.py::test_basic_provision_flow"
+			]
+		},
+		{
+			"label": "lint + targeted dup mgmt test",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/tests/test_ipam_edge_cases.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_ipam_edge_cases.py -q"
+			]
+		},
+		{
+			"label": "lint + run dup mgmt test",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/tests/test_ipam_edge_cases.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_ipam_edge_cases.py::test_duplicate_mgmt_interface_rejected -q"
+			]
+		},
+		{
+			"label": "Run targeted test for IPAM edge cases",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ipam_edge_cases.py",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Run backend tests",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Run tests for catalog suite",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_catalog_loader_api.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "tests: run backend",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "tests: run pipeline & suite",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "tests: run backend suite x2",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (focused)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_forwarding_multihop.py::test_multihop_success_router_to_router",
+				"backend/tests/test_forwarding_multihop.py::test_multihop_drop_midpath_no_route",
+				"backend/tests/test_forwarding_multihop.py::test_multihop_ttl_exceeded"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (full)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (ad-hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "lint-only (ruff)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ruff: fix (repo)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				".",
+				"--fix"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ruff check (single)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"backend/services/traffic_engine.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ruff fix traffic_engine",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"--fix",
+				"backend/services/traffic_engine.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ruff check (repo)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "ruff + tests quick",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "lint: ruff",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (quick)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: run tests quick",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_congestion.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: quick re-run congestion tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/traffic_engine.py backend/tests/test_congestion.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_congestion.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: lint and run congestion tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/traffic_engine.py backend/tests/test_congestion.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_congestion.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: lint traffic_engine only",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/traffic_engine.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "lint-then-congestion-tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_congestion.py"
+			]
+		},
+		{
+			"label": "lint-and-run-congestion-tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/traffic_engine.py backend/tests/test_congestion.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_congestion.py"
+			]
+		},
+		{
+			"label": "ruff-check-traffic_engine",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"backend/services/traffic_engine.py"
+			]
+		},
+		{
+			"label": "ruff-and-targeted-tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/traffic_engine.py backend/tests/test_congestion.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_congestion.py"
+			]
+		},
+		{
+			"label": "frontend: test (vitest)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test",
+				"-s"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (agent)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (run)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (re-run)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (final)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: unit tests (quick)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test",
+				"--silent"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "frontend: test (Tariff UI)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check . --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "quality: all (backend) - recheck",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test quick",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ws_endpoint.py",
+				"backend/tests/test_ws_transport.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: build adhoc",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc",
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - run",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: imports (fix)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"isort",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: format (black)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"black",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint+test",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: run reset demo topology",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/reset_dev_db.py",
+				"--force",
+				"--seed",
+				"--demo-topology"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (subset)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_ip_uniqueness_and_audit.py",
+				"backend/tests/test_interfaces_mac_and_api.py",
+				"backend/tests/test_provisioning.py",
+				"backend/tests/test_optical_events_on_link_crud.py",
+				"backend/tests/test_optical_recompute_hook.py",
+				"backend/tests/test_optical_status_gating.py",
+				"backend/tests/test_ipam_edge_cases.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "test"
+		},
+		{
+			"label": "backend: test (subset) 2",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_interfaces_mac_and_api.py::test_provisioning_sets_mgmt0_mac",
+				"backend/tests/test_ip_uniqueness_and_audit.py::test_provisioning_creates_audit_record",
+				"backend/tests/test_ipam_edge_cases.py::test_duplicate_mgmt_interface_rejected",
+				"backend/tests/test_optical_events_on_link_crud.py::test_optical_event_emitted_on_link_create_and_delete",
+				"backend/tests/test_optical_recompute_hook.py::test_optical_hook_triggers_for_optical_device_types",
+				"backend/tests/test_optical_status_gating.py::test_ont_status_gating_happy_loss_recovery",
+				"backend/tests/test_provisioning.py::test_basic_provision_flow"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "test"
+		},
+		{
+			"label": "backend: test (all)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "test"
+		},
+		{
+			"label": "backend: test (optical trio)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_optical_events_on_link_crud.py::test_optical_event_emitted_on_link_create_and_delete",
+				"backend/tests/test_optical_recompute_hook.py::test_optical_hook_triggers_for_optical_device_types",
+				"backend/tests/test_optical_status_gating.py::test_ont_status_gating_happy_loss_recovery"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "test"
+		},
+		{
+			"label": "quality: all (backend) [run]",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) [run #2]",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: test (vitest)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "ci:gate (run)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "ci:gate (ad hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (ad hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (ad hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (ad hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (ad hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (ad hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (ad hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - run",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - run 2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - run 3",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - run 4",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - run 5",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test - IPAM only",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_ipam* -q"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - run IPAM subset",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend/api/endpoints/ipam.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_ipam_endpoint.py -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (quick) - v2 gating + offline test + build",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_offline_ont_zero.py backend/tests/test_traffic_engine_v2.py -q; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; cd unoc-frontend-v2; npm run -s build"
+			]
+		},
+		{
+			"label": "lint: ruff fix imports then tests+build",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check --fix backend/services/traffic/v2_engine.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_offline_ont_zero.py backend/tests/test_traffic_engine_v2.py -q; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; cd unoc-frontend-v2; npm run -s build"
+			]
+		},
+		{
+			"label": "lint+tests after gating tweak",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/services/traffic/v2_engine.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_offline_ont_zero.py backend/tests/test_traffic_engine_v2.py -q; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "run affected tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check backend/api/endpoints/metrics.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links -q; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "retest snapshot endpoint case",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links -q"
+			]
+		},
+		{
+			"label": "run v2 tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py -q"
+			]
+		},
+		{
+			"label": "re-run v2 tests after gating tweak",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_tariff_based_generation_asymmetric_within_bounds backend/tests/test_traffic_engine_v2.py::test_end_to_end_aggregation_on_devices_and_links backend/tests/test_traffic_engine_v2.py::test_congestion_detect_and_clear_with_hysteresis backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links -q"
+			]
+		},
+		{
+			"label": "run failing v2 snapshot test",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links -q"
+			]
+		},
+		{
+			"label": "run full backend tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "re-run v2 snapshot test after endpoint flip",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links -q"
+			]
+		},
+		{
+			"label": "quality: quick lint & tests (targeted)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend/services/traffic/v2_engine.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_health.py backend/tests/test_events_emission.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "lint v2_engine only",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend/services/traffic/v2_engine.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint & tests (ipam scope)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend/api/endpoints/ipam.py backend/constants/provisioning.py backend/provisioning.py backend/services/seed_service.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_ipam_endpoint.py backend/tests/test_provisioning_service.py backend/tests/test_prefix_fixtures_non_overlapping.py backend/tests/test_ip_uniqueness_and_audit.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "lint & targeted ipam tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend/api/endpoints/ipam.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_ipam_endpoint.py backend/tests/test_prefix_fixtures_non_overlapping.py backend/tests/test_ip_uniqueness_and_audit.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: backend subset (TASK-560)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_link_rules_unit.py backend/tests/test_optical_link_fields.py backend/tests/test_health.py"
+			]
+		},
+		{
+			"label": "lint + targeted tests after metrics endpoint fix",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_metrics_snapshot.py backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links"
+			]
+		},
+		{
+			"label": "run single metrics snapshot test",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_metrics_snapshot.py::test_metrics_snapshot_basic_shape_and_tick -q"
+			]
+		},
+		{
+			"label": "run failing test again after dynamic import tweak",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q backend/tests/test_metrics_snapshot.py::test_metrics_snapshot_basic_shape_and_tick -q"
+			]
+		},
+		{
+			"label": "ruff fix + full tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check backend --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "run full test suite for confirmation",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: imports",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"isort",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint (ad-hoc)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: test (targeted)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test",
+				"--silent",
+				"--",
+				"-q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: test (quick)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"-w",
+				"unoc-frontend-v2",
+				"test",
+				"--silent",
+				"--",
+				"--run",
+				"src/__tests__/DetailsPanel.interfaces.spec.ts",
+				"--reporter=dot"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m isort .; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m black .; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "repo: list oversized files",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"c:\\noc_project\\UNOC\\unoc\\scripts/list_long_files.ps1"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain (single)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain (single) rerun",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain (single) rerun 2",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain (single) rerun 3",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain (single) rerun 4",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain (single) rerun 5",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain (single) rerun 6",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests - causal chain (single) rerun 7",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (full suite)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test quick subset",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_traffic_engine_v2.py::test_end_to_end_aggregation_on_devices_and_links",
+				"backend/tests/test_traffic_engine_e2e.py::test_e2e_tariff_generation_and_events",
+				"backend/tests/test_traffic_aggregation_and_capacity.py::test_full_path_aggregation_and_nonnull_capacities",
+				"backend/tests/test_causal_chain_core_down.py::test_causal_chain_core_down"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test causal subset",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_causal_chain_core_down.py::test_causal_chain_core_down"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test two failing",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_traffic_engine_v2.py::test_end_to_end_aggregation_on_devices_and_links",
+				"backend/tests/test_traffic_engine_e2e.py::test_e2e_tariff_generation_and_events"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test full",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test full confirm",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: quality gates (ruff+pytest)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: format+imports",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black ."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: ruff+pytest",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check --fix .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: ruff fix + pytest",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check --fix .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ruff fix + pytest (retry)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check --fix .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - quick",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - quick (retry)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - quick (retry 2)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: typecheck+build (vite)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"cd ${workspaceFolder}/unoc-frontend-v2; npm run build"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "backend: lint+tests (retry after traffic gate)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: backend quick",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "quality: backend quick",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "quality: backend quick",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "backend: run tests for debug snapshot",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_debug_full_snapshot.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "ci:gate (retry after fixes)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "ci:gate (final)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "backend: imports (isort)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"isort",
+				"."
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint (ruff)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (phase 1)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "test"
+		},
+		{
+			"label": "backend: tests after phase 2 edits",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "test"
+		},
+		{
+			"label": "backend: run full test suite (phase 3)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "test"
+		},
+		{
+			"label": "backend: run tests again",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "test"
+		},
+		{
+			"label": "backend: run tests again",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "test"
+		},
+		{
+			"label": "backend: run tests after fixes",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "test"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m isort .; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m black .; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m isort .; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m black .; C:\\noc_project\\UNOC\\UNOC/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m isort .; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m black .; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - phase A",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - phase A rerun",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - phase A rerun 2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - phase B run",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend) - phase B run 2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (tests)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (fast)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_traffic_engine_v2.py",
+				"backend/tests/test_traffic_engine_e2e.py",
+				"backend/tests/test_link_effective_status_from_endpoints.py",
+				"backend/tests/test_status_e2e_propagation.py",
+				"backend/tests/test_overrides_and_propagation.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (targeted suite)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_traffic_engine_v2.py",
+				"backend/tests/test_traffic_engine_e2e.py",
+				"backend/tests/test_causal_chain_e2e_fixed.py",
+				"backend/tests/test_traffic_aggregation_and_capacity.py",
+				"backend/tests/test_soft_ont_dependency.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: tests (quick sample)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_traffic_congestion.py",
+				"backend/tests/test_provisioning.py",
+				"backend/tests/test_events_emission.py"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m isort .; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m black .; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			]
+		},
+		{
+			"label": "run debug script",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/debug_active_degrade.py"
+			]
+		},
+		{
+			"label": "backend: test (quick)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_provision_status_hooks.py::test_active_device_degrades_when_unreachable",
+				"-q"
+			]
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			]
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			]
+		},
+		{
+			"label": "backend: test (subset)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_optical_status_gating.py::test_ont_status_gating_happy_loss_recovery",
+				"backend/tests/test_traffic_engine_v2.py::test_tariff_based_generation_asymmetric_within_bounds"
+			]
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint+tests quick",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: all (backend)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ci: focused quick check",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q -k \"seed or hardware or device_create or ports or catalog or tariffs\""
+			]
+		},
+		{
+			"label": "backend: lint quick",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "ci:gate (adhoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m pytest -q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: test (adhoc)",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "test"
+		},
+		{
+			"label": "quick: backend tests",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"problemMatcher": [
+				"$python"
+			],
+			"group": "build"
+		},
+		{
+			"label": "db: reset empty (catalog only)",
+			"type": "shell",
+			"command": "C:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"scripts/reset_dev_db.py",
+				"--force",
+				"--catalog-only"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend: test (focused)",
+			"type": "shell",
+			"command": "C:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_devices.py",
+				"backend/tests/test_devices_branches.py",
+				"backend/tests/test_health.py"
+			]
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m isort .; ${workspaceFolder}/.venv/Scripts/python.exe -m black .; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "frontend: build (ad-hoc)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			]
+		},
+		{
+			"label": "frontend: typecheck (ad-hoc)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			]
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "install slowapi",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m pip install slowapi~=0.1.9"
+			]
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "ci:gate",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/list_long_files.ps1; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "C:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "C:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "C:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint",
+			"type": "shell",
+			"command": "C:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			],
+			"group": "build"
+		},
+		{
+			"label": "backend: lint fix",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				".",
+				"--fix"
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: typecheck & build (quick)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/unoc-frontend-v2"
+			},
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "frontend: test (ad-hoc)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/unoc-frontend-v2"
+			},
+			"group": "build"
+		},
+		{
+			"label": "backend: test",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			],
+			"group": "build"
+		},
+		{
+			"label": "perf: run large-scale test",
+			"type": "shell",
+			"command": "C:/noc_project/UNOC/unoc/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"-m",
+				"perf",
+				"backend/tests/perf/test_large_scale.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "quality: quick run affected",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "backend: lint+test (phase 2)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "backend: ruff quick (phase 2 delta)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check backend/services/traffic/v2_path.py backend/services/traffic/v2_engine.py; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; Write-Host 'ruff-ok'"
+			]
+		},
+		{
+			"label": "backend: run targeted tests (v2 paths)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links backend/tests/test_traffic_engine_v2.py::test_end_to_end_aggregation_on_devices_and_links -q"
+			]
+		},
+		{
+			"label": "backend: run targeted tests (v2 paths) 2",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links backend/tests/test_traffic_engine_v2.py::test_end_to_end_aggregation_on_devices_and_links -q"
+			]
+		},
+		{
+			"label": "ruff + targeted tests after Phase 3 extracts",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check backend/services/traffic/v2_engine.py backend/services/traffic/v2_segments.py backend/services/traffic/v2_tick.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links backend/tests/test_traffic_engine_v2.py::test_end_to_end_aggregation_on_devices_and_links -q"
+			]
+		},
+		{
+			"label": "ruff clean + targeted tests (final)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check backend/services/traffic/v2_engine.py backend/services/traffic/v2_segments.py backend/services/traffic/v2_tick.py --fix; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m pytest -q backend/tests/test_traffic_engine_v2.py::test_snapshot_endpoint_returns_v2_data_with_links backend/tests/test_traffic_engine_v2.py::test_end_to_end_aggregation_on_devices_and_links -q"
+			]
+		},
+		{
+			"label": "repo-wide ruff check (post-fixes)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check ."
+			]
+		},
+		{
+			"label": "repo-wide ruff check (clean)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check ."
+			]
+		},
+		{
+			"label": "repo-wide ruff check (final)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check ."
+			]
+		},
+		{
+			"label": "repo-wide ruff check (truly final)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check ."
+			]
+		},
+		{
+			"label": "repo-wide ruff check (confirm clean)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check ."
+			]
+		},
+		{
+			"label": "ruff check after fixes",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check ."
+			]
+		},
+		{
+			"label": "run ruff after isort skips",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe -m ruff check ."
+			]
+		},
+		{
+			"label": "check 400-line budget backend",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe tools/check_file_lengths.py --max 400 --ext .py --format table"
+			]
+		},
+		{
+			"label": "lint+tests after links split",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "lint+tests after links lint fix",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "ad-hoc: ruff check",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			]
+		},
+		{
+			"label": "ad-hoc: ruff check 2",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"ruff",
+				"check",
+				"."
+			]
+		},
+		{
+			"label": "ad-hoc: run tests quick",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q"
+			]
+		},
+		{
+			"label": "ad-hoc: run single test list_links",
+			"type": "shell",
+			"command": "c:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"pytest",
+				"-q",
+				"backend/tests/test_link_effective_status_field.py::test_link_effective_status_field_reflects_override",
+				"-q"
+			]
+		},
+		{
+			"label": "backend: check server health (ad-hoc)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$env:UNOC_ASYNC_MODE='threading'; $env:UNOC_PORT='5001'; $env:UNOC_SHUTDOWN_TOKEN='dev'; $env:UNOC_DEV_FEATURES='1'; $env:AUTO_ASSIGN_DEFAULT_HARDWARE='1'; C:\\noc_project\\UNOC\\unoc\\.venv\\Scripts\\python.exe run.py"
+			],
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"label": "ci:gate (quick) - async link create/delete",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; ${workspaceFolder}/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "docs: markdownlint (optional) + tests",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			]
+		},
+		{
+			"label": "ci:gate (docs delta)",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m ruff check .; if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}; C:\\noc_project\\UNOC\\unoc/.venv/Scripts/python.exe -m pytest -q"
+			]
+		}
+	]
+}

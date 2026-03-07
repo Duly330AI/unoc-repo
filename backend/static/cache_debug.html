@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cache Debug Helper</title>
+  </head>
+  <body>
+    <h1>Browser Cache Debug</h1>
+    <p>1. Öffne DevTools (F12)</p>
+    <p>2. Gehe zum "Network" Tab</p>
+    <p>3. Aktiviere "Disable cache"</p>
+    <p>4. Hard Reload: Ctrl+Shift+R (Windows) oder Cmd+Shift+R (Mac)</p>
+    <p>5. Check ob index-Dp5HWYXR.js geladen wird (neue Version)</p>
+
+    <h2>Alternative: Cache komplett leeren</h2>
+    <p>1. DevTools → Application Tab → Storage → "Clear site data"</p>
+    <p>2. Oder: Browser Settings → Clear browsing data → Cached images and files</p>
+
+    <h2>Test ob Backend korrekt antwortet:</h2>
+    <pre id="test-output">Loading...</pre>
+
+    <script>
+      async function testBackend() {
+        try {
+          // Test OLT port summary
+          const resp = await fetch('/api/ports/summary?ids=olt');
+          const data = await resp.json();
+
+          const output = document.getElementById('test-output');
+          output.textContent = JSON.stringify(data, null, 2);
+
+          // Check occupancy values
+          const oltInterfaces = data.olt || [];
+          const ponPorts = oltInterfaces.filter((i) => i.port_role === 'PON');
+          const totalOccupancy = ponPorts.reduce((sum, p) => sum + (p.occupancy || 0), 0);
+
+          const result = document.createElement('div');
+          result.innerHTML = `
+                    <h3>Backend Test Results:</h3>
+                    <p>PON Ports: ${ponPorts.length}</p>
+                    <p>Total Occupancy: ${totalOccupancy}</p>
+                    <p>Expected: 2 (ont + ont_1)</p>
+                    <p style="color: ${totalOccupancy === 2 ? 'green' : 'red'}">
+                        ${totalOccupancy === 2 ? '✅ BACKEND OK' : '❌ BACKEND PROBLEM'}
+                    </p>
+                `;
+          output.appendChild(result);
+        } catch (e) {
+          document.getElementById('test-output').textContent = 'Error: ' + e;
+        }
+      }
+
+      testBackend();
+    </script>
+  </body>
+</html>

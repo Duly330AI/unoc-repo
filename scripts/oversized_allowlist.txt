@@ -1,0 +1,11 @@
+# Relative paths (from repo root) of oversized files that are temporarily allowed
+# Keep this list short and revisit periodically.
+unoc-frontend-v2\src\components\layout\DetailsPanel.vue
+backend\services\traffic\v2_engine.py
+unoc-frontend-v2\src\stores\linksStore.ts
+backend\api\endpoints\links.py
+backend\services\seed_service.py
+backend\api\endpoints\devices.py
+unoc-frontend-v2\src\composables\topologyCore\draw.ts
+unoc-frontend-v2\src\composables\topologyCore\drag.ts
+unoc-frontend-v2\src\components\layout\TopologyCanvas.vue

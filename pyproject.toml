@@ -1,0 +1,89 @@
+# pyproject.toml – UNOC v3 Development & Build Config
+
+[project]
+name = "unoc"
+version = "0.0.0"
+description = "UNOC v3 backend service"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+authors = [
+    { name = "Duly", email = "dev@example.com" }
+]
+keywords = ["fastapi", "sqlalchemy", "sqlmodel", "unoc", "backend"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Framework :: FastAPI",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent"
+]
+
+dependencies = [
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.7.0",
+    "sqlmodel>=0.0.21",
+    "SQLAlchemy>=2.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "coverage>=7.5.0",
+    "ruff>=0.4.0",
+    "black>=24.0.0",
+    "isort>=5.13.0",
+    "mypy>=1.8.0"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+# ---------------------------
+# Tool Configurations
+# ---------------------------
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["backend"]
+src_paths = ["backend"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["backend"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]  # Zeilenlänge wird von black geregelt
+
+[tool.ruff.lint.isort]
+known-first-party = ["backend"]
+
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q"
+testpaths = ["backend/tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["backend"]
+omit = [
+    "backend/tests/*",
+    "backend/provisioning.py"
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+omit = [
+    "backend/tests/*",
+    "backend/provisioning.py"
+]

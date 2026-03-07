@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "version": 1,
+  "containers": {
+    "POP": {
+      "headerHeight": 56,
+      "contentPadding": { "top": 24, "right": 24, "bottom": 24, "left": 24 },
+      "slotBox": { "width": 240, "height": 140 },
+      "slots": [
+        { "id": "top-left", "x": 144, "y": 150 },
+        { "id": "top-right", "x": 480, "y": 150 },
+        { "id": "mid-left", "x": 144, "y": 338 },
+        { "id": "mid-right", "x": 480, "y": 338 },
+        { "id": "bottom-left", "x": 144, "y": 526 },
+        { "id": "bottom-right", "x": 480, "y": 526 }
+      ],
+      "policies": {
+        "allowedChildren": [
+          "BACKBONE_GATEWAY",
+          "EDGE_ROUTER",
+          "OLT",
+          "SWITCH",
+          "AGG_SWITCH",
+          "CORE_ROUTER"
+        ]
+      }
+    },
+    "CORE_SITE": {
+      "headerHeight": 56,
+      "contentPadding": { "top": 24, "right": 24, "bottom": 24, "left": 24 },
+      "slotBox": { "width": 240, "height": 140 },
+      "slots": [
+        { "id": "top-left", "x": 144, "y": 150 },
+        { "id": "top-right", "x": 480, "y": 150 },
+        { "id": "mid-left", "x": 144, "y": 338 },
+        { "id": "mid-right", "x": 480, "y": 338 },
+        { "id": "bottom-left", "x": 144, "y": 526 },
+        { "id": "bottom-right", "x": 480, "y": 526 }
+      ],
+      "policies": {
+        "allowedChildren": ["BACKBONE_GATEWAY", "CORE_ROUTER", "AGG_SWITCH", "SWITCH", "OLT"]
+      }
+    }
+  }
+}

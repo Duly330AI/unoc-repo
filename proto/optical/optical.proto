@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package optical;
+
+option go_package = "github.com/unoc/engine-go/proto/optical";
+
+// OpticalService handles optical path computation and signal budget calculations
+service OpticalService {
+  // Recompute optical paths for affected ONTs after topology changes
+  // This is the critical performance bottleneck (currently O(N²) in Python)
+  rpc RecomputePaths(RecomputeRequest) returns (RecomputeResponse);
+  
+  // Get optical path details for a single ONT (debugging/UI)
+  rpc GetPath(GetPathRequest) returns (OpticalPath);
+  
+  // Health check endpoint
+  rpc Health(HealthRequest) returns (HealthResponse);
+}
+
+// ============================================================================
+// Recompute Paths (Batch Operation)
+// ============================================================================
+
+message RecomputeRequest {
+  // Links that changed (created/deleted/modified)
+  repeated string link_ids = 1;
+  
+  // Devices that changed (created/deleted/status changed)
+  repeated string device_ids = 2;
+  
+  // Force full recompute (skip smart affected-ONT detection)
+  // Use only for debugging or after major topology changes
+  bool force_full_recompute = 3;
+  
+  // Request ID for tracing/correlation
+  optional string request_id = 4;
+}
+
+message RecomputeResponse {
+  // Number of ONTs that were recomputed
+  int32 affected_onts = 1;
+  
+  // List of affected ONT IDs (for logging/debugging)
+  repeated string ont_ids = 2;
+  
+  // Duration in milliseconds
+  int64 duration_ms = 3;
+  
+  // Status: "success" | "partial" | "error"
+  string status = 4;
+  
+  // Error messages if any (empty if success)
+  repeated string errors = 5;
+  
+  // Request ID (echo from request)
+  optional string request_id = 6;
+}
+
+// ============================================================================
+// Get Path (Single ONT)
+// ============================================================================
+
+message GetPathRequest {
+  // ONT device ID
+  string ont_id = 1;
+  
+  // Request ID for tracing
+  optional string request_id = 2;
+}
+
+message OpticalPath {
+  // ONT device ID
+  string ont_id = 1;
+  
+  // Path segments from ONT → Splitter(s) → OLT
+  repeated PathSegment segments = 2;
+  
+  // Total attenuation (dB) - sum of all segments
+  double total_attenuation_db = 3;
+  
+  // Received power at OLT (dBm)
+  double rx_power_dbm = 4;
+  
+  // Signal margin (dB) - how much above minimum threshold
+  double margin_db = 5;
+  
+  // Optical status: "ok" | "degraded" | "loss"
+  string status = 6;
+  
+  // OLT device ID (terminus of path)
+  string olt_id = 7;
+  
+  // Request ID (echo from request)
+  optional string request_id = 8;
+}
+
+message PathSegment {
+  // Link ID in database
+  string link_id = 1;
+  
+  // Source device ID
+  string from_device_id = 2;
+  
+  // Source device type (for debugging)
+  string from_device_type = 3;
+  
+  // Target device ID
+  string to_device_id = 4;
+  
+  // Target device type (for debugging)
+  string to_device_type = 5;
+  
+  // Attenuation for this segment (dB)
+  double attenuation_db = 6;
+  
+  // Cumulative attenuation up to this segment (dB)
+  double cumulative_attenuation_db = 7;
+}
+
+// ============================================================================
+// Health Check
+// ============================================================================
+
+message HealthRequest {
+  // Optional: specific component to check
+  optional string component = 1;
+}
+
+message HealthResponse {
+  // Overall status: "ok" | "degraded" | "down"
+  string status = 1;
+  
+  // Service version
+  string version = 2;
+  
+  // Uptime in seconds
+  int64 uptime_seconds = 3;
+  
+  // Database connection status: "ok" | "error"
+  string db_status = 4;
+  
+  // Last recompute timestamp (Unix seconds)
+  optional int64 last_recompute_timestamp = 5;
+  
+  // Total ONTs in system
+  optional int32 total_onts = 6;
+}

@@ -1,0 +1,172 @@
+// batch.proto - Batch Operations Service
+// Week 3 Day 13: Protobuf definitions for bulk link/device operations
+// Target: 262× speedup (64 links: 37 min → 8s)
+
+syntax = "proto3";
+
+package batch;
+
+option go_package = "github.com/unoc/engine-go/proto/batch";
+
+// BatchService handles bulk operations for links and devices
+// All operations use single transactions for atomicity
+service BatchService {
+  // BatchCreateLinks creates multiple links in a single transaction
+  // Target: 64 links in <10s (vs 37 min Python sequential)
+  rpc BatchCreateLinks(BatchCreateLinksRequest) returns (BatchCreateLinksResponse);
+  
+  // BatchDeleteLinks deletes multiple links in a single transaction
+  // Target: 64 links in <5s (vs 15-20 min Python sequential)
+  rpc BatchDeleteLinks(BatchDeleteLinksRequest) returns (BatchDeleteLinksResponse);
+  
+  // HealthCheck verifies service is operational
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// ============================================================================
+// Batch Link Creation
+// ============================================================================
+
+message BatchCreateLinksRequest {
+  // links: Array of link creation specs
+  // Each link requires a_interface_id, b_interface_id, and optional metadata
+  repeated LinkCreateSpec links = 1;
+  
+  // dry_run: If true, validate but don't commit (default: false)
+  bool dry_run = 2;
+  
+  // skip_optical_recompute: If true, skip optical path resolution (default: false)
+  // Use when creating many links in a topology without optical elements
+  bool skip_optical_recompute = 3;
+  
+  // request_id: Correlation ID for tracing (optional)
+  string request_id = 4;
+}
+
+message LinkCreateSpec {
+  // a_interface_id: First interface (typically upstream/core-side)
+  // NOTE: Interface IDs are strings in the database (e.g., "core1_eth0")
+  string a_interface_id = 1;
+  
+  // b_interface_id: Second interface (typically downstream/edge-side)
+  string b_interface_id = 2;
+  
+  // length_km: Physical length in kilometers (optional, default: 0.0)
+  float length_km = 3;
+  
+  // status: Initial status (optional, default: "UP")
+  // Valid values: "UP", "DOWN", "DEGRADED", "BLOCKING"
+  // Must match Python Status enum: backend/models.py Status(str, Enum)
+  string status = 4;
+  
+  // metadata: Additional key-value pairs (optional)
+  map<string, string> metadata = 5;
+}
+
+message BatchCreateLinksResponse {
+  // created_links: Array of successfully created link IDs (strings, e.g., "link_123")
+  repeated string created_link_ids = 1;
+  
+  // failed_links: Array of failed link creation attempts with errors
+  repeated LinkCreationFailure failed_links = 2;
+  
+  // total_requested: Total number of links requested
+  int32 total_requested = 3;
+  
+  // total_created: Total number of links successfully created
+  int32 total_created = 4;
+  
+  // duration_ms: Operation duration in milliseconds
+  int64 duration_ms = 5;
+  
+  // request_id: Echo of request_id from request (for correlation)
+  string request_id = 6;
+}
+
+message LinkCreationFailure {
+  // index: Index in the original request array
+  int32 index = 1;
+  
+  // a_interface_id: First interface ID (from request)
+  string a_interface_id = 2;
+  
+  // b_interface_id: Second interface ID (from request)
+  string b_interface_id = 3;
+  
+  // error_code: Machine-readable error code
+  // Examples: "INTERFACE_NOT_FOUND", "INTERFACE_ALREADY_LINKED", "VALIDATION_ERROR"
+  string error_code = 4;
+  
+  // error_message: Human-readable error description
+  string error_message = 5;
+}
+
+// ============================================================================
+// Batch Link Deletion
+// ============================================================================
+
+message BatchDeleteLinksRequest {
+  // link_ids: Array of link IDs to delete (strings)
+  repeated string link_ids = 1;
+  
+  // force: If true, ignore dependencies and delete anyway (default: false)
+  bool force = 2;
+  
+  // request_id: Correlation ID for tracing (optional)
+  string request_id = 3;
+}
+
+message BatchDeleteLinksResponse {
+  // deleted_link_ids: Array of successfully deleted link IDs (strings)
+  repeated string deleted_link_ids = 1;
+  
+  // failed_deletes: Array of failed deletion attempts with errors
+  repeated LinkDeletionFailure failed_deletes = 2;
+  
+  // total_requested: Total number of links requested for deletion
+  int32 total_requested = 3;
+  
+  // total_deleted: Total number of links successfully deleted
+  int32 total_deleted = 4;
+  
+  // duration_ms: Operation duration in milliseconds
+  int64 duration_ms = 5;
+  
+  // request_id: Echo of request_id from request (for correlation)
+  string request_id = 6;
+}
+
+message LinkDeletionFailure {
+  // link_id: Link ID that failed to delete (string)
+  string link_id = 1;
+  
+  // error_code: Machine-readable error code
+  // Examples: "LINK_NOT_FOUND", "DEPENDENCY_EXISTS", "DATABASE_ERROR"
+  string error_code = 2;
+  
+  // error_message: Human-readable error description
+  string error_message = 3;
+}
+
+// ============================================================================
+// Health Check
+// ============================================================================
+
+message HealthCheckRequest {
+  // service: Service name to check (optional, default: "batch")
+  string service = 1;
+}
+
+message HealthCheckResponse {
+  // status: "OK" if healthy, "DEGRADED" if issues, "DOWN" if unavailable
+  string status = 1;
+  
+  // message: Optional message with health details
+  string message = 2;
+  
+  // timestamp: Unix timestamp (seconds) of health check
+  int64 timestamp = 3;
+  
+  // version: Service version string (e.g., "v1.0.0-week3")
+  string version = 4;
+}

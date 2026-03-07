@@ -1,0 +1,1 @@
+This legacy design note described POP/CORE site networking layouts (German). The canonical container model and UI documentation now lives in `docs/llm/07_container_model_and_ui.md`. This file is retained as a non-authoritative reference.

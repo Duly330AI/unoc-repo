@@ -1,0 +1,81 @@
+{
+  // .vscode/settings.json (Phase A planning adjustments)
+  // Runtime code absent → keep tooling minimal & warning-free.
+  // Global save formatting (language overrides can refine)
+  "editor.formatOnSave": true,
+  // --- Vue ---
+  "[vue]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.formatOnSave": true
+  },
+  // --- Python ---
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.analysis.typeCheckingMode": "basic",
+  // --- JavaScript / TypeScript ---
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  // --- Prettier Preferences ---
+  "prettier.singleQuote": true,
+  "prettier.printWidth": 100,
+  // --- ESLint Fixes ---
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.fixAll.eslint": "always"
+  },
+  // --- JSON / Markdown ---
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[markdown]": {
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 100
+  },
+  // --- Excludes ---
+  "files.exclude": {
+    ".venv/": true,
+    "unoc-frontend-v2/node_modules/": true
+  },
+  "search.exclude": {
+    ".venv/": true,
+    "unoc-frontend-v2/node_modules/": true
+  },
+  // --- PostgreSQL (vscode-postgres) ---
+  // Define two connections: Admin and Read-Only (default). The extension id is ckolkman.vscode-postgres
+  // NOTE: For security, prefer using env vars or .env and avoid committing secrets to VCS.
+  // These values target the local docker-compose dev database.
+  "postgres.connections": [
+    {
+      "name": "UNOC (Read-Only)",
+      "host": "localhost",
+      "port": 5432,
+      "database": "unocdb",
+      "username": "unoc_ro",
+      "password": "unocpw_ro",
+      "ssl": false,
+      "application_name": "vscode-unoc-ro"
+    },
+    {
+      "name": "UNOC (Admin)",
+      "host": "localhost",
+      "port": 5432,
+      "database": "unocdb",
+      "username": "unoc",
+      "password": "unocpw",
+      "ssl": false,
+      "application_name": "vscode-unoc-admin"
+    }
+  ],
+  // Prefer the Read-Only connection for all ad-hoc diagnostics
+  "postgres.defaultConnection": "UNOC (Read-Only)"
+}

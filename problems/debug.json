@@ -1,0 +1,1588 @@
+{
+  "meta": {
+    "ts": 1759482679.6932018,
+    "tick": 339,
+    "sections": [
+      "addresses",
+      "devices",
+      "interfaces",
+      "links",
+      "mac_tables",
+      "metrics_v2",
+      "optical",
+      "prefixes",
+      "routes",
+      "tariffs",
+      "vrfs"
+    ],
+    "counts": {
+      "devices": 9,
+      "interfaces": 93,
+      "tariffs": 4,
+      "addresses": 11,
+      "links": 8,
+      "vrfs": 2,
+      "prefixes": 6,
+      "routes": 2,
+      "mac_tables": 2,
+      "optical": 2
+    }
+  },
+  "devices": [
+    {
+      "id": "core_router",
+      "name": "core_router",
+      "type": "CORE_ROUTER",
+      "status": "UP",
+      "effective_status": "UP",
+      "provisioned": true,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 800000,
+      "parent_container_id": null,
+      "hardware_model_id": 3,
+      "admin_override_status": null
+    },
+    {
+      "id": "backbone_gateway",
+      "name": "backbone_gateway",
+      "type": "BACKBONE_GATEWAY",
+      "status": "UP",
+      "effective_status": "UP",
+      "provisioned": false,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 800000,
+      "parent_container_id": null,
+      "hardware_model_id": 4,
+      "admin_override_status": null
+    },
+    {
+      "id": "edge_router",
+      "name": "edge_router",
+      "type": "EDGE_ROUTER",
+      "status": "UP",
+      "effective_status": "UP",
+      "provisioned": true,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 200000,
+      "parent_container_id": null,
+      "hardware_model_id": 5,
+      "admin_override_status": null
+    },
+    {
+      "id": "aon_cpe",
+      "name": "aon_cpe",
+      "type": "AON_CPE",
+      "status": "UP",
+      "effective_status": "DOWN",
+      "provisioned": true,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 1000,
+      "parent_container_id": null,
+      "hardware_model_id": 6,
+      "admin_override_status": null
+    },
+    {
+      "id": "aon_switch",
+      "name": "aon_switch",
+      "type": "AON_SWITCH",
+      "status": "UP",
+      "effective_status": "DOWN",
+      "provisioned": true,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 64000,
+      "parent_container_id": null,
+      "hardware_model_id": 2,
+      "admin_override_status": "DOWN"
+    },
+    {
+      "id": "odf",
+      "name": "odf",
+      "type": "ODF",
+      "status": "UP",
+      "effective_status": "UP",
+      "provisioned": false,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 1000000,
+      "parent_container_id": null,
+      "hardware_model_id": 8,
+      "admin_override_status": null
+    },
+    {
+      "id": "olt",
+      "name": "olt",
+      "type": "OLT",
+      "status": "UP",
+      "effective_status": "UP",
+      "provisioned": true,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 80000,
+      "parent_container_id": null,
+      "hardware_model_id": 1,
+      "admin_override_status": null
+    },
+    {
+      "id": "ont",
+      "name": "ont",
+      "type": "ONT",
+      "status": "UP",
+      "effective_status": "UP",
+      "provisioned": true,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 1000,
+      "parent_container_id": null,
+      "hardware_model_id": 7,
+      "admin_override_status": null
+    },
+    {
+      "id": "ont_1",
+      "name": "ont_1",
+      "type": "ONT",
+      "status": "UP",
+      "effective_status": "UP",
+      "provisioned": true,
+      "capacity_mbps": null,
+      "effective_capacity_mbps": 1000,
+      "parent_container_id": null,
+      "hardware_model_id": 7,
+      "admin_override_status": null
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "backbone_gateway-mgmt0",
+      "device_id": "backbone_gateway",
+      "name": "mgmt0",
+      "mac": "02:55:4e:00:00:00",
+      "role": "management",
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "backbone_gateway-uplink1",
+      "device_id": "backbone_gateway",
+      "name": "uplink1",
+      "mac": "02:55:4e:00:00:01",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "backbone_gateway-uplink2",
+      "device_id": "backbone_gateway",
+      "name": "uplink2",
+      "mac": "02:55:4e:00:00:02",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "backbone_gateway-uplink3",
+      "device_id": "backbone_gateway",
+      "name": "uplink3",
+      "mac": "02:55:4e:00:00:03",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "backbone_gateway-uplink4",
+      "device_id": "backbone_gateway",
+      "name": "uplink4",
+      "mac": "02:55:4e:00:00:04",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "backbone_gateway-uplink5",
+      "device_id": "backbone_gateway",
+      "name": "uplink5",
+      "mac": "02:55:4e:00:00:05",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "backbone_gateway-uplink6",
+      "device_id": "backbone_gateway",
+      "name": "uplink6",
+      "mac": "02:55:4e:00:00:06",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "backbone_gateway-uplink7",
+      "device_id": "backbone_gateway",
+      "name": "uplink7",
+      "mac": "02:55:4e:00:00:07",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "backbone_gateway-uplink8",
+      "device_id": "backbone_gateway",
+      "name": "uplink8",
+      "mac": "02:55:4e:00:00:08",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "backbone_gateway-access1",
+      "device_id": "backbone_gateway",
+      "name": "access1",
+      "mac": "02:55:4e:00:00:09",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "core_router-mgmt0",
+      "device_id": "core_router",
+      "name": "mgmt0",
+      "mac": "02:55:4e:00:00:0a",
+      "role": "management",
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "core_router-uplink1",
+      "device_id": "core_router",
+      "name": "uplink1",
+      "mac": "02:55:4e:00:00:0b",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "core_router-uplink2",
+      "device_id": "core_router",
+      "name": "uplink2",
+      "mac": "02:55:4e:00:00:0c",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "core_router-uplink3",
+      "device_id": "core_router",
+      "name": "uplink3",
+      "mac": "02:55:4e:00:00:0d",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "core_router-uplink4",
+      "device_id": "core_router",
+      "name": "uplink4",
+      "mac": "02:55:4e:00:00:0e",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "core_router-uplink5",
+      "device_id": "core_router",
+      "name": "uplink5",
+      "mac": "02:55:4e:00:00:0f",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "core_router-uplink6",
+      "device_id": "core_router",
+      "name": "uplink6",
+      "mac": "02:55:4e:00:00:10",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "core_router-uplink7",
+      "device_id": "core_router",
+      "name": "uplink7",
+      "mac": "02:55:4e:00:00:11",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "core_router-uplink8",
+      "device_id": "core_router",
+      "name": "uplink8",
+      "mac": "02:55:4e:00:00:12",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 100000,
+      "effective_capacity_mbps": 100000
+    },
+    {
+      "id": "core_router-access1",
+      "device_id": "core_router",
+      "name": "access1",
+      "mac": "02:55:4e:00:00:13",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "edge_router-access1",
+      "device_id": "edge_router",
+      "name": "access1",
+      "mac": "02:55:4e:00:00:19",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-access2",
+      "device_id": "edge_router",
+      "name": "access2",
+      "mac": "02:55:4e:00:00:1a",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-access3",
+      "device_id": "edge_router",
+      "name": "access3",
+      "mac": "02:55:4e:00:00:1b",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-access4",
+      "device_id": "edge_router",
+      "name": "access4",
+      "mac": "02:55:4e:00:00:1c",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-access5",
+      "device_id": "edge_router",
+      "name": "access5",
+      "mac": "02:55:4e:00:00:1d",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-access6",
+      "device_id": "edge_router",
+      "name": "access6",
+      "mac": "02:55:4e:00:00:1e",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-access7",
+      "device_id": "edge_router",
+      "name": "access7",
+      "mac": "02:55:4e:00:00:1f",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-access8",
+      "device_id": "edge_router",
+      "name": "access8",
+      "mac": "02:55:4e:00:00:20",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-mgmt0",
+      "device_id": "edge_router",
+      "name": "mgmt0",
+      "mac": "02:55:4e:00:00:14",
+      "role": "management",
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "edge_router-uplink1",
+      "device_id": "edge_router",
+      "name": "uplink1",
+      "mac": "02:55:4e:00:00:15",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "edge_router-uplink2",
+      "device_id": "edge_router",
+      "name": "uplink2",
+      "mac": "02:55:4e:00:00:16",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "edge_router-uplink3",
+      "device_id": "edge_router",
+      "name": "uplink3",
+      "mac": "02:55:4e:00:00:17",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "edge_router-uplink4",
+      "device_id": "edge_router",
+      "name": "uplink4",
+      "mac": "02:55:4e:00:00:18",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "aon_switch-access1",
+      "device_id": "aon_switch",
+      "name": "access1",
+      "mac": "02:55:4e:00:00:22",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access10",
+      "device_id": "aon_switch",
+      "name": "access10",
+      "mac": "02:55:4e:00:00:2b",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access11",
+      "device_id": "aon_switch",
+      "name": "access11",
+      "mac": "02:55:4e:00:00:2c",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access12",
+      "device_id": "aon_switch",
+      "name": "access12",
+      "mac": "02:55:4e:00:00:2d",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access13",
+      "device_id": "aon_switch",
+      "name": "access13",
+      "mac": "02:55:4e:00:00:2e",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access14",
+      "device_id": "aon_switch",
+      "name": "access14",
+      "mac": "02:55:4e:00:00:2f",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access15",
+      "device_id": "aon_switch",
+      "name": "access15",
+      "mac": "02:55:4e:00:00:30",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access16",
+      "device_id": "aon_switch",
+      "name": "access16",
+      "mac": "02:55:4e:00:00:31",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access17",
+      "device_id": "aon_switch",
+      "name": "access17",
+      "mac": "02:55:4e:00:00:32",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access18",
+      "device_id": "aon_switch",
+      "name": "access18",
+      "mac": "02:55:4e:00:00:33",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access19",
+      "device_id": "aon_switch",
+      "name": "access19",
+      "mac": "02:55:4e:00:00:34",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-mgmt0",
+      "device_id": "aon_switch",
+      "name": "mgmt0",
+      "mac": "02:55:4e:00:00:21",
+      "role": "management",
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_cpe-mgmt0",
+      "device_id": "aon_cpe",
+      "name": "mgmt0",
+      "mac": "02:55:4e:00:00:3e",
+      "role": "management",
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_cpe-access1",
+      "device_id": "aon_cpe",
+      "name": "access1",
+      "mac": "02:55:4e:00:00:3f",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_cpe-access2",
+      "device_id": "aon_cpe",
+      "name": "access2",
+      "mac": "02:55:4e:00:00:40",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_cpe-access3",
+      "device_id": "aon_cpe",
+      "name": "access3",
+      "mac": "02:55:4e:00:00:41",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_cpe-access4",
+      "device_id": "aon_cpe",
+      "name": "access4",
+      "mac": "02:55:4e:00:00:42",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access2",
+      "device_id": "aon_switch",
+      "name": "access2",
+      "mac": "02:55:4e:00:00:23",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access20",
+      "device_id": "aon_switch",
+      "name": "access20",
+      "mac": "02:55:4e:00:00:35",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access21",
+      "device_id": "aon_switch",
+      "name": "access21",
+      "mac": "02:55:4e:00:00:36",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access22",
+      "device_id": "aon_switch",
+      "name": "access22",
+      "mac": "02:55:4e:00:00:37",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access23",
+      "device_id": "aon_switch",
+      "name": "access23",
+      "mac": "02:55:4e:00:00:38",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access24",
+      "device_id": "aon_switch",
+      "name": "access24",
+      "mac": "02:55:4e:00:00:39",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access3",
+      "device_id": "aon_switch",
+      "name": "access3",
+      "mac": "02:55:4e:00:00:24",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access4",
+      "device_id": "aon_switch",
+      "name": "access4",
+      "mac": "02:55:4e:00:00:25",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access5",
+      "device_id": "aon_switch",
+      "name": "access5",
+      "mac": "02:55:4e:00:00:26",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access6",
+      "device_id": "aon_switch",
+      "name": "access6",
+      "mac": "02:55:4e:00:00:27",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access7",
+      "device_id": "aon_switch",
+      "name": "access7",
+      "mac": "02:55:4e:00:00:28",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access8",
+      "device_id": "aon_switch",
+      "name": "access8",
+      "mac": "02:55:4e:00:00:29",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-access9",
+      "device_id": "aon_switch",
+      "name": "access9",
+      "mac": "02:55:4e:00:00:2a",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "aon_switch-uplink1",
+      "device_id": "aon_switch",
+      "name": "uplink1",
+      "mac": "02:55:4e:00:00:3a",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "aon_switch-uplink2",
+      "device_id": "aon_switch",
+      "name": "uplink2",
+      "mac": "02:55:4e:00:00:3b",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "aon_switch-uplink3",
+      "device_id": "aon_switch",
+      "name": "uplink3",
+      "mac": "02:55:4e:00:00:3c",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "aon_switch-uplink4",
+      "device_id": "aon_switch",
+      "name": "uplink4",
+      "mac": "02:55:4e:00:00:3d",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "olt-mgmt0",
+      "device_id": "olt",
+      "name": "mgmt0",
+      "mac": "02:55:4e:00:00:43",
+      "role": "management",
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "olt-uplink1",
+      "device_id": "olt",
+      "name": "uplink1",
+      "mac": "02:55:4e:00:00:44",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "olt-uplink2",
+      "device_id": "olt",
+      "name": "uplink2",
+      "mac": "02:55:4e:00:00:45",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "olt-uplink3",
+      "device_id": "olt",
+      "name": "uplink3",
+      "mac": "02:55:4e:00:00:46",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "olt-uplink4",
+      "device_id": "olt",
+      "name": "uplink4",
+      "mac": "02:55:4e:00:00:47",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 10000,
+      "effective_capacity_mbps": 10000
+    },
+    {
+      "id": "olt-pon1",
+      "device_id": "olt",
+      "name": "pon1",
+      "mac": "02:55:4e:00:00:48",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon2",
+      "device_id": "olt",
+      "name": "pon2",
+      "mac": "02:55:4e:00:00:49",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon3",
+      "device_id": "olt",
+      "name": "pon3",
+      "mac": "02:55:4e:00:00:4a",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon4",
+      "device_id": "olt",
+      "name": "pon4",
+      "mac": "02:55:4e:00:00:4b",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon5",
+      "device_id": "olt",
+      "name": "pon5",
+      "mac": "02:55:4e:00:00:4c",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon6",
+      "device_id": "olt",
+      "name": "pon6",
+      "mac": "02:55:4e:00:00:4d",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon7",
+      "device_id": "olt",
+      "name": "pon7",
+      "mac": "02:55:4e:00:00:4e",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon8",
+      "device_id": "olt",
+      "name": "pon8",
+      "mac": "02:55:4e:00:00:4f",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon9",
+      "device_id": "olt",
+      "name": "pon9",
+      "mac": "02:55:4e:00:00:50",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon10",
+      "device_id": "olt",
+      "name": "pon10",
+      "mac": "02:55:4e:00:00:51",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon11",
+      "device_id": "olt",
+      "name": "pon11",
+      "mac": "02:55:4e:00:00:52",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon12",
+      "device_id": "olt",
+      "name": "pon12",
+      "mac": "02:55:4e:00:00:53",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon13",
+      "device_id": "olt",
+      "name": "pon13",
+      "mac": "02:55:4e:00:00:54",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon14",
+      "device_id": "olt",
+      "name": "pon14",
+      "mac": "02:55:4e:00:00:55",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon15",
+      "device_id": "olt",
+      "name": "pon15",
+      "mac": "02:55:4e:00:00:56",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "olt-pon16",
+      "device_id": "olt",
+      "name": "pon16",
+      "mac": "02:55:4e:00:00:57",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "odf-if0",
+      "device_id": "odf",
+      "name": "if0",
+      "mac": "02:55:4e:00:00:58",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": null,
+      "effective_capacity_mbps": null
+    },
+    {
+      "id": "ont-mgmt0",
+      "device_id": "ont",
+      "name": "mgmt0",
+      "mac": "02:55:4e:00:00:59",
+      "role": "management",
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "ont-ge1",
+      "device_id": "ont",
+      "name": "ge1",
+      "mac": "02:55:4e:00:00:5a",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "ont_1-mgmt0",
+      "device_id": "ont_1",
+      "name": "mgmt0",
+      "mac": "02:55:4e:00:00:5b",
+      "role": "management",
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    },
+    {
+      "id": "ont_1-ge1",
+      "device_id": "ont_1",
+      "name": "ge1",
+      "mac": "02:55:4e:00:00:5c",
+      "role": null,
+      "admin_status": "up",
+      "capacity_mbps": 1000,
+      "effective_capacity_mbps": 1000
+    }
+  ],
+  "tariffs": [
+    {
+      "id": 1,
+      "name": "Basic 100/20",
+      "max_up_mbps": 20,
+      "max_down_mbps": 100,
+      "technology": "GPON"
+    },
+    {
+      "id": 2,
+      "name": "Pro 1000/300",
+      "max_up_mbps": 300,
+      "max_down_mbps": 1000,
+      "technology": "GPON"
+    },
+    {
+      "id": 3,
+      "name": "AON 300/300",
+      "max_up_mbps": 300,
+      "max_down_mbps": 300,
+      "technology": "AON"
+    },
+    {
+      "id": 4,
+      "name": "AON 1000/1000",
+      "max_up_mbps": 1000,
+      "max_down_mbps": 1000,
+      "technology": "AON"
+    }
+  ],
+  "addresses": [
+    {
+      "id": 1,
+      "interface_id": "core_router-mgmt0",
+      "ip": "10.250.0.1",
+      "prefix_len": 24,
+      "vrf_id": 1
+    },
+    {
+      "id": 2,
+      "interface_id": "core_router-uplink1",
+      "ip": "172.18.90.135",
+      "prefix_len": 31,
+      "vrf_id": 1
+    },
+    {
+      "id": 3,
+      "interface_id": "backbone_gateway-uplink1",
+      "ip": "172.18.90.134",
+      "prefix_len": 31,
+      "vrf_id": 1
+    },
+    {
+      "id": 4,
+      "interface_id": "edge_router-mgmt0",
+      "ip": "10.250.0.2",
+      "prefix_len": 24,
+      "vrf_id": 1
+    },
+    {
+      "id": 5,
+      "interface_id": "edge_router-uplink1",
+      "ip": "172.18.120.141",
+      "prefix_len": 31,
+      "vrf_id": 1
+    },
+    {
+      "id": 6,
+      "interface_id": "core_router-uplink2",
+      "ip": "172.18.120.140",
+      "prefix_len": 31,
+      "vrf_id": 1
+    },
+    {
+      "id": 7,
+      "interface_id": "aon_switch-mgmt0",
+      "ip": "10.250.2.1",
+      "prefix_len": 24,
+      "vrf_id": 1
+    },
+    {
+      "id": 8,
+      "interface_id": "aon_cpe-mgmt0",
+      "ip": "10.250.3.1",
+      "prefix_len": 24,
+      "vrf_id": 1
+    },
+    {
+      "id": 9,
+      "interface_id": "olt-mgmt0",
+      "ip": "10.250.4.1",
+      "prefix_len": 24,
+      "vrf_id": 1
+    },
+    {
+      "id": 10,
+      "interface_id": "ont-mgmt0",
+      "ip": "10.250.1.1",
+      "prefix_len": 24,
+      "vrf_id": 1
+    },
+    {
+      "id": 11,
+      "interface_id": "ont_1-mgmt0",
+      "ip": "10.250.1.2",
+      "prefix_len": 24,
+      "vrf_id": 1
+    }
+  ],
+  "links": [
+    {
+      "id": "backbone_gateway-uplink1__core_router-uplink1",
+      "a_interface_id": "backbone_gateway-uplink1",
+      "b_interface_id": "core_router-uplink1",
+      "status": "UP",
+      "effective_status": "UP",
+      "kind": "P2P",
+      "length_km": 1.38,
+      "physical_medium_id": 3,
+      "admin_override_status": null
+    },
+    {
+      "id": "core_router-uplink2__edge_router-uplink1",
+      "a_interface_id": "core_router-uplink2",
+      "b_interface_id": "edge_router-uplink1",
+      "status": "UP",
+      "effective_status": "UP",
+      "kind": "P2P",
+      "length_km": 1.34,
+      "physical_medium_id": 1,
+      "admin_override_status": null
+    },
+    {
+      "id": "aon_switch-uplink1__edge_router-uplink2",
+      "a_interface_id": "aon_switch-uplink1",
+      "b_interface_id": "edge_router-uplink2",
+      "status": "UP",
+      "effective_status": "DOWN",
+      "kind": "FIBER",
+      "length_km": 1.77,
+      "physical_medium_id": 2,
+      "admin_override_status": null
+    },
+    {
+      "id": "aon_cpe-access1__aon_switch-access1",
+      "a_interface_id": "aon_cpe-access1",
+      "b_interface_id": "aon_switch-access1",
+      "status": "UP",
+      "effective_status": "DOWN",
+      "kind": "FIBER",
+      "length_km": 0.08,
+      "physical_medium_id": 6,
+      "admin_override_status": null
+    },
+    {
+      "id": "edge_router-uplink3__olt-uplink1",
+      "a_interface_id": "edge_router-uplink3",
+      "b_interface_id": "olt-uplink1",
+      "status": "UP",
+      "effective_status": "UP",
+      "kind": "FIBER",
+      "length_km": 1.6,
+      "physical_medium_id": 1,
+      "admin_override_status": null
+    },
+    {
+      "id": "odf__olt-pon1",
+      "a_interface_id": "odf-if0",
+      "b_interface_id": "olt-pon1",
+      "status": "UP",
+      "effective_status": "UP",
+      "kind": "FIBER",
+      "length_km": 0.84,
+      "physical_medium_id": 3,
+      "admin_override_status": null
+    },
+    {
+      "id": "odf__ont-ge1",
+      "a_interface_id": "odf-if0",
+      "b_interface_id": "ont-ge1",
+      "status": "UP",
+      "effective_status": "UP",
+      "kind": "FIBER",
+      "length_km": 0.96,
+      "physical_medium_id": 4,
+      "admin_override_status": null
+    },
+    {
+      "id": "odf__ont_1-ge1",
+      "a_interface_id": "odf-if0",
+      "b_interface_id": "ont_1-ge1",
+      "status": "UP",
+      "effective_status": "UP",
+      "kind": "FIBER",
+      "length_km": 0.79,
+      "physical_medium_id": 5,
+      "admin_override_status": null
+    }
+  ],
+  "vrfs": [
+    {
+      "id": 1,
+      "name": "mgmt"
+    },
+    {
+      "id": 2,
+      "name": "internet"
+    }
+  ],
+  "prefixes": [
+    {
+      "id": 1,
+      "vrf_id": 1,
+      "prefix": "10.250.0.0/24",
+      "description": "core_mgmt"
+    },
+    {
+      "id": 2,
+      "vrf_id": 1,
+      "prefix": "10.250.4.0/24",
+      "description": "olt_mgmt"
+    },
+    {
+      "id": 3,
+      "vrf_id": 1,
+      "prefix": "10.250.1.0/24",
+      "description": "ont_mgmt"
+    },
+    {
+      "id": 4,
+      "vrf_id": 1,
+      "prefix": "10.250.2.0/24",
+      "description": "aon_mgmt"
+    },
+    {
+      "id": 5,
+      "vrf_id": 1,
+      "prefix": "10.250.3.0/24",
+      "description": "cpe_mgmt"
+    },
+    {
+      "id": 6,
+      "vrf_id": 1,
+      "prefix": "10.250.10.0/24",
+      "description": "noc_tools"
+    }
+  ],
+  "routes": [
+    {
+      "id": 1,
+      "vrf_id": 1,
+      "prefix": "0.0.0.0/0",
+      "next_hop": "172.18.90.134",
+      "interface_id": "core_router-uplink1",
+      "admin_distance": 1,
+      "metric": 0
+    },
+    {
+      "id": 2,
+      "vrf_id": 1,
+      "prefix": "0.0.0.0/0",
+      "next_hop": "172.18.120.140",
+      "interface_id": "edge_router-uplink1",
+      "admin_distance": 1,
+      "metric": 0
+    }
+  ],
+  "mac_tables": [
+    {
+      "bridge_domain_id": 1,
+      "device_id": "edge_router",
+      "name": "default",
+      "entries": []
+    },
+    {
+      "bridge_domain_id": 2,
+      "device_id": "aon_switch",
+      "name": "default",
+      "entries": []
+    }
+  ],
+  "metrics_v2": {
+    "lastTick": 339,
+    "devices": {
+      "ont": {
+        "bps": 1234600.4492728692,
+        "utilization": 0.001234600449272869,
+        "version": 0,
+        "upstream_bps": 1234600.4492728692,
+        "downstream_bps": 6173002.246364345
+      },
+      "odf": {
+        "bps": 11130840.705007017,
+        "utilization": 0.000011130840705007016,
+        "version": 0,
+        "upstream_bps": 11130840.705007017,
+        "downstream_bps": 55654203.52503508
+      },
+      "olt": {
+        "bps": 11130840.705007017,
+        "utilization": 0.00013913550881258771,
+        "version": 0,
+        "upstream_bps": 11130840.705007017,
+        "downstream_bps": 55654203.52503508
+      },
+      "edge_router": {
+        "bps": 11130840.705007017,
+        "utilization": 0.00005565420352503508,
+        "version": 0,
+        "upstream_bps": 11130840.705007017,
+        "downstream_bps": 55654203.52503508
+      },
+      "core_router": {
+        "bps": 11130840.705007017,
+        "utilization": 0.00001391355088125877,
+        "version": 0,
+        "upstream_bps": 11130840.705007017,
+        "downstream_bps": 55654203.52503508
+      },
+      "backbone_gateway": {
+        "bps": 11130840.705007017,
+        "utilization": 0.00001391355088125877,
+        "version": 0,
+        "upstream_bps": 11130840.705007017,
+        "downstream_bps": 55654203.52503508
+      },
+      "ont_1": {
+        "bps": 9896240.255734148,
+        "utilization": 0.009896240255734148,
+        "version": 0,
+        "upstream_bps": 9896240.255734148,
+        "downstream_bps": 49481201.278670736
+      }
+    },
+    "links": {
+      "odf__ont-ge1": {
+        "bps": 1234600.4492728692,
+        "utilization": 0.001234600449272869,
+        "version": 0
+      },
+      "odf__olt-pon1": {
+        "bps": 11130840.705007017,
+        "utilization": 0.011130840705007016,
+        "version": 0
+      },
+      "edge_router-uplink3__olt-uplink1": {
+        "bps": 11130840.705007017,
+        "utilization": 0.0011130840705007017,
+        "version": 0
+      },
+      "core_router-uplink2__edge_router-uplink1": {
+        "bps": 11130840.705007017,
+        "utilization": 0.0011130840705007017,
+        "version": 0
+      },
+      "backbone_gateway-uplink1__core_router-uplink1": {
+        "bps": 11130840.705007017,
+        "utilization": 0.00011130840705007016,
+        "version": 0
+      },
+      "odf__ont_1-ge1": {
+        "bps": 9896240.255734148,
+        "utilization": 0.009896240255734148,
+        "version": 0
+      }
+    },
+    "ports": {
+      "odf": {
+        "odf-if0": {
+          "bps": 133570088.4600842,
+          "utilization": 1000000000,
+          "version": 0
+        }
+      },
+      "ont": {
+        "ont-ge1": {
+          "bps": 7407602.695637214,
+          "utilization": 0.007407602695637214,
+          "version": 0
+        }
+      },
+      "olt": {
+        "olt-pon1": {
+          "bps": 66785044.2300421,
+          "utilization": 1000000000,
+          "version": 0
+        },
+        "olt-uplink1": {
+          "bps": 66785044.2300421,
+          "utilization": 0.00667850442300421,
+          "version": 0
+        }
+      },
+      "edge_router": {
+        "edge_router-uplink3": {
+          "bps": 66785044.2300421,
+          "utilization": 0.00667850442300421,
+          "version": 0
+        },
+        "edge_router-uplink1": {
+          "bps": 66785044.2300421,
+          "utilization": 0.00667850442300421,
+          "version": 0
+        }
+      },
+      "core_router": {
+        "core_router-uplink2": {
+          "bps": 66785044.2300421,
+          "utilization": 0.000667850442300421,
+          "version": 0
+        },
+        "core_router-uplink1": {
+          "bps": 66785044.2300421,
+          "utilization": 0.000667850442300421,
+          "version": 0
+        }
+      },
+      "backbone_gateway": {
+        "backbone_gateway-uplink1": {
+          "bps": 66785044.2300421,
+          "utilization": 0.000667850442300421,
+          "version": 0
+        }
+      },
+      "ont_1": {
+        "ont_1-ge1": {
+          "bps": 59377441.53440488,
+          "utilization": 0.059377441534404884,
+          "version": 0
+        }
+      }
+    },
+    "segments": {
+      "olt-pon1::odf": {
+        "id": "olt-pon1::odf",
+        "olt_id": "olt",
+        "pon_port_id": "olt-pon1",
+        "odf_id": "odf",
+        "subscribers_count": 2,
+        "subscribers_max": 64,
+        "capacity_down_bps": 2500000000,
+        "capacity_up_bps": 1250000000,
+        "demand_down_bps": 55654203.52503508,
+        "demand_up_bps": 11130840.705007017,
+        "used_down_bps": 55654203.52503508,
+        "used_up_bps": 11130840.705007017,
+        "headroom_down_bps": 2444345796.474965,
+        "headroom_up_bps": 1238869159.294993,
+        "congested": false
+      }
+    }
+  },
+  "optical": {
+    "onts": [
+      {
+        "id": "ont",
+        "device_type": "ONT",
+        "received_dbm": 0.8460000000000001,
+        "margin_db": 30.846,
+        "signal_status": "OK",
+        "path": {
+          "olt_id": "olt",
+          "total_attenuation_db": 4.154,
+          "segments": [
+            {
+              "src": "ont",
+              "dst": "odf",
+              "link_id": "odf__ont-ge1",
+              "attenuation_db": 3.36
+            },
+            {
+              "src": "odf",
+              "dst": "olt",
+              "link_id": "odf__olt-pon1",
+              "attenuation_db": 0.294
+            }
+          ]
+        }
+      },
+      {
+        "id": "ont_1",
+        "device_type": "ONT",
+        "received_dbm": 1.8359999999999999,
+        "margin_db": 31.836,
+        "signal_status": "OK",
+        "path": {
+          "olt_id": "olt",
+          "total_attenuation_db": 3.164,
+          "segments": [
+            {
+              "src": "ont_1",
+              "dst": "odf",
+              "link_id": "odf__ont_1-ge1",
+              "attenuation_db": 2.37
+            },
+            {
+              "src": "odf",
+              "dst": "olt",
+              "link_id": "odf__olt-pon1",
+              "attenuation_db": 0.294
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
