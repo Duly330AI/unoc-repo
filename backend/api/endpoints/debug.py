@@ -10,6 +10,7 @@ from backend.models import Device
 from backend.services import status_diagnostics
 from backend.services.debug_snapshot import gather_full_snapshot
 from backend.services.dependency_resolver import trace_l3_path_to_anchor
+from backend.services.layer_validation import validate_layer_isolation
 from backend.services.layered_state_model import resolve_layered_device_state
 from backend.services.optical_physics_model import resolve_optical_physics_state
 from backend.services.subscriber_model import resolve_subscriber_model
@@ -92,7 +93,11 @@ def get_device_state():  # type: ignore[override]
     with get_session() as s:
         subscriber_model = resolve_subscriber_model(s)
         optical_state = resolve_optical_physics_state(s)
-        return resolve_layered_device_state(s, subscriber_model, optical_state)
+        device_state = resolve_layered_device_state(s, subscriber_model, optical_state)
+        device_state["validation"] = validate_layer_isolation(
+            device_state, subscriber_model, optical_state
+        )
+        return device_state
 
 
 @router.get("/optical-state")
@@ -101,3 +106,14 @@ def get_optical_state():  # type: ignore[override]
         raise HTTPException(status_code=404, detail="Not Found")
     with get_session() as s:
         return resolve_optical_physics_state(s)
+
+
+@router.get("/layer-leak-report")
+def get_layer_leak_report():  # type: ignore[override]
+    if not _dev_enabled():
+        raise HTTPException(status_code=404, detail="Not Found")
+    with get_session() as s:
+        subscriber_model = resolve_subscriber_model(s)
+        optical_state = resolve_optical_physics_state(s)
+        device_state = resolve_layered_device_state(s, subscriber_model, optical_state)
+        return validate_layer_isolation(device_state, subscriber_model, optical_state)
