@@ -154,10 +154,13 @@ class PortSummaryManager {
                   typeof r.occupancy === 'number'
                     ? (r.occupancy as number)
                     : Number(r.occupancy ?? 0) || 0,
+                // Preserve null: ports without a fixed capacity must not display as capacity 0
                 capacity:
                   typeof r.capacity === 'number'
                     ? (r.capacity as number)
-                    : Number(r.capacity ?? 0) || 0
+                    : r.capacity == null
+                      ? null
+                      : Number(r.capacity) || 0
               } satisfies InterfaceSummary
             })
 

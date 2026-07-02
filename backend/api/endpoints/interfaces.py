@@ -8,7 +8,8 @@ from sqlmodel import select
 from backend.db import get_session, init_db
 from backend.models import Device, Interface, InterfaceAddress, InterfaceRole, PortRole, Prefix
 from backend.services import recompute_coalescer
-from backend.services.event_store import append_write_path_event
+from backend.services.event_store import append_domain_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.mac_allocator import next_mac
 from backend.services.pathfinding import PATHFINDING_STORE
 
@@ -40,6 +41,7 @@ def list_interfaces(device_id: str):
 
 
 @router.post("", status_code=201)
+@projection_write
 def create_interface(device_id: str, payload: dict):
     init_db()
     name = payload.get("name")
@@ -75,20 +77,20 @@ def create_interface(device_id: str, payload: dict):
                 raise HTTPException(status_code=422, detail="invalid role") from exc
         if port_role is not None:
             i.port_role = port_role
-        s.add(i)
         try:
+            append_domain_event(
+                s,
+                "PORT_CONNECTED",
+                i.id,
+                {"device_id": i.device_id, "name": i.name, "port_role": str(i.port_role) if i.port_role else None},
+            )
+            s.add(i)
             s.commit()
         except IntegrityError as exc:
             # Handle unique violations (device_id+name or mac uniqueness)
             s.rollback()
             raise HTTPException(status_code=409, detail="INTERFACE_CONFLICT") from exc
         s.refresh(i)
-        append_write_path_event(
-            s,
-            "PORT_CONNECTED",
-            i.id,
-            {"device_id": i.device_id, "name": i.name, "port_role": str(i.port_role) if i.port_role else None},
-        )
         return {
             "id": i.id,
             "device_id": i.device_id,
@@ -136,6 +138,7 @@ def list_interface_addresses(interface_id: str):
 
 
 @addr_router.post("", status_code=201)
+@projection_write
 def create_interface_address(interface_id: str, payload: dict):
     init_db()
     ip = payload.get("ip")
@@ -213,18 +216,19 @@ def create_interface_address(interface_id: str, payload: dict):
         )
         s.add(a)
         try:
+            s.flush()
+            append_domain_event(
+                s,
+                "PROVISIONING_UPDATED",
+                interface_id,
+                {"address_id": a.id, "ip": a.ip, "prefix_len": a.prefix_len},
+            )
             s.commit()
         except IntegrityError as exc:
             # covers VRF/prefix unique constraints collisions
             s.rollback()
             raise HTTPException(status_code=409, detail="DUPLICATE_IP") from exc
         s.refresh(a)
-        append_write_path_event(
-            s,
-            "PROVISIONING_UPDATED",
-            interface_id,
-            {"address_id": a.id, "ip": a.ip, "prefix_len": a.prefix_len},
-        )
         # IP address mutations can influence reachability; bump and schedule recompute
         PATHFINDING_STORE.bump_version()
         recompute_coalescer.schedule(scope="addresses", key=interface_id)
@@ -238,6 +242,7 @@ def create_interface_address(interface_id: str, payload: dict):
 
 
 @addr_router.delete("/{address_id}", status_code=204)
+@projection_write
 def delete_interface_address(interface_id: str, address_id: int):
     init_db()
     with get_session() as s:
@@ -247,14 +252,14 @@ def delete_interface_address(interface_id: str, address_id: int):
         a = s.get(InterfaceAddress, address_id)
         if not a or a.interface_id != interface_id:
             raise HTTPException(status_code=404, detail="Address not found")
-        s.delete(a)
-        s.commit()
-        append_write_path_event(
+        append_domain_event(
             s,
             "PROVISIONING_UPDATED",
             interface_id,
             {"address_id": address_id, "action": "address_deleted"},
         )
+        s.delete(a)
+        s.commit()
         # Invalidate on address removal as well
         PATHFINDING_STORE.bump_version()
         recompute_coalescer.schedule(scope="addresses", key=interface_id)

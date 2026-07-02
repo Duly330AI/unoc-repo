@@ -4,13 +4,10 @@ from backend.api.endpoints.links_helpers import create_link_impl, get_link_impl,
 from backend.api.endpoints.links_helpers_ips import get_link_ips_impl
 from backend.api.endpoints.links_helpers_query import get_links_json_cached, list_links_impl
 from backend.api.schemas import (
-    BatchCreateLinksResponse,
-    BatchLinkCreateRequest,
     LinkCreate,
     LinkResolvedOut,
     LinkUpdate,
 )
-from backend.clients.go_services.batch_client import get_batch_client
 from backend.db import get_session, init_db
 from backend.services.job_dispatcher import enqueue
 
@@ -124,75 +121,9 @@ def update_link(link_id: str, payload: LinkUpdate) -> LinkResolvedOut:
     return update_link_impl(link_id, payload)
 
 
-# ---- Batch Operations (Week 3 Day 14) ----
-
-
-@router.post("/batch", response_model=BatchCreateLinksResponse, status_code=201)
-def batch_create_links_endpoint(payload: BatchLinkCreateRequest) -> BatchCreateLinksResponse:
-    """Batch create multiple links via Go service with Python fallback.
-
-    Week 3 Day 14: Python → Go gRPC integration. Go service performs bulk operations
-    in a single transaction with parallel validation. Python fallback (stub) used
-    when Go service unavailable.
-
-    Performance target: 64 links in <10s (Go) vs 37 min (Python one-by-one).
-
-    Request body:
-    {
-      "links": [
-        {
-          "a_interface_id": 1,
-          "b_interface_id": 2,
-          "length_km": 5.0,
-          "status": "active",
-          "metadata": {"fiber_type": "SM"}
-        },
-        ...
-      ],
-      "dry_run": false,
-      "skip_optical_recompute": false,
-      "request_id": "optional-correlation-id"
-    }
-
-    Response:
-    {
-      "created_link_ids": [101, 102, ...],
-      "failed_links": [
-        {
-          "index": 3,
-          "a_interface_id": 7,
-          "b_interface_id": 8,
-          "error_code": "INTERFACE_NOT_FOUND",
-          "error_message": "Interface 7 not found"
-        },
-        ...
-      ],
-      "total_requested": 64,
-      "total_created": 63,
-      "duration_ms": 8420,
-      "request_id": "optional-correlation-id",
-      "backend": "go"  // "go" or "python"
-    }
-
-    Error codes:
-    - INTERFACE_NOT_FOUND: Interface doesn't exist
-    - INTERFACE_ALREADY_LINKED: Interface already in a link
-    - INTERFACE_SAME_DEVICE: Both interfaces on same device
-    - TRANSACTION_FAILED: Database transaction error
-    """
-    # Get batch client (connects to Go service on port 50052)
-    client = get_batch_client()
-
-    # Convert Pydantic models to dicts for gRPC client
-    links_data = [link.model_dump() for link in payload.links]
-
-    # Call Go service (or Python fallback on error)
-    result = client.batch_create_links(
-        links=links_data,
-        dry_run=payload.dry_run,
-        skip_optical_recompute=payload.skip_optical_recompute,
-        request_id=payload.request_id,
-    )
-
-    # Result is already a dict with correct structure (from batch_client)
-    return BatchCreateLinksResponse(**result)
+# ---- Batch Operations ----
+#
+# POST /links/batch is served by backend.api.endpoints.links_batch (Python,
+# event-first, projection-guarded). The former Go-client route was removed:
+# the Go batch-service INSERTed link rows directly into the database, which
+# would bypass the EventStore. No frontend or test caller used the Go route.

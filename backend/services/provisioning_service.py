@@ -24,7 +24,7 @@ from backend.models import (
     ProvisioningAction,
     ProvisioningRecord,
 )
-from backend.services.event_store import append_write_path_event
+from backend.services.event_store import append_domain_event
 from backend.services.mac_allocator import next_mac
 from backend.services.provisioning_dependency import dependency_ok as _dependency_ok_impl
 from backend.services.provisioning_dependency import is_provisionable as _is_provisionable_impl
@@ -293,6 +293,13 @@ def provision_device(session: Session, device: Device) -> Device:
                     if attempt >= max_retries:
                         # After several conflicts, treat as exhaustion in practice
                         raise_error(ErrorCode.POOL_EXHAUSTED)
+    append_domain_event(
+        session,
+        "PROVISIONING_UPDATED",
+        device.id,
+        {"device_type": device.type.value, "provisioned": True, "ip": ip_addr},
+    )
+
     # Defaults (signal placeholders)
     if device.type == DeviceType.OLT and device.tx_power_dbm is None:
         device.tx_power_dbm = 5.0
@@ -337,18 +344,11 @@ def provision_device(session: Session, device: Device) -> Device:
     }:
         # Optical recompute handled by background workflow after API commit
         pass
-    # Ensure persistence of provisioning changes even if status didn't change
     try:
         session.commit()
     except Exception:
         session.rollback()
         raise
-    append_write_path_event(
-        session,
-        "PROVISIONING_UPDATED",
-        device.id,
-        {"device_type": device.type.value, "provisioned": True, "ip": ip_addr},
-    )
     # Emit provisioned event once from service layer so both direct and API paths see it
     try:
         from backend.services.pathfinding import PATHFINDING_STORE as _pf

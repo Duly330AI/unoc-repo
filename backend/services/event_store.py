@@ -78,22 +78,42 @@ def append_runtime_event(event: Any) -> None:
         return None
 
 
-def append_write_path_event(
+class EventStoreAppendError(RuntimeError):
+    """Raised when a mandatory domain-event append cannot be performed."""
+
+
+def append_domain_event(
     session: Session,
     event_type: str,
     entity_id: str,
     payload: dict[str, Any] | None = None,
-) -> None:
+    *,
+    correlation_id: str | None = None,
+) -> EventStoreRecord:
+    """Event-first mandatory append for guarded domain mutations.
+
+    Joins the caller's transaction (no commit here) so the domain event and the
+    write-model mutation commit atomically. Must be called BEFORE the mutation
+    commit. If the append fails, the exception propagates and the mutation
+    fails with it — best-effort logging is not allowed for domain events.
+    """
+    if event_type not in DOMAIN_EVENT_TYPES:
+        raise EventStoreAppendError(f"unknown domain event type: {event_type}")
     data = dict(payload or {})
     data.setdefault("entity_id", entity_id)
     data.setdefault("timestamp", datetime.now(UTC).isoformat())
-    try:
-        append_event(session, event_type, data, source="WRITE_PATH")
-    except Exception:
-        try:
-            session.rollback()
-        except Exception:
-            pass
+    record = EventStoreRecord(
+        sequence=_next_sequence(session),
+        event_type=event_type,
+        payload=data,
+        source="WRITE_PATH",
+        created_at=datetime.now(UTC).isoformat(),
+        correlation_id=correlation_id,
+    )
+    session.add(record)
+    # Flush so subsequent appends in the same transaction see this sequence.
+    session.flush([record])
+    return record
 
 
 def event_store_snapshot(session: Session) -> dict[str, Any]:
@@ -108,8 +128,9 @@ def event_store_snapshot(session: Session) -> dict[str, Any]:
 
 __all__ = [
     "DOMAIN_EVENT_TYPES",
+    "EventStoreAppendError",
+    "append_domain_event",
     "append_event",
     "append_runtime_event",
-    "append_write_path_event",
     "event_store_snapshot",
 ]

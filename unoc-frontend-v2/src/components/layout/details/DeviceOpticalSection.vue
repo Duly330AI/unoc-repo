@@ -15,6 +15,9 @@
       <div class="row"><label>Power</label><span>{{ fmtDbm(deviceEx.signal_power_dbm) }}</span></div>
       <div class="row"><label>Margin</label><span>{{ fmtDb(deviceEx.signal_margin_db) }}</span></div>
       <div class="row"><label>Attenuation</label><span>{{ fmtDb(deviceEx.total_path_attenuation_db) }}</span></div>
+      <div v-if="measuredLossDb != null" class="row">
+        <label>Measured loss</label><span>{{ fmtDb(measuredLossDb) }}</span>
+      </div>
     </div>
 
     <!-- Editable params -->
@@ -70,6 +73,13 @@ type DeviceWithOptical = DeviceOut & {
 
 const deviceEx = computed(() => (props.device ?? {}) as DeviceWithOptical)
 const canUpdate = computed(() => !!props.device)
+
+// L1 measured loss from the optical physics model (passive optical devices)
+const measuredLossDb = computed<number | null>(() => {
+  const params = (props.device?.parameters || {}) as unknown as { optical?: { measured_loss_db?: number } }
+  const v = params?.optical?.measured_loss_db
+  return typeof v === 'number' && Number.isFinite(v) ? v : null
+})
 
 function isOnt(d: DeviceOut | null): boolean { return !!d && (d.type === 'ONT' || d.type === 'BUSINESS_ONT') }
 function isOlt(d: DeviceOut | null): boolean { return !!d && d.type === 'OLT' }

@@ -42,6 +42,30 @@ def _attach_subscriber_parameters(device_out: DeviceOut, model: dict, count_mode
     device_out.subscribers = int(effective_count or 0)
 
 
+_PASSIVE_OPTICAL_TYPES = {"SPLITTER", "HOP", "NVT", "ODF"}
+
+
+def _attach_measured_optical_loss(device_out: DeviceOut, optical_state: dict) -> None:
+    """Expose L1 measured loss to consumers for passive optical devices.
+
+    Configured insertion_loss_db may be unset while the optical physics model has a
+    real computed loss; the UI must not display 0.0 dB / "-" in that case.
+    """
+    dev_type = str(getattr(device_out.type, "value", device_out.type) or "").upper()
+    if dev_type not in _PASSIVE_OPTICAL_TYPES:
+        return
+    entry = (optical_state.get("devices") or {}).get(device_out.id) or {}
+    measured = entry.get("measured_loss_db")
+    if measured is None:
+        return
+    params = dict(device_out.parameters or {})
+    optical = dict(params.get("optical") or {})
+    optical["measured_loss_db"] = measured
+    optical["measured_loss_source"] = "L1_OPTICAL_PHYSICS"
+    params["optical"] = optical
+    device_out.parameters = params
+
+
 def list_devices_impl(s: Session, include_interfaces: bool) -> list[DeviceOut]:
     tv = PATHFINDING_STORE.version()
     key = (tv, bool(include_interfaces))
@@ -58,13 +82,16 @@ def list_devices_impl(s: Session, include_interfaces: bool) -> list[DeviceOut]:
         devices = s.exec(select(Device)).all()
         subscriber_model = resolve_subscriber_model(s)
         from backend.services.count_semantics import build_count_semantics
+        from backend.services.optical_physics_model import resolve_optical_physics_state
 
         count_model = build_count_semantics(s)
+        optical_state = resolve_optical_physics_state(s)
         vrf_name_map = resolve_vrf_name_map(s, devices)
         out: list[DeviceOut] = []
         for d in devices:
             o = DeviceOut.from_model(d)
             _attach_subscriber_parameters(o, subscriber_model, count_model)
+            _attach_measured_optical_loss(o, optical_state)
             vid = getattr(d, "vrf_id", None)
             if vid is not None:
                 o.device_default_vrf_name = vrf_name_map.get(int(vid))
@@ -133,8 +160,10 @@ def get_device_impl(s: Session, device_id: str) -> DeviceOut:
     o = DeviceOut.from_model(d)
     subscriber_model = resolve_subscriber_model(s)
     from backend.services.count_semantics import build_count_semantics
+    from backend.services.optical_physics_model import resolve_optical_physics_state
 
     _attach_subscriber_parameters(o, subscriber_model, build_count_semantics(s))
+    _attach_measured_optical_loss(o, resolve_optical_physics_state(s))
     vid = getattr(d, "vrf_id", None)
     if vid is not None:
         from backend.models import VRF  # local import to avoid circulars at import time

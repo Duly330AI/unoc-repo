@@ -25,7 +25,8 @@ from backend.models import (
     Tariff,
 )
 from backend.services.mac_allocator import next_mac
-from backend.services.event_store import append_write_path_event
+from backend.services.event_store import append_domain_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.seed_service import allocate_backbone_mgmt, ensure_default_tariffs
 from backend.services.splitter_service import DEFAULT_SPLIT_RATIO, ensure_default_ports_for_splitter
@@ -40,6 +41,19 @@ class UnprocessableError(Exception):
     pass
 
 
+def _append_pending_port_events(s: Session) -> None:
+    """Append PORT_CONNECTED for interfaces pending in this transaction (event-first)."""
+    for obj in list(s.new):
+        if isinstance(obj, Interface):
+            append_domain_event(
+                s,
+                "PORT_CONNECTED",
+                obj.id,
+                {"device_id": obj.device_id, "name": obj.name},
+            )
+
+
+@projection_write
 def create_device_impl(s: Session, payload: DeviceCreate) -> DeviceOut:
     # Ensure default tariffs exist for intelligent assignment (TASK-407)
     try:
@@ -127,6 +141,12 @@ def create_device_impl(s: Session, payload: DeviceCreate) -> DeviceOut:
     except Exception:
         # Non-fatal; leave as None if catalog lookup fails
         pass
+    append_domain_event(
+        s,
+        "DEVICE_CREATED",
+        d.id,
+        {"device_type": d.type.value, "name": d.name, "status": str(d.status)},
+    )
     s.add(d)
     s.commit()
     PATHFINDING_STORE.bump_version()
@@ -203,6 +223,7 @@ def create_device_impl(s: Session, payload: DeviceCreate) -> DeviceOut:
                     )
                     created_any = True
         if created_any:
+            _append_pending_port_events(s)
             s.commit()
         # assign default bridge-domain if exists and ports have none
         if d.type in {DeviceType.AON_SWITCH, DeviceType.EDGE_ROUTER}:
@@ -225,11 +246,13 @@ def create_device_impl(s: Session, payload: DeviceCreate) -> DeviceOut:
         # fallback: if no hardware model, create default interfaces
         if d.type == DeviceType.SPLITTER:
             ensure_default_ports_for_splitter(s, d, DEFAULT_SPLIT_RATIO)
+            _append_pending_port_events(s)
             s.commit()
         else:
             iface_id = f"{d.id}-if0"
             if not s.get(Interface, iface_id):
                 s.add(Interface(id=iface_id, device_id=d.id, name="if0", mac_address=next_mac()))
+                _append_pending_port_events(s)
                 s.commit()
 
     # Optional backbone mgmt IP allocation (prefix-based)
@@ -239,6 +262,7 @@ def create_device_impl(s: Session, payload: DeviceCreate) -> DeviceOut:
         allow_mgmt = getenv("ALLOW_BACKBONE_MGMT_IP", "false").lower() in {"1", "true", "yes", "on"}
         if allow_mgmt:
             allocate_backbone_mgmt(s, d)
+            _append_pending_port_events(s)
             s.commit()
 
     # Trigger status propagation via Go service (30,000× faster than Python!)
@@ -256,31 +280,16 @@ def create_device_impl(s: Session, payload: DeviceCreate) -> DeviceOut:
     # NOTE: PON occupancy cache automatically invalidates via provisioning_count in cache key
     # No manual invalidation needed - cache reacts to ONT provision state changes
 
-    append_write_path_event(
-        s,
-        "DEVICE_CREATED",
-        d.id,
-        {"device_type": d.type.value, "name": d.name, "status": str(d.status)},
-    )
-    for iface in s.exec(select(Interface).where(Interface.device_id == d.id)).all():
-        append_write_path_event(
-            s,
-            "PORT_CONNECTED",
-            iface.id,
-            {"device_id": iface.device_id, "name": iface.name},
-        )
 
     return DeviceOut.from_model(d)
 
 
+@projection_write
 def update_device_impl(s: Session, device_id: str, payload: DeviceUpdate) -> DeviceOut:
     d = s.get(Device, device_id)
     if not d:
         raise LookupError("Not found")
     data = payload.model_dump(exclude_unset=True)
-    before_iface_ids = {
-        iface.id for iface in s.exec(select(Interface).where(Interface.device_id == device_id)).all()
-    }
 
     # validate hardware_model compatibility
     if "hardware_model_id" in data:
@@ -331,6 +340,12 @@ def update_device_impl(s: Session, device_id: str, payload: DeviceUpdate) -> Dev
     ):
         data["slot_id"] = None
 
+    append_domain_event(
+        s,
+        "DEVICE_UPDATED",
+        d.id,
+        {"device_type": d.type.value, "changed_fields": sorted(data.keys())},
+    )
     for k, v in data.items():
         setattr(d, k, v)
     s.add(d)
@@ -387,6 +402,7 @@ def update_device_impl(s: Session, device_id: str, payload: DeviceUpdate) -> Dev
                     )
                     created_any = True
         if created_any:
+            _append_pending_port_events(s)
             s.commit()
         if d.type in {DeviceType.AON_SWITCH, DeviceType.EDGE_ROUTER}:
             bd = s.exec(
@@ -448,19 +464,5 @@ def update_device_impl(s: Session, device_id: str, payload: DeviceUpdate) -> Dev
     # NOTE: PON occupancy cache automatically invalidates via provisioning_count in cache key
     # No manual invalidation needed - cache reacts to ONT provision state changes
 
-    append_write_path_event(
-        s,
-        "DEVICE_UPDATED",
-        d.id,
-        {"device_type": d.type.value, "changed_fields": sorted(data.keys())},
-    )
-    for iface in s.exec(select(Interface).where(Interface.device_id == d.id)).all():
-        if iface.id not in before_iface_ids:
-            append_write_path_event(
-                s,
-                "PORT_CONNECTED",
-                iface.id,
-                {"device_id": iface.device_id, "name": iface.name},
-            )
 
     return after

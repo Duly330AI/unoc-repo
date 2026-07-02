@@ -11,13 +11,15 @@ from backend.clients.go_services.optical_client import get_optical_client
 from backend.clients.go_services.status_client import get_status_client
 from backend.db import get_session, init_db
 from backend.models import Device, Interface, Link
-from backend.services.event_store import append_write_path_event
+from backend.services.event_store import append_domain_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.status_service import evaluate_device_status
 
 __all__ = ["delete_link_impl"]
 
 
+@projection_write
 def delete_link_impl(link_id: str) -> None:
     init_db()
     with get_session() as s:
@@ -32,9 +34,7 @@ def delete_link_impl(link_id: str) -> None:
         for dev in (a_dev, b_dev):
             if dev:
                 baseline[dev.id] = evaluate_device_status(dev)
-        s.delete(link)
-        s.commit()
-        append_write_path_event(
+        append_domain_event(
             s,
             "LINK_DELETED",
             link_id,
@@ -43,6 +43,8 @@ def delete_link_impl(link_id: str) -> None:
                 "b_interface_id": b_iface.id if b_iface else None,
             },
         )
+        s.delete(link)
+        s.commit()
         tv = PATHFINDING_STORE.bump_version()
 
         events.publish(events.Event(type="link.deleted", payload={"id": link_id}, topo_version=tv))

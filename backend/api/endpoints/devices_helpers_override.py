@@ -11,11 +11,13 @@ from sqlmodel import Session
 from backend import events
 from backend.api.schemas import DeviceOut
 from backend.models import Device, Status
-from backend.services.event_store import append_write_path_event
+from backend.services.event_store import append_domain_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.status_service import evaluate_device_status
 
 
+@projection_write
 def set_device_override_impl(s: Session, device_id: str, body: dict) -> DeviceOut:  # type: ignore[no-untyped-def]
     d = s.get(Device, device_id)
     if not d:
@@ -28,15 +30,15 @@ def set_device_override_impl(s: Session, device_id: str, body: dict) -> DeviceOu
         Status.DEGRADED.value,
     }:
         raise ValueError("Invalid override status")
-    d.admin_override_status = Status(new_val) if new_val is not None else None
-    s.add(d)
-    s.commit()
-    append_write_path_event(
+    append_domain_event(
         s,
         "DEVICE_UPDATED",
         d.id,
         {"field": "admin_override_status", "admin_override_status": new_val},
     )
+    d.admin_override_status = Status(new_val) if new_val is not None else None
+    s.add(d)
+    s.commit()
     tv = PATHFINDING_STORE.bump_version()
     s.refresh(d)
     after = evaluate_device_status(d)

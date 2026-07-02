@@ -204,3 +204,13 @@ def get_event_store_health():  # type: ignore[override]
         raise HTTPException(status_code=404, detail="Not Found")
     with get_session() as s:
         return build_event_store_health(s)
+
+
+@router.get("/go-services")
+def get_go_services():  # type: ignore[override]
+    """Live Go-service reachability plus backend go-vs-fallback mode."""
+    if not _dev_enabled():
+        raise HTTPException(status_code=404, detail="Not Found")
+    from backend.services.go_services_health import build_go_services_health
+
+    return build_go_services_health()

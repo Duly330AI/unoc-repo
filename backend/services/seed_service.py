@@ -31,6 +31,7 @@ from backend.services.seed_helpers.catalog import (
 from backend.services.seed_helpers.catalog import (
     ensure_default_tariffs as _ensure_default_tariffs_impl,
 )
+from backend.services.event_store_runtime import projection_write
 from backend.services.seed_helpers.ipam import ensure_ipam_defaults as _ensure_ipam_defaults_impl
 
 BACKBONE_GATEWAY_ID = "backbone_gateway"
@@ -120,6 +121,9 @@ def allocate_backbone_mgmt(session: Session, device: Device) -> None:
             break
 
 
+# Bootstrap writer (Device/Interface seed); explicitly excluded from the
+# EventStore bypass guard.
+@projection_write
 def ensure_backbone_gateway(session: Session) -> Device | None:
     """Ensure the canonical backbone gateway exists (idempotent).
 
