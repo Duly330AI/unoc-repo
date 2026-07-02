@@ -12,6 +12,7 @@ from backend.services.aggregation_audit import build_aggregation_audit
 from backend.services.count_semantics import build_count_semantics
 from backend.services.debug_snapshot import gather_full_snapshot
 from backend.services.dependency_resolver import trace_l3_path_to_anchor
+from backend.services.event_store_health import build_event_store_health
 from backend.services.layer_validation import validate_layer_isolation
 from backend.services.layered_state_model import resolve_layered_device_state
 from backend.services.optical_physics_model import resolve_optical_physics_state
@@ -195,3 +196,11 @@ def get_replay(
             "events": serialize_events(replay_window),
             "projections": replay_simulation_events(replay_window),
         }
+
+
+@router.get("/event-store-health")
+def get_event_store_health():  # type: ignore[override]
+    if not _dev_enabled():
+        raise HTTPException(status_code=404, detail="Not Found")
+    with get_session() as s:
+        return build_event_store_health(s)

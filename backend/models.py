@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from backend.models_pkg.device import Device, DeviceRole, DeviceType, Status
+from backend.models_pkg.event_store import EventStoreRecord
 from backend.models_pkg.hardware import HardwareModel, PortProfile
 from backend.models_pkg.interface import AdminStatus, Interface, InterfaceRole, PortRole
 from backend.models_pkg.ipam import VRF, InterfaceAddress, IPPool, Prefix
@@ -18,6 +19,7 @@ __all__ = [
     "Status",
     "DeviceRole",
     "Device",
+    "EventStoreRecord",
     # interface
     "InterfaceRole",
     "PortRole",

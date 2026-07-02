@@ -22,6 +22,7 @@ from contextlib import contextmanager
 
 from sqlalchemy import create_engine as sa_create_engine
 from sqlalchemy import event
+from sqlalchemy.orm import Session as SASession
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import QueuePool, StaticPool
 from sqlmodel import Session, SQLModel
@@ -55,12 +56,34 @@ except Exception:  # pragma: no cover
 # Import models to register all SQLModel tables with metadata before DDL ops
 from . import models as _models  # noqa: F401
 from .models import VRF, Device, Interface, InterfaceAddress, Link, Prefix, Tariff  # noqa: F401
+from .services.event_store_runtime import event_store_enforcement_enabled, is_projection_write_allowed
 
 # Serialize schema operations to avoid DDL races (deadlocks) when endpoints/tests
 # call init_db() concurrently. Also track if we've already initialized the schema
 # to make init_db() effectively idempotent for this process.
 _SCHEMA_LOCK = threading.RLock()
 _SCHEMA_INITIALIZED = False
+
+_EVENT_STORE_GUARDED_MODELS = {
+    "Device",
+    "Interface",
+    "Link",
+    "ProvisioningRecord",
+}
+
+
+@event.listens_for(SASession, "before_flush")
+def _event_store_write_guard(session, flush_context, instances):  # type: ignore[no-untyped-def]
+    if not event_store_enforcement_enabled() or is_projection_write_allowed():
+        return
+    changed = list(session.new) + list(session.dirty) + list(session.deleted)
+    blocked = sorted({obj.__class__.__name__ for obj in changed if obj.__class__.__name__ in _EVENT_STORE_GUARDED_MODELS})
+    if blocked:
+        raise RuntimeError(
+            "EVENT_STORE_BYPASS: direct DB mutation blocked for "
+            + ", ".join(blocked)
+            + "; append EventStore event and update projection inside projection_write_context()."
+        )
 
 _persistence_mode = os.getenv("UNOC_PERSISTENCE", "file").lower().strip()
 # Prefer standard DATABASE_URL; fall back to legacy UNOC_DB_URL
