@@ -41,6 +41,7 @@ export interface DeviceOut {
   slot_id?: any
   provisioned: boolean
   role: DeviceRole
+  subscribers?: any
   sensitivity_min_dbm?: any
   signal_margin_db?: any
   signal_power_dbm?: any

@@ -14,6 +14,7 @@ from sqlmodel import Session, select
 from backend.api.schemas import DeviceOut
 from backend.models import Device
 from backend.services.pathfinding import PATHFINDING_STORE
+from backend.services.subscriber_model import resolve_subscriber_model, subscriber_parameters
 
 from .devices_helpers_common import resolve_vrf_name_map, serialize_interfaces_for_device
 
@@ -24,6 +25,14 @@ _DEVICES_CACHE_LOCK = Lock()
 
 # Pre-serialized JSON cache (bytes) and ETag per (topology_version, include_interfaces)
 _DEVICES_JSON_CACHE: dict[tuple[int, bool], tuple[bytes, str]] = {}
+
+
+def _attach_subscriber_parameters(device_out: DeviceOut, model: dict) -> None:
+    subscribers = subscriber_parameters(model, device_out.id)
+    params = dict(device_out.parameters or {})
+    params["subscribers"] = subscribers
+    device_out.parameters = params
+    device_out.subscribers = int(subscribers.get("total") or 0)
 
 
 def list_devices_impl(s: Session, include_interfaces: bool) -> list[DeviceOut]:
@@ -40,10 +49,12 @@ def list_devices_impl(s: Session, include_interfaces: bool) -> list[DeviceOut]:
             return cached
 
         devices = s.exec(select(Device)).all()
+        subscriber_model = resolve_subscriber_model(s)
         vrf_name_map = resolve_vrf_name_map(s, devices)
         out: list[DeviceOut] = []
         for d in devices:
             o = DeviceOut.from_model(d)
+            _attach_subscriber_parameters(o, subscriber_model)
             vid = getattr(d, "vrf_id", None)
             if vid is not None:
                 o.device_default_vrf_name = vrf_name_map.get(int(vid))
@@ -110,6 +121,8 @@ def get_device_impl(s: Session, device_id: str) -> DeviceOut:
     if not d:
         raise LookupError("Not found")
     o = DeviceOut.from_model(d)
+    subscriber_model = resolve_subscriber_model(s)
+    _attach_subscriber_parameters(o, subscriber_model)
     vid = getattr(d, "vrf_id", None)
     if vid is not None:
         from backend.models import VRF  # local import to avoid circulars at import time

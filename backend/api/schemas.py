@@ -88,6 +88,7 @@ class DeviceOut(BaseModel):
     device_default_vrf_name: str | None = None
     # Derived parameters bundle (TASK-523)
     parameters: dict | None = None
+    subscribers: int | None = None
 
     @classmethod
     def from_model(cls, d):  # type: ignore[no-untyped-def]
@@ -180,6 +181,7 @@ class DeviceOut(BaseModel):
             hardware_model_id=getattr(d, "hardware_model_id", None),
             device_default_vrf_name=device_default_vrf_name,
             parameters=params,
+            subscribers=None,
         )
 
 
@@ -312,6 +314,8 @@ class InterfaceSummaryOut(BaseModel):
     effective_status: str | None = None
     occupancy: int
     capacity: int | None = None
+    subscriber_count: int | None = None
+    subscriber_domain: str | None = None
 
 
 class TariffOut(BaseModel):

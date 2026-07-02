@@ -10,6 +10,7 @@ from backend.models import Device
 from backend.services import status_diagnostics
 from backend.services.debug_snapshot import gather_full_snapshot
 from backend.services.dependency_resolver import trace_l3_path_to_anchor
+from backend.services.subscriber_model import resolve_subscriber_model
 
 router = APIRouter(tags=["debug"], prefix="/debug")
 
@@ -72,3 +73,11 @@ def get_status_diagnostics():  # type: ignore[override]
     if not _dev_enabled():
         raise HTTPException(status_code=404, detail="Not Found")
     return {"devices": status_diagnostics.snapshot()}
+
+
+@router.get("/subscriber-model")
+def get_subscriber_model():  # type: ignore[override]
+    if not _dev_enabled():
+        raise HTTPException(status_code=404, detail="Not Found")
+    with get_session() as s:
+        return resolve_subscriber_model(s)
