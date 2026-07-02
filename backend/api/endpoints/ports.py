@@ -90,26 +90,18 @@ def _with_canonical_subscribers(
             iface_id = str(item.get("id") or "")
             if iface_id in pon_occ:
                 item["occupancy"] = pon_occ[iface_id]
-                item["subscriber_count"] = pon_occ[iface_id]
-                item["subscriber_domain"] = "OLT"
             if iface_id in aon_occ:
                 item["port_role"] = "ACCESS"
                 item["occupancy"] = aon_occ[iface_id]
-                item["subscriber_count"] = aon_occ[iface_id]
-                item["subscriber_domain"] = "AON"
             patched.append(item)
             continue
 
         iface_id = str(row.id or "")
         if iface_id in pon_occ:
             row.occupancy = pon_occ[iface_id]
-            row.subscriber_count = pon_occ[iface_id]
-            row.subscriber_domain = "OLT"
         if iface_id in aon_occ:
             row.port_role = PortRole.ACCESS
             row.occupancy = aon_occ[iface_id]
-            row.subscriber_count = aon_occ[iface_id]
-            row.subscriber_domain = "AON"
         patched.append(row)
     return patched
 

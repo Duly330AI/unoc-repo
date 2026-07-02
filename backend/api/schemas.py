@@ -314,8 +314,6 @@ class InterfaceSummaryOut(BaseModel):
     effective_status: str | None = None
     occupancy: int
     capacity: int | None = None
-    subscriber_count: int | None = None
-    subscriber_domain: str | None = None
 
 
 class TariffOut(BaseModel):

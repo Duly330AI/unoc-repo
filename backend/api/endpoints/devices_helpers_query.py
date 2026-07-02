@@ -28,6 +28,9 @@ _DEVICES_JSON_CACHE: dict[tuple[int, bool], tuple[bytes, str]] = {}
 
 
 def _attach_subscriber_parameters(device_out: DeviceOut, model: dict) -> None:
+    dev_type = str(getattr(device_out.type, "value", device_out.type) or "").upper()
+    if dev_type not in {"OLT", "AON_SWITCH", "ONT", "BUSINESS_ONT", "AON_CPE"}:
+        return
     subscribers = subscriber_parameters(model, device_out.id)
     params = dict(device_out.parameters or {})
     params["subscribers"] = subscribers
