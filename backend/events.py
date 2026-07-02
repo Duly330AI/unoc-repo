@@ -172,6 +172,12 @@ def publish(event: Event) -> None:
     finally:
         # Always record even if broadcaster fails
         record_event(event)
+        try:
+            from backend.services.event_store import append_runtime_event
+
+            append_runtime_event(event)
+        except Exception:
+            pass
 
 
 def get_event_counts() -> dict[str, int]:

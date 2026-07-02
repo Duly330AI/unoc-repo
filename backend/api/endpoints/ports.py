@@ -19,6 +19,13 @@ from backend.models import Device, DeviceType, Interface, Link, PortProfile, Por
 from backend.services.optical_path_resolver import resolve_optical_path
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.status_service import evaluate_device_status, evaluate_link_status
+from backend.services.subscriber_model import (
+    aon_access_port_state_for,
+    aon_access_occupancy_for,
+    pon_port_state_for,
+    pon_occupancy_for,
+    resolve_subscriber_model,
+)
 
 router = APIRouter(tags=["ports"], prefix="/ports")
 
@@ -62,6 +69,63 @@ _ports_summary_locks: dict[tuple[int, str], asyncio.Lock] = {}
 # Cache key includes provisioning_count to auto-invalidate on ONT provision/deprovision
 _olt_pon_occ_cache: dict[tuple[int, str, int], dict[str, int]] = {}
 _olt_pon_occ_locks: dict[tuple[int, str, int], asyncio.Lock] = {}
+
+
+def _resolve_subscriber_model_sync() -> dict:
+    with get_session() as sync_session:
+        return resolve_subscriber_model(sync_session)
+
+
+async def _resolve_subscriber_model_async() -> dict:
+    return await asyncio.to_thread(_resolve_subscriber_model_sync)
+
+
+def _with_canonical_subscribers(
+    device_id: str, rows: list[InterfaceSummaryOut] | list[dict], model: dict
+) -> list:
+    pon_occ = pon_occupancy_for(model, device_id)
+    aon_occ = aon_access_occupancy_for(model, device_id)
+    pon_ports = pon_port_state_for(model, device_id)
+    aon_ports = aon_access_port_state_for(model, device_id)
+    patched: list = []
+    for row in rows:
+        if isinstance(row, dict):
+            item = dict(row)
+            iface_id = str(item.get("id") or "")
+            if iface_id in pon_occ:
+                item["occupancy"] = pon_occ[iface_id]
+                state = pon_ports.get(iface_id, {})
+                item["provisioned_onts_count"] = state.get("provisioned_onts_count", pon_occ[iface_id])
+                item["max_capacity"] = state.get("max_capacity", item.get("capacity"))
+                item["utilization"] = state.get("utilization")
+            if iface_id in aon_occ:
+                item["port_role"] = "ACCESS"
+                item["occupancy"] = aon_occ[iface_id]
+                state = aon_ports.get(iface_id, {})
+                item["provisioned_cpes_count"] = state.get("provisioned_cpes_count", aon_occ[iface_id])
+                item["max_capacity"] = state.get("max_capacity", 1)
+                item["capacity"] = state.get("max_capacity", item.get("capacity"))
+                item["utilization"] = state.get("utilization")
+            patched.append(item)
+            continue
+
+        iface_id = str(row.id or "")
+        if iface_id in pon_occ:
+            row.occupancy = pon_occ[iface_id]
+            state = pon_ports.get(iface_id, {})
+            row.provisioned_onts_count = int(state.get("provisioned_onts_count", pon_occ[iface_id]))
+            row.max_capacity = int(state.get("max_capacity", row.capacity or 0)) or None
+            row.utilization = state.get("utilization")
+        if iface_id in aon_occ:
+            row.port_role = PortRole.ACCESS
+            row.occupancy = aon_occ[iface_id]
+            state = aon_ports.get(iface_id, {})
+            row.provisioned_cpes_count = int(state.get("provisioned_cpes_count", aon_occ[iface_id]))
+            row.max_capacity = int(state.get("max_capacity", 1))
+            row.capacity = int(state.get("max_capacity", row.capacity or 1))
+            row.utilization = state.get("utilization")
+        patched.append(row)
+    return patched
 
 
 async def _get_olt_pon_occupancy(
@@ -250,7 +314,8 @@ async def get_port_summary(
         try:
             summary = await go_client.get_port_summary(device_id)
             if summary:
-                return summary
+                subscriber_model = await _resolve_subscriber_model_async()
+                return _with_canonical_subscribers(device_id, summary, subscriber_model)
         except Exception as e:
             # Log and fall back to Python
             import logging
@@ -318,13 +383,8 @@ async def get_port_summary(
             if ln.b_interface_id in links_by_if:
                 links_by_if[ln.b_interface_id].append(ln)
 
-    # If OLT: get cached occupancy per PON interface for this topology version
-    pon_occ: dict[str, int] | None = None
-    if d.type == DeviceType.OLT:
-        try:
-            pon_occ = await _get_olt_pon_occupancy(s, d, ifaces, links, tv)
-        except Exception:
-            pon_occ = None
+    subscriber_model = await _resolve_subscriber_model_async()
+    pon_occ: dict[str, int] = pon_occupancy_for(subscriber_model, d.id)
 
     # Helper: compute effective interface status string based on device and attached links
     def _effective_interface_status(dev: Device, iface: Interface) -> str:
@@ -425,6 +485,7 @@ async def get_port_summary(
         except Exception:
             return str(v)
 
+    out = _with_canonical_subscribers(d.id, out, subscriber_model)
     out.sort(key=lambda x: (_role_key(x.port_role), x.name, x.id))
     # Store in TTL cache before returning
     _ports_summary_cache[cache_key] = (time.monotonic() + _PORTS_CACHE_TTL_SEC, out)
@@ -464,7 +525,11 @@ async def get_bulk_port_summary(
         try:
             result = await go_client.get_bulk_port_summary(ids)
             if result:
-                return result
+                subscriber_model = await _resolve_subscriber_model_async()
+                return {
+                    did: _with_canonical_subscribers(did, rows, subscriber_model)
+                    for did, rows in result.items()
+                }
         except Exception as e:
             # Log and fall back to Python
             logging.getLogger(__name__).warning(
@@ -549,6 +614,7 @@ async def get_bulk_port_summary(
     # Process each device using batch-fetched data
     results: dict[str, list[InterfaceSummaryOut]] = {}
     tv = PATHFINDING_STORE.version()
+    subscriber_model = await _resolve_subscriber_model_async()
 
     for did in ordered_ids:
         dev = devices_by_id.get(did)
@@ -574,16 +640,7 @@ async def get_bulk_port_summary(
                 if hw_id == dev.hardware_model_id:
                     device_profile_cap[prof_name] = cap
 
-        # Get OLT PON occupancy if applicable (simplified - use single-device helper)
-        pon_occ_map: dict[str, int] = {}
-        if dev.type == DeviceType.OLT and ifaces:
-            try:
-                links_for_dev = []
-                for iface in ifaces:
-                    links_for_dev.extend(links_by_if.get(iface.id, []))
-                pon_occ_map = await _get_olt_pon_occupancy(s, dev, ifaces, links_for_dev, tv)
-            except Exception:
-                pon_occ_map = {}
+        pon_occ_map: dict[str, int] = pon_occupancy_for(subscriber_model, dev.id)
 
         for iface in ifaces:
             role = getattr(iface, "port_role", None)
@@ -625,6 +682,7 @@ async def get_bulk_port_summary(
             except Exception:
                 return str(v)
 
+        out = _with_canonical_subscribers(dev.id, out, subscriber_model)
         out.sort(key=lambda x: (_role_key(x.port_role), x.name, x.id))
 
         # Cache result

@@ -125,10 +125,17 @@ const accessCells = computed(() => {
   })
 })
 
+const subscriberCount = computed(() => {
+  const value = device.value?.subscribers
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  const params = device.value?.parameters as { subscribers?: { total?: number } } | undefined
+  const total = params?.subscribers?.total
+  return typeof total === 'number' && Number.isFinite(total) ? total : null
+})
+
 const subscribersText = computed(() => {
-  // Sum up all CPEs across ACCESS ports (using accessCells which have cpeCount from port occupancy)
-  const totalCPEs = accessCells.value.reduce((sum, cell) => sum + cell.cpeCount, 0)
-  return totalCPEs > 0 ? String(totalCPEs) : '—'
+  const totalCPEs = subscriberCount.value
+  return totalCPEs == null ? '—' : String(totalCPEs)
 })
 
 const visibleCells = computed(() => accessCells.value.slice(0, MAX_CELLS))

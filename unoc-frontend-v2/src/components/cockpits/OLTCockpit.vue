@@ -139,11 +139,18 @@ const ponCells = computed<PonCell[]>(() => {
   })
 })
 
+const subscriberCount = computed(() => {
+  const value = device.value?.subscribers
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  const params = device.value?.parameters as { subscribers?: { total?: number } } | undefined
+  const total = params?.subscribers?.total
+  return typeof total === 'number' && Number.isFinite(total) ? total : null
+})
+
 const subscribersText = computed(() => {
-  // Sum up all ONTs across PON ports (using ponCells which have ontCount from port occupancy)
-  const totalONTs = ponCells.value.reduce((sum, cell) => sum + cell.ontCount, 0)
+  const totalONTs = subscriberCount.value
   console.log('[OLTCockpit] subscribersText:', totalONTs, '| ponCells:', ponCells.value.length)
-  return totalONTs > 0 ? String(totalONTs) : '—'
+  return totalONTs == null ? '—' : String(totalONTs)
 })
 
 // Grid layout
