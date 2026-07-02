@@ -15,7 +15,10 @@ _F = TypeVar("_F", bound=Callable[..., Any])
 
 
 def event_store_enforcement_enabled() -> bool:
-    return os.getenv("UNOC_EVENTSTORE_ENFORCE", "0").strip().lower() in {"1", "true", "yes", "on"}
+    # Enabled by default: the EventStore is authoritative for guarded domain
+    # mutations. Set UNOC_EVENTSTORE_ENFORCE=0 only for explicit opt-out
+    # (e.g. unit tests that build topology state directly).
+    return os.getenv("UNOC_EVENTSTORE_ENFORCE", "1").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def is_projection_write_allowed() -> bool:

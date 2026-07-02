@@ -22,7 +22,7 @@ from backend.errors import ErrorCode, raise_error
 from backend.link_rules import allowed_media_codes_for_class
 from backend.models import Device, Interface, Link, PhysicalMedium
 from backend.services import recompute_coalescer as coalescer
-from backend.services.event_store import append_write_path_event
+from backend.services.event_store import append_domain_event
 from backend.services.event_store_runtime import projection_write
 from backend.services.link_policy_optical import (
     enforce_ont_placement_rules,
@@ -220,10 +220,16 @@ def create_link_impl(payload: LinkCreate, background: BackgroundTasks | None) ->
             ),
         )
         try:
-            s.add(link)
-            s.commit()
-            s.refresh(link)
-            append_write_path_event(
+            # Event-first: auto-created interfaces + the link itself, same transaction
+            for pending in list(s.new):
+                if isinstance(pending, Interface):
+                    append_domain_event(
+                        s,
+                        "PORT_CONNECTED",
+                        pending.id,
+                        {"device_id": pending.device_id, "name": pending.name},
+                    )
+            append_domain_event(
                 s,
                 "LINK_CREATED",
                 link.id,
@@ -234,6 +240,9 @@ def create_link_impl(payload: LinkCreate, background: BackgroundTasks | None) ->
                     "rule_id": cls.rule_id,
                 },
             )
+            s.add(link)
+            s.commit()
+            s.refresh(link)
             log.info(
                 "Link created id=%s (%s<->%s)",
                 link.id,

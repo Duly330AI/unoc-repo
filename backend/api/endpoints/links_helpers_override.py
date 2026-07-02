@@ -9,7 +9,7 @@ from backend import events
 from backend.api.schemas import LinkResolvedOut
 from backend.db import get_session, init_db
 from backend.models import Device, Interface, Link, Status
-from backend.services.event_store import append_write_path_event
+from backend.services.event_store import append_domain_event
 from backend.services.event_store_runtime import projection_write
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.status_recompute import recompute_devices_status
@@ -44,15 +44,15 @@ def set_link_override_impl(link_id: str, body: dict) -> LinkResolvedOut:  # type
             Status.DEGRADED.value,
         }:
             raise HTTPException(status_code=400, detail="Invalid override status")
-        link.admin_override_status = Status(new_val) if new_val is not None else None
-        s.add(link)
-        s.commit()
-        append_write_path_event(
+        append_domain_event(
             s,
             "LINK_UPDATED",
             link.id,
             {"field": "admin_override_status", "admin_override_status": new_val},
         )
+        link.admin_override_status = Status(new_val) if new_val is not None else None
+        s.add(link)
+        s.commit()
         s.refresh(link)
         try:
             tv = PATHFINDING_STORE.bump_version()
