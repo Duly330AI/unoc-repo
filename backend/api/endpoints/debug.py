@@ -11,6 +11,7 @@ from backend.services import status_diagnostics
 from backend.services.debug_snapshot import gather_full_snapshot
 from backend.services.dependency_resolver import trace_l3_path_to_anchor
 from backend.services.layered_state_model import resolve_layered_device_state
+from backend.services.optical_physics_model import resolve_optical_physics_state
 from backend.services.subscriber_model import resolve_subscriber_model
 
 router = APIRouter(tags=["debug"], prefix="/debug")
@@ -90,4 +91,13 @@ def get_device_state():  # type: ignore[override]
         raise HTTPException(status_code=404, detail="Not Found")
     with get_session() as s:
         subscriber_model = resolve_subscriber_model(s)
-        return resolve_layered_device_state(s, subscriber_model)
+        optical_state = resolve_optical_physics_state(s)
+        return resolve_layered_device_state(s, subscriber_model, optical_state)
+
+
+@router.get("/optical-state")
+def get_optical_state():  # type: ignore[override]
+    if not _dev_enabled():
+        raise HTTPException(status_code=404, detail="Not Found")
+    with get_session() as s:
+        return resolve_optical_physics_state(s)

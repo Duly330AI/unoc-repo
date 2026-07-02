@@ -24,7 +24,9 @@ def _value(value: Any) -> Any:
     return getattr(value, "value", value)
 
 
-def resolve_layered_device_state(session: Session, subscriber_model: dict[str, Any]) -> dict[str, Any]:
+def resolve_layered_device_state(
+    session: Session, subscriber_model: dict[str, Any], optical_state: dict[str, Any] | None = None
+) -> dict[str, Any]:
     devices = list(session.exec(select(Device)).all())
     interfaces = list(session.exec(select(Interface)).all())
     links = list(session.exec(select(Link)).all())
@@ -66,6 +68,7 @@ def resolve_layered_device_state(session: Session, subscriber_model: dict[str, A
         iface_ids = {iface.id for iface in dev_ifaces}
         service = subscriber_parameters(subscriber_model, device.id)
         service_applies = dev_type in {"OLT", "AON_SWITCH", "ONT", "BUSINESS_ONT", "AON_CPE"}
+        optical_device = (optical_state or {}).get("devices", {}).get(device.id, {})
 
         states[device.id] = {
             "physical": {
@@ -74,6 +77,13 @@ def resolve_layered_device_state(session: Session, subscriber_model: dict[str, A
                 "port_count": len(dev_ifaces),
                 "link_count": sum(link_count_by_if[iface.id] for iface in dev_ifaces),
                 "insertion_loss_db": getattr(device, "insertion_loss_db", None),
+                "optical_physics": {
+                    "modeled": bool(optical_device)
+                    and not bool(optical_device.get("excluded_from_optical_physics")),
+                    "excluded": bool(optical_device.get("excluded_from_optical_physics", False)),
+                    "measured_loss_db": optical_device.get("measured_loss_db"),
+                    "port_states": optical_device.get("port_states", {}),
+                },
                 "ports": [
                     {
                         "id": iface.id,
