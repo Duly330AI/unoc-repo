@@ -9,6 +9,7 @@ from backend.db import get_session
 from backend.models import Device
 from backend.services import status_diagnostics
 from backend.services.aggregation_audit import build_aggregation_audit
+from backend.services.count_semantics import build_count_semantics
 from backend.services.debug_snapshot import gather_full_snapshot
 from backend.services.dependency_resolver import trace_l3_path_to_anchor
 from backend.services.layer_validation import validate_layer_isolation
@@ -126,3 +127,11 @@ def get_aggregation_audit():  # type: ignore[override]
         raise HTTPException(status_code=404, detail="Not Found")
     with get_session() as s:
         return build_aggregation_audit(s)
+
+
+@router.get("/count-semantics")
+def get_count_semantics():  # type: ignore[override]
+    if not _dev_enabled():
+        raise HTTPException(status_code=404, detail="Not Found")
+    with get_session() as s:
+        return build_count_semantics(s)

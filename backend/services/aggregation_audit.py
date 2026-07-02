@@ -6,6 +6,7 @@ from typing import Any
 
 from sqlmodel import Session
 
+from backend.services.count_semantics import build_count_semantics
 from backend.services.layer_validation import validate_layer_isolation
 from backend.services.layered_state_model import resolve_layered_device_state
 from backend.services.optical_physics_model import resolve_optical_physics_state
@@ -37,6 +38,7 @@ def _wrong_source_warnings(validation: dict[str, Any]) -> list[dict[str, Any]]:
 
 def build_aggregation_audit(session: Session) -> dict[str, Any]:
     model = resolve_subscriber_model(session)
+    count_semantics = build_count_semantics(session)
     optical_state = resolve_optical_physics_state(session)
     device_state = resolve_layered_device_state(session, model, optical_state)
     validation = validate_layer_isolation(device_state, model, optical_state)
@@ -60,6 +62,7 @@ def build_aggregation_audit(session: Session) -> dict[str, Any]:
             "correct_subscriber_count": correct,
             "reported_subscriber_count": reported,
             "mismatch_delta": delta,
+            "count_semantics": count_semantics.get("devices", {}).get(device_id, {}),
             "aggregation_source": node.get("aggregation_source"),
             "source_of_wrong_calculation": "none" if delta == 0 else node.get("aggregation_source"),
             "port_breakdown": port_breakdown,
@@ -75,6 +78,7 @@ def build_aggregation_audit(session: Session) -> dict[str, Any]:
         "source_of_truth": SUBSCRIBER_SOURCE,
         "forbidden_sources": ["MAC_TABLE", "IP_PATH", "OPTICAL_LOSS", "TRAFFIC_FLOW", "PORT_UTILIZATION"],
         "global": model.get("global", {}),
+        "count_semantics": count_semantics,
         "olt": {
             device_id: data for device_id, data in device_breakdown.items() if data["device_type"] == "OLT"
         },
