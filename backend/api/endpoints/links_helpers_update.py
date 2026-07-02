@@ -13,6 +13,7 @@ from backend.errors import ErrorCode, raise_error
 from backend.link_rules import allowed_media_codes_for_class
 from backend.models import Device, Interface, Link, PhysicalMedium, Status
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.links_service import classify_devices_for_link
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.status_service import evaluate_device_status, evaluate_link_status
@@ -22,6 +23,7 @@ from .links_helpers_common import normalize_status_str
 __all__ = ["update_link_impl"]
 
 
+@projection_write
 def update_link_impl(link_id: str, payload: LinkUpdate) -> LinkResolvedOut:
     init_db()
     with get_session() as s:

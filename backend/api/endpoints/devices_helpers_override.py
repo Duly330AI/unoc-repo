@@ -12,10 +12,12 @@ from backend import events
 from backend.api.schemas import DeviceOut
 from backend.models import Device, Status
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.status_service import evaluate_device_status
 
 
+@projection_write
 def set_device_override_impl(s: Session, device_id: str, body: dict) -> DeviceOut:  # type: ignore[no-untyped-def]
     d = s.get(Device, device_id)
     if not d:

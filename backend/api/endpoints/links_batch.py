@@ -40,6 +40,7 @@ from backend.link_rules import allowed_media_codes_for_class
 from backend.models import Device, Link, LinkType, PhysicalMedium
 from backend.services import recompute_coalescer as coalescer
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write_context
 from backend.services.link_policy_optical import (
     enforce_ont_placement_rules,
     enforce_pon_role_if_declared,
@@ -91,6 +92,12 @@ def batch_create_links(payload: BatchLinkCreateRequest) -> BatchLinkCreateRespon
     - created: List of successfully created links
     - failed: List of {"link_id": str, "error": str} for any failures
     """
+    # Covered write surface: run inside projection context for the bypass guard
+    with projection_write_context():
+        return _batch_create_links_guarded(payload)
+
+
+def _batch_create_links_guarded(payload: BatchLinkCreateRequest) -> BatchLinkCreateResponse:
     init_db()
     if not payload.links:
         raise HTTPException(status_code=400, detail="No links provided")

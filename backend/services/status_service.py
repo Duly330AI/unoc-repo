@@ -454,8 +454,11 @@ def bulk_update_device_statuses(device_ids: list[str]) -> None:
 
     from backend.db import get_session
     from backend.models import Device
+    from backend.services.event_store_runtime import projection_write_context
 
-    with get_session() as session:
+    # Internal derived-state writer (status propagation fallback); explicitly
+    # excluded from the EventStore bypass guard.
+    with projection_write_context(), get_session() as session:
         # Batch load all devices
         devices = session.exec(select(Device).where(Device.id.in_(device_ids))).all()  # type: ignore[attr-defined]
 

@@ -24,6 +24,7 @@ from backend.services.catalog_effective import (
     get_effective_sensitivity_dbm,
     get_effective_tx_power_dbm,
 )
+from backend.services.event_store_runtime import projection_write
 from backend.services.status_recompute import recompute_devices_status
 from backend.services.status_service import evaluate_device_status
 
@@ -41,6 +42,9 @@ OPTICAL_RELEVANT_DEVICE_TYPES = {
 }
 
 
+# Internal derived-state writer (signal fields), not a domain mutation surface;
+# explicitly excluded from the EventStore bypass guard.
+@projection_write
 def recompute_optical_paths_for_affected_onts(
     device_ids: set[str] | None = None, link_ids: set[str] | None = None
 ) -> None:

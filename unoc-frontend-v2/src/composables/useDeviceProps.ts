@@ -42,6 +42,25 @@ export function useDeviceProps(activeDevice: ComputedRef<DeviceWithParent | null
       { key: 'Parent', value: parentDisplay.value, warn: parentDisplay.value === 'FEHLT' }
     ]
     if (type === 'POP') list.push({ key: 'Children', value: childInfo })
+
+    // Subscriber count semantics from backend (effective is the authoritative display value).
+    // When physical/provisioned differ from effective (e.g. AON 1:1 oversubscription),
+    // show the breakdown instead of implying all three are equal.
+    const cs = (d as { parameters?: { count_semantics?: Record<string, unknown> } }).parameters
+      ?.count_semantics
+    if (cs && typeof cs === 'object') {
+      const eff = Number(cs.effective_count)
+      const prov = Number(cs.provisioned_count)
+      const phys = Number(cs.physical_count)
+      if (Number.isFinite(eff)) {
+        const differs =
+          (Number.isFinite(prov) && prov !== eff) || (Number.isFinite(phys) && phys !== eff)
+        const value = differs
+          ? `${eff} effective (${Number.isFinite(prov) ? prov : '?'} provisioned / ${Number.isFinite(phys) ? phys : '?'} physical)`
+          : String(eff)
+        list.push({ key: 'Subscribers', value, warn: differs })
+      }
+    }
     return list
   })
 

@@ -22,10 +22,12 @@ from backend.models import (
 )
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write
 
 logger = logging.getLogger(__name__)
 
 
+@projection_write
 def delete_device_impl(s: Session, device_id: str) -> None:
     d = s.get(Device, device_id)
     if not d:

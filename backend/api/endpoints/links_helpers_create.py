@@ -23,6 +23,7 @@ from backend.link_rules import allowed_media_codes_for_class
 from backend.models import Device, Interface, Link, PhysicalMedium
 from backend.services import recompute_coalescer as coalescer
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.link_policy_optical import (
     enforce_ont_placement_rules,
     enforce_pon_role_if_declared,
@@ -63,6 +64,7 @@ def _dev_from_iface_id(s, iid: str) -> str | None:
     return None
 
 
+@projection_write
 def create_link_impl(payload: LinkCreate, background: BackgroundTasks | None) -> LinkResolvedOut:
     init_db()
     if payload.a_interface_id == payload.b_interface_id:

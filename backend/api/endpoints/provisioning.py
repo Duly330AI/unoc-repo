@@ -6,6 +6,7 @@ from backend.db import get_session, init_db
 from backend.models import Device
 from backend.services import recompute_coalescer as coalescer
 from backend.services.background import _recompute_after_device_provision, schedule
+from backend.services.event_store_runtime import projection_write_context
 from backend.services.provisioning_service import provision_device
 from backend.services.status_service import evaluate_device_status
 
@@ -14,6 +15,12 @@ router = APIRouter(tags=["provisioning"], prefix="/devices")
 
 @router.post("/{device_id}/provision", response_model=ProvisionResponse)
 def provision_device_endpoint(device_id: str, background: BackgroundTasks):
+    # Covered write surface: run inside projection context for the bypass guard
+    with projection_write_context():
+        return _provision_device_guarded(device_id, background)
+
+
+def _provision_device_guarded(device_id: str, background: BackgroundTasks):
     init_db()
     with get_session() as s:
         d = s.get(Device, device_id)

@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+import functools
 import os
+from collections.abc import Callable
 from contextlib import contextmanager
 from contextvars import ContextVar
+from typing import Any, TypeVar
 
 _PROJECTION_WRITE: ContextVar[bool] = ContextVar("eventstore_projection_write", default=False)
+
+_F = TypeVar("_F", bound=Callable[..., Any])
 
 
 def event_store_enforcement_enabled() -> bool:
@@ -24,3 +29,18 @@ def projection_write_context():
         yield
     finally:
         _PROJECTION_WRITE.reset(token)
+
+
+def projection_write(fn: _F) -> _F:
+    """Mark a covered write path: its DB mutations run inside projection_write_context.
+
+    Covered paths append EventStore write-path events for their mutations, so the
+    hard bypass guard (UNOC_EVENTSTORE_ENFORCE=1) must allow them.
+    """
+
+    @functools.wraps(fn)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        with projection_write_context():
+            return fn(*args, **kwargs)
+
+    return wrapper  # type: ignore[return-value]

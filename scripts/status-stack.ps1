@@ -116,3 +116,36 @@ $ports | ForEach-Object { Show-PortStatus -Name $_.Name -Port $_.Port } | Format
 
 Write-Host 'HTTP checks' -ForegroundColor Cyan
 $checks | ForEach-Object { Test-HttpEndpoint -Name $_.Name -Url $_.Url } | Format-Table -AutoSize
+
+# Backend view: is the backend actually using Go services or Python fallback?
+Write-Host 'Go services (backend view)' -ForegroundColor Cyan
+try {
+    $goHealth = Invoke-RestMethod -Uri 'http://127.0.0.1:5001/api/debug/go-services' -TimeoutSec 10 -ErrorAction Stop
+    $modeColor = switch ($goHealth.mode) {
+        'go_active' { 'Green' }
+        'partial_fallback' { 'Yellow' }
+        default { 'Red' }
+    }
+    Write-Host ("Mode: {0} ({1}/{2} Go services reachable)" -f $goHealth.mode, $goHealth.go_services_reachable, $goHealth.go_services_total) -ForegroundColor $modeColor
+    if ($goHealth.fallback_active_for -and $goHealth.fallback_active_for.Count -gt 0) {
+        Write-Host ("Python fallback active for: {0}" -f ($goHealth.fallback_active_for -join ', ')) -ForegroundColor Yellow
+    }
+    $goTable = $goHealth.services | ForEach-Object {
+        [pscustomobject]@{
+            Service = $_.service
+            Address = $_.address
+            Reachable = if ($_.reachable) { 'yes' } else { 'no' }
+            BackendMode = $_.backend_mode
+        }
+    } | Format-Table -AutoSize | Out-String -Width 200
+    Write-Host $goTable
+}
+catch {
+    $status = if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { $null }
+    if ($status -eq 404) {
+        Write-Host 'Go service debug endpoint disabled (backend running without UNOC_DEV_FEATURES=1)' -ForegroundColor Yellow
+    }
+    else {
+        Write-Host ("Go service debug endpoint unreachable: {0}" -f $_.Exception.Message) -ForegroundColor Red
+    }
+}

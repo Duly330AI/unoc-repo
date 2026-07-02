@@ -12,12 +12,14 @@ from backend.clients.go_services.status_client import get_status_client
 from backend.db import get_session, init_db
 from backend.models import Device, Interface, Link
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.status_service import evaluate_device_status
 
 __all__ = ["delete_link_impl"]
 
 
+@projection_write
 def delete_link_impl(link_id: str) -> None:
     init_db()
     with get_session() as s:

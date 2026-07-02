@@ -10,6 +10,7 @@ from backend.api.schemas import LinkResolvedOut
 from backend.db import get_session, init_db
 from backend.models import Device, Interface, Link, Status
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.status_recompute import recompute_devices_status
 from backend.services.status_service import evaluate_device_status, evaluate_link_status
@@ -19,6 +20,7 @@ from .links_helpers_common import normalize_status_str
 __all__ = ["set_link_override_impl"]
 
 
+@projection_write
 def set_link_override_impl(link_id: str, body: dict) -> LinkResolvedOut:  # type: ignore[no-untyped-def]
     init_db()
     with get_session() as s:

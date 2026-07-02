@@ -26,6 +26,7 @@ from backend.models import (
 )
 from backend.services.mac_allocator import next_mac
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.pathfinding import PATHFINDING_STORE
 from backend.services.seed_service import allocate_backbone_mgmt, ensure_default_tariffs
 from backend.services.splitter_service import DEFAULT_SPLIT_RATIO, ensure_default_ports_for_splitter
@@ -40,6 +41,7 @@ class UnprocessableError(Exception):
     pass
 
 
+@projection_write
 def create_device_impl(s: Session, payload: DeviceCreate) -> DeviceOut:
     # Ensure default tariffs exist for intelligent assignment (TASK-407)
     try:
@@ -273,6 +275,7 @@ def create_device_impl(s: Session, payload: DeviceCreate) -> DeviceOut:
     return DeviceOut.from_model(d)
 
 
+@projection_write
 def update_device_impl(s: Session, device_id: str, payload: DeviceUpdate) -> DeviceOut:
     d = s.get(Device, device_id)
     if not d:

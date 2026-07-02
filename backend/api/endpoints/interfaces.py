@@ -9,6 +9,7 @@ from backend.db import get_session, init_db
 from backend.models import Device, Interface, InterfaceAddress, InterfaceRole, PortRole, Prefix
 from backend.services import recompute_coalescer
 from backend.services.event_store import append_write_path_event
+from backend.services.event_store_runtime import projection_write
 from backend.services.mac_allocator import next_mac
 from backend.services.pathfinding import PATHFINDING_STORE
 
@@ -40,6 +41,7 @@ def list_interfaces(device_id: str):
 
 
 @router.post("", status_code=201)
+@projection_write
 def create_interface(device_id: str, payload: dict):
     init_db()
     name = payload.get("name")
@@ -136,6 +138,7 @@ def list_interface_addresses(interface_id: str):
 
 
 @addr_router.post("", status_code=201)
+@projection_write
 def create_interface_address(interface_id: str, payload: dict):
     init_db()
     ip = payload.get("ip")
@@ -238,6 +241,7 @@ def create_interface_address(interface_id: str, payload: dict):
 
 
 @addr_router.delete("/{address_id}", status_code=204)
+@projection_write
 def delete_interface_address(interface_id: str, address_id: int):
     init_db()
     with get_session() as s:
