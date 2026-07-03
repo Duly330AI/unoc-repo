@@ -7,6 +7,10 @@ export interface LinkMetric {
   version: number
   congested?: boolean
   capacity_mbps?: number
+  // B2 shaping: requested (pre-shaping) demand crossing the link; bps stays
+  // delivered traffic.
+  demand_up_bps?: number
+  demand_down_bps?: number
 }
 
 interface State {
@@ -42,6 +46,8 @@ export const useLinkMetricsStore = defineStore('linkMetrics', {
             version?: number
             congested?: boolean
             capacity_mbps?: number
+            demand_up_bps?: number
+            demand_down_bps?: number
           }>
           tick?: number
         }
@@ -65,6 +71,10 @@ export const useLinkMetricsStore = defineStore('linkMetrics', {
             const capacityMbps = it.capacity_mbps ?? cur?.capacity_mbps
             if (typeof congested === 'boolean') metric.congested = congested
             if (typeof capacityMbps === 'number') metric.capacity_mbps = capacityMbps
+            const demandUp = it.demand_up_bps ?? cur?.demand_up_bps
+            const demandDown = it.demand_down_bps ?? cur?.demand_down_bps
+            if (typeof demandUp === 'number') metric.demand_up_bps = demandUp
+            if (typeof demandDown === 'number') metric.demand_down_bps = demandDown
             next[it.id] = metric
           }
         }
@@ -81,6 +91,8 @@ export const useLinkMetricsStore = defineStore('linkMetrics', {
           version?: number
           congested?: boolean
           capacity_mbps?: number
+          demand_up_bps?: number
+          demand_down_bps?: number
         }
       >
       lastTick?: number
@@ -96,6 +108,8 @@ export const useLinkMetricsStore = defineStore('linkMetrics', {
         }
         if (typeof m.congested === 'boolean') metric.congested = m.congested
         if (typeof m.capacity_mbps === 'number') metric.capacity_mbps = m.capacity_mbps
+        if (typeof m.demand_up_bps === 'number') metric.demand_up_bps = m.demand_up_bps
+        if (typeof m.demand_down_bps === 'number') metric.demand_down_bps = m.demand_down_bps
         next[id] = metric
       }
       this.byId = next

@@ -57,6 +57,67 @@ describe('metricsStore', () => {
     })
   })
 
+  it('preserves B2 shaping fields from snapshots and partial updates', () => {
+    const s = useMetricsStore()
+    s.initRealtime()
+    s.applySnapshot({
+      devices: {
+        A: {
+          bps: 396,
+          utilization: 0.33,
+          version: 1,
+          congested: true,
+          capacity_mbps: 1000,
+          demand_up_bps: 100_000_000,
+          demand_down_bps: 500_000_000,
+          scale_up: 0.66,
+          scale_down: 0.66,
+          throttled: true
+        }
+      },
+      lastTick: 7
+    })
+    expect(s.byId.A.demand_up_bps).toBe(100_000_000)
+    expect(s.byId.A.demand_down_bps).toBe(500_000_000)
+    expect(s.byId.A.scale_up).toBe(0.66)
+    expect(s.byId.A.scale_down).toBe(0.66)
+    expect(s.byId.A.throttled).toBe(true)
+    expect(s.byId.A.congested).toBe(true)
+
+    // WS event carrying new shaping values replaces them ...
+    eventBus.emit('deviceMetricsUpdated', {
+      type: 'deviceMetricsUpdated',
+      payload: {
+        tick: 8,
+        devices: [
+          {
+            id: 'A',
+            bps: 600,
+            utilization: 0.5,
+            version: 2,
+            demand_up_bps: 100_000_000,
+            demand_down_bps: 500_000_000,
+            scale_up: 1.0,
+            scale_down: 1.0,
+            throttled: false
+          }
+        ]
+      }
+    })
+    expect(s.byId.A.scale_up).toBe(1.0)
+    expect(s.byId.A.throttled).toBe(false)
+
+    // ... and an update without shaping fields keeps the previous ones.
+    eventBus.emit('deviceMetricsUpdated', {
+      type: 'deviceMetricsUpdated',
+      payload: { tick: 9, devices: [{ id: 'A', bps: 601, utilization: 0.5, version: 3 }] }
+    })
+    expect(s.byId.A.bps).toBe(601)
+    expect(s.byId.A.demand_up_bps).toBe(100_000_000)
+    expect(s.byId.A.scale_down).toBe(1.0)
+    expect(s.byId.A.throttled).toBe(false)
+  })
+
   it('deviceMetricsUpdated applies multi-device updates with version check', () => {
     const s = useMetricsStore()
     s.initRealtime()

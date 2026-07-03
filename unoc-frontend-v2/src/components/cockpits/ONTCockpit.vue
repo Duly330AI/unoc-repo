@@ -66,7 +66,10 @@ import { computed, onMounted, watch } from 'vue'
 import { useDevicesStore } from '../../stores/devicesStore.js'
 import { useMetricsStore } from '../../stores/metricsStore.js'
 import { useTariffsStore } from '../../stores/tariffsStore'
-import { formatBps } from '../../composables/useLinkMetricsView.js'
+import {
+    formatShapedRate,
+    THROTTLE_SCALE_THRESHOLD
+} from '../../composables/useLinkMetricsView.js'
 
 const props = defineProps<{ deviceId: string }>()
 const devices = useDevicesStore()
@@ -94,22 +97,30 @@ const statusColor = computed(() => {
     if (status.value === 'DOWN') return '#ef5350'
     return '#b0bec5'
 })
-const upColor = '#64b5f6'
-const downColor = '#ffa726'
-
-// Metrics
+// Metrics (delivered values; when shaping throttles a direction the row shows
+// "delivered / requested" and turns amber)
 const metric = computed(() => metrics.byId[props.deviceId])
+const upThrottled = computed(() => {
+    const s = metric.value?.scale_up
+    return typeof s === 'number' && s < THROTTLE_SCALE_THRESHOLD
+})
+const downThrottled = computed(() => {
+    const s = metric.value?.scale_down
+    return typeof s === 'number' && s < THROTTLE_SCALE_THRESHOLD
+})
+const upColor = computed(() => (upThrottled.value ? '#ff9800' : '#64b5f6'))
+const downColor = computed(() => (downThrottled.value ? '#ff9800' : '#ffa726'))
 const upstreamText = computed(() => {
     const m = metric.value
     if (!m) return '—'
     const v = typeof m.upstream_bps === 'number' ? m.upstream_bps : m.bps / 2
-    return formatBps(v)
+    return formatShapedRate(v, m.demand_up_bps, m.scale_up)
 })
 const downstreamText = computed(() => {
     const m = metric.value
     if (!m) return '—'
     const v = typeof m.downstream_bps === 'number' ? m.downstream_bps : m.bps / 2
-    return formatBps(v)
+    return formatShapedRate(v, m.demand_down_bps, m.scale_down)
 })
 
 // Signal (ONT-family only; neutral otherwise)

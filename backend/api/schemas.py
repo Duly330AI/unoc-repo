@@ -280,6 +280,13 @@ class DeviceMetricOut(BaseModel):
     downstream_bps: float | None = None
     congested: bool | None = None
     capacity_mbps: float | None = None
+    # B2 shaping: requested (pre-shaping) demand, applied scale factors and
+    # throttled marker. bps/upstream_bps/downstream_bps remain delivered traffic.
+    demand_up_bps: float | None = None
+    demand_down_bps: float | None = None
+    scale_up: float | None = None
+    scale_down: float | None = None
+    throttled: bool | None = None
 
 
 class MetricsSnapshotResponse(BaseModel):
