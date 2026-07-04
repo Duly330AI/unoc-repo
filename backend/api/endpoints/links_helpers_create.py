@@ -261,6 +261,8 @@ def create_link_impl(payload: LinkCreate, background: BackgroundTasks | None) ->
                             "b_interface_id": link.b_interface_id,
                             "kind": str(link.kind),
                             "rule_id": cls.rule_id,
+                            "length_km": link.length_km,
+                            "physical_medium_id": link.physical_medium_id,
                         },
                         topo_version=tv_create,
                     )
