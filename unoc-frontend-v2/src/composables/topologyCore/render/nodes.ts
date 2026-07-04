@@ -93,6 +93,9 @@ export function drawNodes(options: {
       const ds = d as DeviceMaybeStatus
       return ds.effective_status || ds.status || 'UNKNOWN'
     })
+    .attr('data-overridden', (d: Device) =>
+      (d as Device & { admin_override_status?: string | null }).admin_override_status ? '1' : '0'
+    )
     .style('cursor', 'pointer')
     .style('pointer-events', 'all')
     .each(function (this: SVGGElement, d: Device) {
@@ -174,6 +177,27 @@ export function drawNodes(options: {
       tooltip.hide()
     })
 
+  const overrideBadge = nodeGroupsEnter
+    .append('g')
+    .attr('class', 'override-badge')
+    .attr('transform', 'translate(-118,-58)')
+  overrideBadge
+    .append('rect')
+    .attr('class', 'override-badge-bg')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', 28)
+    .attr('height', 12)
+    .attr('rx', 2)
+    .attr('ry', 2)
+  overrideBadge
+    .append('text')
+    .attr('class', 'override-badge-text')
+    .attr('x', 14)
+    .attr('y', 8.5)
+    .attr('text-anchor', 'middle')
+    .text('OVR')
+
   const assignedSlotsByParent: Record<string, Set<string>> = {}
   nodeGroupsEnter
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -230,6 +254,9 @@ export function drawNodes(options: {
     .attr('data-container', (d: Device) => (d.type === 'POP' ? '1' : '0'))
     .attr('data-pinned', (d: Device) => (layoutCache[d.id].pinned ? '1' : '0'))
     .attr('data-congested', (d: Device) => (metrics.byId[d.id]?.congested ? '1' : '0'))
+    .attr('data-overridden', (d: Device) =>
+      (d as Device & { admin_override_status?: string | null }).admin_override_status ? '1' : '0'
+    )
     .attr(
       'data-status',
       (d: Device) =>

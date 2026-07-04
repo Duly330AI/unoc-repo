@@ -61,5 +61,33 @@ svg g.device-node[data-congested='1']:not([data-status='DOWN']):not([data-status
   stroke-width: 3;
 }
 
+svg g.device-node[data-overridden='1'] .frame,
+svg g.device-node[data-overridden='1'] .frame-outline {
+  stroke-dasharray: 4 3;
+}
+
+svg g.device-node .override-badge {
+  display: none;
+  pointer-events: none;
+}
+
+svg g.device-node[data-overridden='1'] .override-badge {
+  display: inline;
+}
+
+svg g.device-node .override-badge-bg {
+  fill: #111827;
+  stroke: #fbbf24;
+  stroke-width: 1.5;
+}
+
+svg g.device-node .override-badge-text {
+  fill: #fef3c7;
+  font-family: var(--font-mono, monospace);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
 /* Optional: if any cockpit omits .frame-outline we still get inner frame stroke; if both exist outline gets same color.
    Could differentiate by thicker stroke or separate glow later. */
