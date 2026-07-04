@@ -51,7 +51,12 @@ def test_link_create_delete_emits_events():
         },
     )
     assert r.status_code == 201, r.text
-    assert any(e.type == "link.created" and e.payload["id"] == "gw1__core1" for e in cap.events)
+    body = r.json()
+    created = next(
+        e for e in cap.events if e.type == "link.created" and e.payload["id"] == "gw1__core1"
+    )
+    assert created.payload["length_km"] == body["length_km"]
+    assert created.payload["physical_medium_id"] == body["physical_medium_id"]
     r2 = client.delete("/api/links/gw1__core1")
     assert r2.status_code == 202
     # Drain async queue
