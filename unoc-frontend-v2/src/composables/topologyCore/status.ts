@@ -12,3 +12,13 @@ export function normalizeVisualStatus(raw: unknown): string {
   if (['failed', 'unreachable', 'offline'].includes(lower)) return 'DOWN'
   return 'UNKNOWN'
 }
+
+export function deriveNodeVisualStatus(
+  operational: string,
+  signalStatus?: string | null
+): string {
+  const normalizedOperational = normalizeVisualStatus(operational)
+  if (normalizedOperational === 'DOWN') return 'DOWN'
+  if (signalStatus === 'WARNING' || signalStatus === 'CRITICAL') return 'DEGRADED'
+  return normalizedOperational
+}
