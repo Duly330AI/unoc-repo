@@ -15,6 +15,8 @@ manual QA. Roughly priority-ordered. Shipped items kept for context. Tick items 
   the EventStore; fixes intermittent device-create 500/409 (sequence collision) + eventstore bloat.
 - **Batch 5 — deterministic port ordering**: port summaries sorted in natural order (shared helper);
   subscriber / PON port-matrix cells no longer jump between refreshes. (#2)
+- **Batch 6 — leaf delivered-primary**: leaf traffic rows show delivered as the hero value + a small
+  muted `req NNG` label when throttled (was "1.0G / 92G" which read as loss). (#3)
 
 ## Next up (prioritized)
 
@@ -27,10 +29,6 @@ EventStore-schema-sensitive (AGENTS.md caution) — own batch, scope carefully.
 
 ### Audit findings still open
 
-- **#3 demand-vs-delivered UI clarity** · frontend · MEDIUM. Cockpits show delivered next to huge
-  "demand" (tariff) which reads as if traffic is lost upstream (it is not — link-capped shaping is
-  correct). Make delivered primary, demand clearly secondary; drop the misleading `throttled` marker on
-  transit devices. Resolves the "CPE delivers more than the switch can take" perception.
 - **#6 link-defaults hydration** · frontend/backend · LOW-MED. New links show blank `length_km` /
   `physical_medium_id` until an update saves. Backend derives defaults on create and returns them —
   hydrate the create response into the link store, and guarantee a default medium for every FIBER/P2P.
@@ -49,9 +47,12 @@ EventStore-schema-sensitive (AGENTS.md caution) — own batch, scope carefully.
 - **Link create: auto/default port** · frontend · LOW-MED. Linking two devices always pops the port picker
   requiring manual confirm even when "auto"/"default" is wanted. Add an auto-confirm/default path; only
   prompt when the port choice is genuinely ambiguous.
-- **Node redesign (long-term)** · frontend · LARGE. Nodes should have a clear, device-type-dependent
-  structure with later polish (meaningful animated elements). Current cockpit layout is placeholder-ish;
-  the OVR badge position is "good enough until the redesign".
+- **Node redesign / cockpit sizing** · frontend · LARGE · rising priority. Cockpit content overflows on
+  smaller nodes — e.g. throttled leaf rows (`1.00 Gbps  req 91.5G`) overlap the UPSTREAM/DOWNSTREAM
+  labels; richer rows make it worse. Nodes should get a clear, device-type-dependent structure that
+  auto-sizes to content, with later polish (meaningful animated elements). Best tackled as a proper
+  design-first effort before adding more per-row info. Until then, band-aids (smaller/wrapped labels)
+  are deferred. (OVR badge position also rides on this.)
 
 ## Watch / low-priority
 
