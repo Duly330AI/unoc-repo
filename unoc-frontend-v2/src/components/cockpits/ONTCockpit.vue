@@ -70,6 +70,7 @@ import {
     formatShapedRate,
     THROTTLE_SCALE_THRESHOLD
 } from '../../composables/useLinkMetricsView.js'
+import { deriveNodeVisualStatus } from '../../composables/topologyCore/status.js'
 
 const props = defineProps<{ deviceId: string }>()
 const devices = useDevicesStore()
@@ -78,6 +79,9 @@ const tariffs = useTariffsStore()
 
 const device = computed(() => devices.byId(props.deviceId))
 const status = computed(() => device.value?.status ?? 'UNKNOWN')
+const visualStatus = computed(() =>
+    deriveNodeVisualStatus(status.value, (device.value as OptDev | undefined)?.signal_status)
+)
 
 // Styling/colors consistent with other Digital Display cockpits
 const headerColor = '#cfd8dc'
@@ -89,12 +93,12 @@ function ledColor(key: 'UP' | 'DEGRADED' | 'DOWN') {
     return '#90caf9'
 }
 function ledOpacity(key: 'UP' | 'DEGRADED' | 'DOWN') {
-    return status.value === key ? 1.0 : 0.25
+    return visualStatus.value === key ? 1.0 : 0.25
 }
 const statusColor = computed(() => {
-    if (status.value === 'UP') return '#66bb6a'
-    if (status.value === 'DEGRADED') return '#ffd54f'
-    if (status.value === 'DOWN') return '#ef5350'
+    if (visualStatus.value === 'UP') return '#66bb6a'
+    if (visualStatus.value === 'DEGRADED') return '#ffd54f'
+    if (visualStatus.value === 'DOWN') return '#ef5350'
     return '#b0bec5'
 })
 // Metrics (delivered values; when shaping throttles a direction the row shows
