@@ -28,6 +28,24 @@ def _preserve_congestion_fields(target: dict, metrics: dict) -> None:
         target["capacity_mbps"] = metrics.get("capacity_mbps")
 
 
+# B2 shaping fields: requested (pre-shaping) demand, applied scales and the
+# throttled marker. up/down_bps stay delivered traffic; never rename those.
+_SHAPING_FLOAT_FIELDS = (
+    "demand_up_bps",
+    "demand_down_bps",
+    "scale_up",
+    "scale_down",
+)
+
+
+def _preserve_shaping_fields(target: dict, metrics: dict) -> None:
+    for field in _SHAPING_FLOAT_FIELDS:
+        if field in metrics:
+            target[field] = metrics.get(field)
+    if "throttled" in metrics:
+        target["throttled"] = bool(metrics.get("throttled"))
+
+
 def transform_go_snapshot_to_frontend(go_snapshot: dict) -> dict:
     """Transform Go snapshot format to frontend-expected format."""
     devices = {}
@@ -43,6 +61,7 @@ def transform_go_snapshot_to_frontend(go_snapshot: dict) -> dict:
             "version": 0,
         }
         _preserve_congestion_fields(entry, metrics)
+        _preserve_shaping_fields(entry, metrics)
         devices[dev_id] = entry
 
     links = {}
@@ -54,6 +73,7 @@ def transform_go_snapshot_to_frontend(go_snapshot: dict) -> dict:
             "version": 0,
         }
         _preserve_congestion_fields(entry, metrics)
+        _preserve_shaping_fields(entry, metrics)
         links[link_id] = entry
 
     return {
@@ -76,6 +96,7 @@ def build_device_metric_changes(go_snapshot: dict) -> list[dict]:
             "utilization": metrics.get("utilization", 0.0),
         }
         _preserve_congestion_fields(entry, metrics)
+        _preserve_shaping_fields(entry, metrics)
         device_changes.append(entry)
     return device_changes
 
@@ -91,6 +112,7 @@ def build_link_metric_changes(go_snapshot: dict) -> list[dict]:
             "utilization": metrics.get("utilization", 0.0),
         }
         _preserve_congestion_fields(entry, metrics)
+        _preserve_shaping_fields(entry, metrics)
         link_changes.append(entry)
     return link_changes
 

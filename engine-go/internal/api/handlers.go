@@ -58,25 +58,39 @@ type SnapshotResponse struct {
 	LeavesCount   int                       `json:"leaves_count"`
 }
 
-// DeviceMetrics represents traffic metrics for a device
+// DeviceMetrics represents traffic metrics for a device.
+// up/down values are delivered (post-shaping) traffic; demand values are the
+// requested (pre-shaping) traffic. B2 shaping never renames existing fields.
 type DeviceMetrics struct {
-	UpBps        float64 `json:"up_bps"`
-	DownBps      float64 `json:"down_bps"`
-	UpMbps       float64 `json:"up_mbps"`
-	DownMbps     float64 `json:"down_mbps"`
-	CapacityMbps float64 `json:"capacity_mbps"`
-	Utilization  float64 `json:"utilization"`
-	Congested    bool    `json:"congested"` // HGO-006: Congestion state
+	UpBps          float64 `json:"up_bps"`
+	DownBps        float64 `json:"down_bps"`
+	UpMbps         float64 `json:"up_mbps"`
+	DownMbps       float64 `json:"down_mbps"`
+	DemandUpBps    float64 `json:"demand_up_bps"`    // B2: requested upstream
+	DemandDownBps  float64 `json:"demand_down_bps"`  // B2: requested downstream
+	DemandUpMbps   float64 `json:"demand_up_mbps"`   // B2: requested upstream
+	DemandDownMbps float64 `json:"demand_down_mbps"` // B2: requested downstream
+	ScaleUp        float64 `json:"scale_up"`         // B2: delivered/requested upstream
+	ScaleDown      float64 `json:"scale_down"`       // B2: delivered/requested downstream
+	Throttled      bool    `json:"throttled"`        // B2: shaping reduced this device's traffic
+	CapacityMbps   float64 `json:"capacity_mbps"`
+	Utilization    float64 `json:"utilization"`
+	Congested      bool    `json:"congested"` // HGO-006: Congestion state
 }
 
-// LinkMetrics represents traffic metrics for a link
+// LinkMetrics represents traffic metrics for a link.
+// up/down values are delivered (post-shaping) traffic; demand values are the
+// requested (pre-shaping) traffic crossing the link.
 type LinkMetrics struct {
-	UpBps        float64 `json:"up_bps"`
-	DownBps      float64 `json:"down_bps"`
-	TrafficMbps  float64 `json:"traffic_mbps"`
-	CapacityMbps float64 `json:"capacity_mbps"`
-	Utilization  float64 `json:"utilization"`
-	Congested    bool    `json:"congested"` // HGO-006: Congestion state
+	UpBps         float64 `json:"up_bps"`
+	DownBps       float64 `json:"down_bps"`
+	TrafficMbps   float64 `json:"traffic_mbps"`
+	DemandUpBps   float64 `json:"demand_up_bps"`   // B2: requested upstream
+	DemandDownBps float64 `json:"demand_down_bps"` // B2: requested downstream
+	DemandMbps    float64 `json:"demand_mbps"`     // B2: requested up+down
+	CapacityMbps  float64 `json:"capacity_mbps"`
+	Utilization   float64 `json:"utilization"`
+	Congested     bool    `json:"congested"` // HGO-006: Congestion state
 }
 
 // tickHandler handles POST /api/v1/tick
@@ -206,14 +220,47 @@ func (s *Server) tickHandler(c *gin.Context) {
 		utilization := congestionState.DeviceUtilization[devID]
 		capacityMbps := congestionState.DeviceCapacityMbps[devID]
 
+		demand := result.DeviceDemand[devID]
+		demandUpBps := metrics.UpBps
+		demandDownBps := metrics.DownBps
+		if demand != nil {
+			demandUpBps = demand.UpBps
+			demandDownBps = demand.DownBps
+		}
+
+		// Leaves carry exact flow scales; transit devices report the derived
+		// delivered/requested ratio of everything aggregated through them.
+		scaleUp, scaleDown := 1.0, 1.0
+		throttled := false
+		if shaping := result.LeafShaping[devID]; shaping != nil {
+			scaleUp = shaping.ScaleUp
+			scaleDown = shaping.ScaleDown
+			throttled = shaping.Throttled
+		} else {
+			if demandUpBps > 0 {
+				scaleUp = metrics.UpBps / demandUpBps
+			}
+			if demandDownBps > 0 {
+				scaleDown = metrics.DownBps / demandDownBps
+			}
+			throttled = scaleUp < traffic.ThrottleScaleThreshold || scaleDown < traffic.ThrottleScaleThreshold
+		}
+
 		snapshot.DeviceMetrics[devID] = &DeviceMetrics{
-			UpBps:        metrics.UpBps,
-			DownBps:      metrics.DownBps,
-			UpMbps:       metrics.UpBps / 1_000_000,
-			DownMbps:     metrics.DownBps / 1_000_000,
-			CapacityMbps: capacityMbps,
-			Utilization:  utilization,
-			Congested:    isCongested,
+			UpBps:          metrics.UpBps,
+			DownBps:        metrics.DownBps,
+			UpMbps:         metrics.UpBps / 1_000_000,
+			DownMbps:       metrics.DownBps / 1_000_000,
+			DemandUpBps:    demandUpBps,
+			DemandDownBps:  demandDownBps,
+			DemandUpMbps:   demandUpBps / 1_000_000,
+			DemandDownMbps: demandDownBps / 1_000_000,
+			ScaleUp:        scaleUp,
+			ScaleDown:      scaleDown,
+			Throttled:      throttled,
+			CapacityMbps:   capacityMbps,
+			Utilization:    utilization,
+			Congested:      isCongested,
 		}
 	}
 
@@ -222,13 +269,24 @@ func (s *Server) tickHandler(c *gin.Context) {
 		utilization := congestionState.LinkUtilization[linkID]
 		capacityMbps := congestionState.LinkCapacityMbps[linkID]
 
+		demand := result.LinkDemand[linkID]
+		demandUpBps := metrics.UpBps
+		demandDownBps := metrics.DownBps
+		if demand != nil {
+			demandUpBps = demand.UpBps
+			demandDownBps = demand.DownBps
+		}
+
 		snapshot.LinkMetrics[linkID] = &LinkMetrics{
-			UpBps:        metrics.UpBps,
-			DownBps:      metrics.DownBps,
-			TrafficMbps:  (metrics.UpBps + metrics.DownBps) / 1_000_000,
-			CapacityMbps: capacityMbps,
-			Utilization:  utilization,
-			Congested:    isCongested,
+			UpBps:         metrics.UpBps,
+			DownBps:       metrics.DownBps,
+			TrafficMbps:   (metrics.UpBps + metrics.DownBps) / 1_000_000,
+			DemandUpBps:   demandUpBps,
+			DemandDownBps: demandDownBps,
+			DemandMbps:    (demandUpBps + demandDownBps) / 1_000_000,
+			CapacityMbps:  capacityMbps,
+			Utilization:   utilization,
+			Congested:     isCongested,
 		}
 	}
 	congestionMutex.RUnlock() // HGO-008 Phase 5: Done reading congestion state

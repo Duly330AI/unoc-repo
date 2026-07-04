@@ -87,9 +87,17 @@ func DetectCongestion(
 		isCongested := wasCongested // default: keep previous state
 
 		if device.IsLeaf() || capacityMbps <= 0 {
-			// B1 reports leaf utilization but does not mark ONT/BUSINESS_ONT/AON_CPE
-			// congestion until B2 shaping can distinguish requested from delivered traffic.
+			// B2: a healthy leaf is congested only when shaping throttled it
+			// (requested > delivered). Tariff-level demand alone never marks a
+			// leaf congested; that was the B1 rule and it still holds for
+			// unthrottled leaves. Threshold-based, no hysteresis: a static
+			// bottleneck throttles deterministically every tick.
 			isCongested = false
+			if device.IsLeaf() {
+				if shaping := result.LeafShaping[devID]; shaping != nil && shaping.Throttled {
+					isCongested = true
+				}
+			}
 		} else {
 			if wasCongested {
 				// Currently congested: clear only when utilization drops below LOW threshold.

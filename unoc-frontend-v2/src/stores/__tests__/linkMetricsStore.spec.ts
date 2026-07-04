@@ -102,4 +102,37 @@ describe('linkMetricsStore', () => {
       capacity_mbps: 1000
     })
   })
+
+  it('preserves B2 link demand fields from snapshots and partial updates', () => {
+    const s = useLinkMetricsStore()
+    s.initRealtime()
+    s.applySnapshot({
+      lastTick: 20,
+      links: {
+        uplink1: {
+          bps: 1_200_000_000,
+          utilization: 1.0,
+          version: 1,
+          congested: true,
+          capacity_mbps: 1000,
+          demand_up_bps: 300_000_000,
+          demand_down_bps: 1_500_000_000
+        }
+      }
+    })
+    expect(s.byId.uplink1.demand_up_bps).toBe(300_000_000)
+    expect(s.byId.uplink1.demand_down_bps).toBe(1_500_000_000)
+
+    // Update without demand fields keeps the previous values.
+    eventBus.emit('linkMetricsUpdated', {
+      type: 'linkMetricsUpdated',
+      payload: {
+        tick: 21,
+        links: [{ id: 'uplink1', bps: 1_100_000_000, utilization: 0.9, version: 2 }]
+      }
+    })
+    expect(s.byId.uplink1.bps).toBe(1_100_000_000)
+    expect(s.byId.uplink1.demand_up_bps).toBe(300_000_000)
+    expect(s.byId.uplink1.demand_down_bps).toBe(1_500_000_000)
+  })
 })

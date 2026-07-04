@@ -9,6 +9,13 @@ export interface DeviceMetric {
   downstream_bps?: number
   congested?: boolean
   capacity_mbps?: number
+  // B2 shaping: requested (pre-shaping) demand, applied scales and throttled
+  // marker. bps/upstream_bps/downstream_bps remain delivered traffic.
+  demand_up_bps?: number
+  demand_down_bps?: number
+  scale_up?: number
+  scale_down?: number
+  throttled?: boolean
 }
 
 export interface InterfaceMetric {
@@ -53,6 +60,11 @@ export const useMetricsStore = defineStore('metrics', {
             downstream_bps?: number
             congested?: boolean
             capacity_mbps?: number
+            demand_up_bps?: number
+            demand_down_bps?: number
+            scale_up?: number
+            scale_down?: number
+            throttled?: boolean
           }>
           tick?: number
         }
@@ -79,6 +91,16 @@ export const useMetricsStore = defineStore('metrics', {
             const capacityMbps = it.capacity_mbps ?? cur?.capacity_mbps
             if (typeof congested === 'boolean') metric.congested = congested
             if (typeof capacityMbps === 'number') metric.capacity_mbps = capacityMbps
+            const demandUp = it.demand_up_bps ?? cur?.demand_up_bps
+            const demandDown = it.demand_down_bps ?? cur?.demand_down_bps
+            const scaleUp = it.scale_up ?? cur?.scale_up
+            const scaleDown = it.scale_down ?? cur?.scale_down
+            const throttled = it.throttled ?? cur?.throttled
+            if (typeof demandUp === 'number') metric.demand_up_bps = demandUp
+            if (typeof demandDown === 'number') metric.demand_down_bps = demandDown
+            if (typeof scaleUp === 'number') metric.scale_up = scaleUp
+            if (typeof scaleDown === 'number') metric.scale_down = scaleDown
+            if (typeof throttled === 'boolean') metric.throttled = throttled
             next[it.id] = metric
           }
         }
@@ -98,6 +120,11 @@ export const useMetricsStore = defineStore('metrics', {
           downstream_bps?: number
           congested?: boolean
           capacity_mbps?: number
+          demand_up_bps?: number
+          demand_down_bps?: number
+          scale_up?: number
+          scale_down?: number
+          throttled?: boolean
         }
       >
       links?: Record<string, unknown>
@@ -115,6 +142,11 @@ export const useMetricsStore = defineStore('metrics', {
         }
         if (typeof m.congested === 'boolean') metric.congested = m.congested
         if (typeof m.capacity_mbps === 'number') metric.capacity_mbps = m.capacity_mbps
+        if (typeof m.demand_up_bps === 'number') metric.demand_up_bps = m.demand_up_bps
+        if (typeof m.demand_down_bps === 'number') metric.demand_down_bps = m.demand_down_bps
+        if (typeof m.scale_up === 'number') metric.scale_up = m.scale_up
+        if (typeof m.scale_down === 'number') metric.scale_down = m.scale_down
+        if (typeof m.throttled === 'boolean') metric.throttled = m.throttled
         next[id] = metric
       }
       this.byId = next

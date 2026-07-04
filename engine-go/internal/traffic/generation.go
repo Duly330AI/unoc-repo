@@ -2,6 +2,7 @@ package traffic
 
 import (
 	"math"
+	"sort"
 
 	"github.com/rs/zerolog/log"
 	"github.com/unoc/engine-go/internal/graph"
@@ -21,29 +22,92 @@ type FlowMetrics struct {
 	DownBps float64 // Downstream traffic in bits per second
 }
 
+// Flow is one leaf's requested traffic and the path it takes to its anchor.
+// Scales start at 1.0 and are reduced by shaping when a path link is over
+// capacity; delivered traffic is demand multiplied by the direction's scale.
+type Flow struct {
+	LeafID        string
+	DemandUpBps   float64
+	DemandDownBps float64
+	ScaleUp       float64
+	ScaleDown     float64
+	PathNodes     []string
+	PathLinks     []string
+}
+
+// DeliveredUpBps returns the post-shaping upstream traffic for the flow.
+func (f *Flow) DeliveredUpBps() float64 { return f.DemandUpBps * f.ScaleUp }
+
+// DeliveredDownBps returns the post-shaping downstream traffic for the flow.
+func (f *Flow) DeliveredDownBps() float64 { return f.DemandDownBps * f.ScaleDown }
+
+// LeafShaping summarizes the shaping outcome for one leaf.
+type LeafShaping struct {
+	ScaleUp   float64
+	ScaleDown float64
+	Throttled bool
+}
+
 // GenerationResult contains all generated traffic data
 type GenerationResult struct {
-	DeviceMetrics map[string]*FlowMetrics // device_id -> metrics
-	LinkMetrics   map[string]*FlowMetrics // link_id -> metrics
-	LeavesCount   int                     // Number of leaves that generated traffic
-	DebugInfo     map[string]interface{}  // Debug information (optional)
+	DeviceMetrics  map[string]*FlowMetrics // device_id -> delivered traffic (post shaping)
+	LinkMetrics    map[string]*FlowMetrics // link_id -> delivered traffic (post shaping)
+	DeviceDemand   map[string]*FlowMetrics // device_id -> requested traffic (pre shaping)
+	LinkDemand     map[string]*FlowMetrics // link_id -> requested traffic (pre shaping)
+	LeafShaping    map[string]*LeafShaping // leaf_id -> shaping outcome
+	ShapingEnabled bool                    // whether shaping ran this tick
+	LeavesCount    int                     // Number of leaves that generated traffic
+	DebugInfo      map[string]interface{}  // Debug information (optional)
 }
 
 // GenerateFlows generates traffic for eligible leaf devices (ONTs, CPEs)
 // Ports Python generate_flows_for_leaves() from backend/services/traffic/v2_tick.py
+// Shaping is controlled by TRAFFIC_SHAPING_ENABLED (default enabled).
 func GenerateFlows(
 	cache *models.TopologyCache,
 	adjacency *graph.AdjacencyGraph,
 	tick int,
 	randomSeed int,
 ) *GenerationResult {
-	result := &GenerationResult{
-		DeviceMetrics: make(map[string]*FlowMetrics),
-		LinkMetrics:   make(map[string]*FlowMetrics),
-		LeavesCount:   0,
-		DebugInfo:     make(map[string]interface{}),
+	return GenerateFlowsWithShaping(cache, adjacency, tick, randomSeed, ShapingEnabledFromEnv())
+}
+
+// GenerateFlowsWithShaping generates per-leaf flows, optionally applies
+// proportional bottleneck shaping, then aggregates delivered traffic.
+func GenerateFlowsWithShaping(
+	cache *models.TopologyCache,
+	adjacency *graph.AdjacencyGraph,
+	tick int,
+	randomSeed int,
+	shapingEnabled bool,
+) *GenerationResult {
+	flows := collectFlows(cache, adjacency, tick, randomSeed)
+
+	if shapingEnabled {
+		ShapeFlows(flows, cache)
 	}
 
+	result := aggregateFlows(flows, shapingEnabled)
+
+	log.Debug().
+		Int("leaves_processed", result.LeavesCount).
+		Int("devices_with_traffic", len(result.DeviceMetrics)).
+		Int("links_with_traffic", len(result.LinkMetrics)).
+		Bool("shaping_enabled", shapingEnabled).
+		Msg("Generated traffic flows")
+
+	return result
+}
+
+// collectFlows discovers eligible leaves and builds one Flow per valid leaf
+// path. Leaf eligibility rules are unchanged from B1 (provisioned, effective
+// status UP per HGO-007, tariff assigned, path to an anchor exists).
+func collectFlows(
+	cache *models.TopologyCache,
+	adjacency *graph.AdjacencyGraph,
+	tick int,
+	randomSeed int,
+) []*Flow {
 	// Track anchor types (devices that act as traffic aggregation points)
 	anchorTypes := map[models.DeviceType]bool{
 		models.DeviceTypeBackboneGateway: true,
@@ -52,14 +116,23 @@ func GenerateFlows(
 		models.DeviceTypeCoreRouter:      true,
 	}
 
-	// Process all devices
 	log.Debug().Int("total_devices", len(cache.DeviceByID)).Msg("Processing devices for traffic generation")
 
-	for _, device := range cache.DeviceByID {
-		// Skip if not a leaf device type
-		if !LeafTypes[device.Type] {
-			continue
+	// Deterministic leaf order: map iteration is randomized in Go, and shaping
+	// plus float aggregation must produce bit-identical output for identical
+	// (topology, tick, seed) inputs.
+	leafIDs := make([]string, 0, len(cache.DeviceByID))
+	for deviceID, device := range cache.DeviceByID {
+		if LeafTypes[device.Type] {
+			leafIDs = append(leafIDs, deviceID)
 		}
+	}
+	sort.Strings(leafIDs)
+
+	flows := make([]*Flow, 0, len(leafIDs))
+
+	for _, deviceID := range leafIDs {
+		device := cache.DeviceByID[deviceID]
 
 		log.Debug().
 			Str("device_id", device.ID).
@@ -113,31 +186,66 @@ func GenerateFlows(
 			continue
 		}
 
-		// Aggregate traffic along the path
-		for _, deviceID := range pathNodes {
-			if result.DeviceMetrics[deviceID] == nil {
-				result.DeviceMetrics[deviceID] = &FlowMetrics{}
-			}
-			result.DeviceMetrics[deviceID].UpBps += upBps
-			result.DeviceMetrics[deviceID].DownBps += downBps
-		}
-
-		for _, linkID := range pathLinks {
-			if result.LinkMetrics[linkID] == nil {
-				result.LinkMetrics[linkID] = &FlowMetrics{}
-			}
-			result.LinkMetrics[linkID].UpBps += upBps
-			result.LinkMetrics[linkID].DownBps += downBps
-		}
-
-		result.LeavesCount++
+		flows = append(flows, &Flow{
+			LeafID:        device.ID,
+			DemandUpBps:   upBps,
+			DemandDownBps: downBps,
+			ScaleUp:       1.0,
+			ScaleDown:     1.0,
+			PathNodes:     pathNodes,
+			PathLinks:     pathLinks,
+		})
 	}
 
-	log.Debug().
-		Int("leaves_processed", result.LeavesCount).
-		Int("devices_with_traffic", len(result.DeviceMetrics)).
-		Int("links_with_traffic", len(result.LinkMetrics)).
-		Msg("Generated traffic flows")
+	return flows
+}
+
+// aggregateFlows sums delivered and requested traffic onto every path device
+// and link, and records the per-leaf shaping outcome.
+func aggregateFlows(flows []*Flow, shapingEnabled bool) *GenerationResult {
+	result := &GenerationResult{
+		DeviceMetrics:  make(map[string]*FlowMetrics),
+		LinkMetrics:    make(map[string]*FlowMetrics),
+		DeviceDemand:   make(map[string]*FlowMetrics),
+		LinkDemand:     make(map[string]*FlowMetrics),
+		LeafShaping:    make(map[string]*LeafShaping, len(flows)),
+		ShapingEnabled: shapingEnabled,
+		LeavesCount:    len(flows),
+		DebugInfo:      make(map[string]interface{}),
+	}
+
+	for _, flow := range flows {
+		deliveredUp := flow.DeliveredUpBps()
+		deliveredDown := flow.DeliveredDownBps()
+
+		for _, deviceID := range flow.PathNodes {
+			if result.DeviceMetrics[deviceID] == nil {
+				result.DeviceMetrics[deviceID] = &FlowMetrics{}
+				result.DeviceDemand[deviceID] = &FlowMetrics{}
+			}
+			result.DeviceMetrics[deviceID].UpBps += deliveredUp
+			result.DeviceMetrics[deviceID].DownBps += deliveredDown
+			result.DeviceDemand[deviceID].UpBps += flow.DemandUpBps
+			result.DeviceDemand[deviceID].DownBps += flow.DemandDownBps
+		}
+
+		for _, linkID := range flow.PathLinks {
+			if result.LinkMetrics[linkID] == nil {
+				result.LinkMetrics[linkID] = &FlowMetrics{}
+				result.LinkDemand[linkID] = &FlowMetrics{}
+			}
+			result.LinkMetrics[linkID].UpBps += deliveredUp
+			result.LinkMetrics[linkID].DownBps += deliveredDown
+			result.LinkDemand[linkID].UpBps += flow.DemandUpBps
+			result.LinkDemand[linkID].DownBps += flow.DemandDownBps
+		}
+
+		result.LeafShaping[flow.LeafID] = &LeafShaping{
+			ScaleUp:   flow.ScaleUp,
+			ScaleDown: flow.ScaleDown,
+			Throttled: flow.ScaleUp < ThrottleScaleThreshold || flow.ScaleDown < ThrottleScaleThreshold,
+		}
+	}
 
 	return result
 }
