@@ -6,6 +6,12 @@ UNOC is a distributed telecom/fiber-access network simulator for NOC-style opera
 
 ![UNOC real-time topology canvas](docs/media/screenshot.png)
 
+**Live provisioning demo:** create an ONT, link it into the optical path, provision it, and watch status, RX power, and traffic update in real time.
+
+![Live ONT provisioning demo](docs/media/unoc-ont-provision-demo.gif)
+
+[MP4 version](docs/media/unoc-ont-provision-demo.mp4)
+
 - Real-time SVG topology canvas for OLTs, AON switches, ONTs, CPEs, ODFs, splitters, and fiber links.
 - Optical, IPAM, provisioning, traffic, congestion, and analytics behavior modeled across the stack.
 - Polyglot runtime: Vue 3 + Pinia + D3 frontend, Python/FastAPI backend, PostgreSQL, Go HTTP/gRPC services.
