@@ -166,6 +166,32 @@ def _get_versioned_logical_graph_snapshot(session: Session):
             _LOGICAL_GRAPH_CACHE["data"] = None
 
 
+def _router_l3_chain(session: Session, router_dev: Device) -> DependencyCheckResult:
+    """Trace a router L3 chain once per recompute session and topology version."""
+    topo_v = PATHFINDING_STORE.version()
+    cache = session.info.get("_router_l3_cache")
+    if not isinstance(cache, dict) or cache.get("version") != topo_v:
+        cache = {"version": topo_v, "map": {}}
+        session.info["_router_l3_cache"] = cache
+    cache_map = cache.get("map")
+    if not isinstance(cache_map, dict):
+        cache_map = {}
+        cache["map"] = cache_map
+
+    cached = cache_map.get(router_dev.id)
+    if isinstance(cached, DependencyCheckResult):
+        return cached
+
+    from .dependency_resolver_trace import trace_l3_path_to_anchor
+
+    # bulk_update_device_statuses and recompute_dirty each open a fresh session per
+    # recompute pass, and the pass is read-only over L3 state. This memo is therefore
+    # pass-scoped; the topology version reset is defensive if a session is ever reused.
+    result = trace_l3_path_to_anchor(session, router_dev)
+    cache_map[router_dev.id] = result
+    return result
+
+
 def evaluate_upstream_dependencies(
     session: Session, device: Device
 ) -> DependencyCheckResult:  # pragma: no cover - deprecated wrapper
@@ -226,9 +252,7 @@ def has_upstream_l3_or_anchor(session: Session, device: Device) -> UpstreamL3Res
 
         # Fast path: routers
         if device.type in {_DT.CORE_ROUTER, _DT.EDGE_ROUTER, _DT.BACKBONE_GATEWAY}:
-            from .dependency_resolver_trace import trace_l3_path_to_anchor
-
-            res = trace_l3_path_to_anchor(session, device)
+            res = _router_l3_chain(session, device)
             result = UpstreamL3Result(
                 ok=bool(res.ok),
                 anchor=(res.chain[-1] if res.ok and res.chain else None),
@@ -259,18 +283,13 @@ def has_upstream_l3_or_anchor(session: Session, device: Device) -> UpstreamL3Res
                 if not router_nodes_sorted:
                     result = UpstreamL3Result(False, None, [device.id], ["no_router_path"])
                 else:
-                    # Evaluate each router's L3 chain (cache results per router to avoid recompute)
-                    from .dependency_resolver_trace import trace_l3_path_to_anchor
-
-                    router_chain_cache: dict[str, DependencyCheckResult] = {}
+                    # Evaluate each router's L3 chain once per recompute session.
                     candidates: list[tuple[int, tuple[str, ...], str, list[str]]] = []
                     for r_id in router_nodes_sorted:
                         r_dev = session.get(Device, r_id)
                         if not r_dev:
                             continue
-                        if r_id not in router_chain_cache:
-                            router_chain_cache[r_id] = trace_l3_path_to_anchor(session, r_dev)
-                        rr = router_chain_cache[r_id]
+                        rr = _router_l3_chain(session, r_dev)
                         if not rr.ok:
                             continue
                         import networkx as _nx
