@@ -27,7 +27,6 @@ def test_provision_endpoint_persists_recomputed_status_with_status_client(monkey
             calls.append(kwargs)
 
     monkeypatch.setattr(provisioning, "get_status_client", lambda: FakeStatusClient())
-    monkeypatch.setattr(provisioning.coalescer, "schedule", lambda **_: None)
     monkeypatch.setattr(provisioning, "schedule", lambda *_, **__: None)
 
     with projection_write_context():

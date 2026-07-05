@@ -5,7 +5,6 @@ from backend.api.schemas import DeviceOut, ProvisionResponse
 from backend.clients.go_services.status_client import get_status_client
 from backend.db import get_session, init_db
 from backend.models import Device
-from backend.services import recompute_coalescer as coalescer
 from backend.services.background import _recompute_after_device_provision, schedule
 from backend.services.event_store_runtime import projection_write_context
 from backend.services.provisioning_service import provision_device
@@ -32,11 +31,6 @@ def _provision_device_guarded(device_id: str, background: BackgroundTasks):
         d = provision_device(s, d)
         s.commit()
         # device.provisioned is emitted by service layer for both API and direct calls
-        # Schedule consolidated status recompute instead of direct call
-        try:
-            coalescer.schedule(scope="devices", key=d.id)
-        except Exception:  # pragma: no cover
-            pass
         try:
             status_client = get_status_client()
             if status_client:
@@ -44,7 +38,7 @@ def _provision_device_guarded(device_id: str, background: BackgroundTasks):
                     changed_device_ids=[d.id], changed_link_ids=[], update_database=True
                 )
         except Exception as e:
-            # Best-effort; the coalescer schedule remains as a fallback.
+            # Best-effort; other recompute hooks remain as fallbacks.
             print(f"[WARN] Status propagation failed after provision: {e}")
         # Offload optical recompute to background
         schedule(background, _recompute_after_device_provision, d.id)
