@@ -4,7 +4,7 @@ from sqlmodel import Session
 
 from backend.db import get_session
 from backend.models import Device, DeviceType, Link, Status
-from backend.services.dependency_resolver import has_upstream_l3_or_anchor
+from backend.services.dependency_resolver import DependencyCheckResult, has_upstream_l3_or_anchor
 from backend.services.event_store_runtime import projection_write_context
 from backend.services.pathfinding import PATHFINDING_STORE
 
@@ -162,3 +162,33 @@ def test_logical_graph_snapshot_reused_until_topology_version_changes(monkeypatc
         r3 = has_upstream_l3_or_anchor(s, cpe1)
         assert r3.ok
         assert len(calls) == 2
+
+
+def test_router_l3_chain_reused_for_shared_router_within_session(monkeypatch):
+    with projection_write_context(), get_session() as s:
+        core = _mk_device(s, "chain_core", DeviceType.BACKBONE_GATEWAY)
+        edge = _mk_device(s, "chain_edge", DeviceType.EDGE_ROUTER)
+        cpe1 = _mk_device(s, "chain_cpe1", DeviceType.AON_CPE)
+        cpe2 = _mk_device(s, "chain_cpe2", DeviceType.AON_CPE)
+        _mk_link(s, edge.id, core.id)
+        _mk_link(s, cpe1.id, edge.id)
+        _mk_link(s, cpe2.id, edge.id)
+        s.commit()
+
+        PATHFINDING_STORE.bump_version()
+        calls: list[str] = []
+
+        from backend.services import dependency_resolver_trace
+
+        def counted_trace(_session, router_dev):
+            calls.append(router_dev.id)
+            return DependencyCheckResult(ok=True, chain=[router_dev.id, "anchor"])
+
+        monkeypatch.setattr(dependency_resolver_trace, "trace_l3_path_to_anchor", counted_trace)
+
+        r1 = has_upstream_l3_or_anchor(s, cpe1)
+        r2 = has_upstream_l3_or_anchor(s, cpe2)
+
+        assert r1.ok and r2.ok
+        assert calls.count(edge.id) == 1
+        assert calls.count(core.id) == 1
