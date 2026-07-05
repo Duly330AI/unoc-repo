@@ -1,5 +1,7 @@
 # UNOC - Fiber Access Network Simulation
 
+![CI](https://github.com/Duly330AI/unoc-network-simulator/actions/workflows/ci.yml/badge.svg)
+
 UNOC is a distributed telecom/fiber-access network simulator for NOC-style operator workflows, with an interactive topology canvas that updates in real time.
 
 ![UNOC real-time topology canvas](docs/media/screenshot.png)
@@ -62,7 +64,7 @@ The Go traffic engine is mandatory in the recovered stack. The optical, batch, s
 
 - Recovered and documented the real Python/FastAPI + Vue 3 + Go services stack after the README still described an obsolete implementation.
 - Stabilized correctness issues tracked in the simulation audit backlog, including stale metrics reconciliation, optical warning display, EventStore telemetry persistence, deterministic port ordering, provisioning status persistence, and link-created metadata.
-- L3 status recompute reduced from O(N^2) to O(N): recompute over 200 leaves dropped from ~24.6 s to ~0.29 s (~85x), measured with a reproducible micro-benchmark (backend/tests/perf/bench_l3_recompute.py) and py-spy.
+- L3 status recompute reduced from O(N^2) to O(N): recompute over 200 leaves dropped from ~24.6 s to ~0.29 s (~85x), measured with a reproducible micro-benchmark (backend/tests/perf/bench_l3_recompute.py) and py-spy. Details and caveats: [docs/performance.md](docs/performance.md).
 - Kept the EventStore as write-path audit/projection infrastructure while preserving the current operational DB mutation path.
 
 See [docs/AUDIT_BACKLOG.md](docs/AUDIT_BACKLOG.md) for the shipped audit batches and remaining work.
