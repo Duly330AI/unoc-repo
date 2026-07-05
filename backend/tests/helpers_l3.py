@@ -16,6 +16,7 @@ from backend.models import (
     Neighbor,
     Route,
 )
+from backend.services.event_store_runtime import projection_write_context
 
 # ruff: noqa: I001
 
@@ -23,7 +24,7 @@ from backend.models import (
 def ensure_vrf(name: str = "mgmt") -> int:
     """Create or get a VRF by name and return its id."""
     init_db()
-    with get_session() as s:
+    with projection_write_context(), get_session() as s:
         v = s.exec(select(VRF).where(VRF.name == name)).first()
         if v:
             return int(v.id)  # type: ignore[arg-type]
@@ -36,7 +37,7 @@ def ensure_vrf(name: str = "mgmt") -> int:
 
 def assign_device_vrf(device_id: str, vrf_id: int) -> None:
     init_db()
-    with get_session() as s:
+    with projection_write_context(), get_session() as s:
         d = s.get(Device, device_id)
         if not d:
             raise RuntimeError("DEVICE_NOT_FOUND")
@@ -47,7 +48,7 @@ def assign_device_vrf(device_id: str, vrf_id: int) -> None:
 
 def up_ifaces(*interface_ids: str) -> None:
     init_db()
-    with get_session() as s:
+    with projection_write_context(), get_session() as s:
         for iid in interface_ids:
             i = s.get(Interface, iid)
             if not i:
@@ -61,7 +62,7 @@ def add_interface_address(
     interface_id: str, ip: str, prefix_len: int, vrf_id: int | None = None
 ) -> int:
     init_db()
-    with get_session() as s:
+    with projection_write_context(), get_session() as s:
         ia = InterfaceAddress(
             interface_id=interface_id, ip=ip, prefix_len=prefix_len, vrf_id=vrf_id
         )
@@ -73,7 +74,7 @@ def add_interface_address(
 
 def add_neighbor(interface_id: str, ip: str, mac: str) -> int:
     init_db()
-    with get_session() as s:
+    with projection_write_context(), get_session() as s:
         nb = Neighbor(interface_id=interface_id, ip_address=ip, mac_address=mac)
         s.add(nb)
         s.commit()
@@ -85,7 +86,7 @@ def add_default_route(
     vrf_id: int, next_hop: str, interface_id: str, admin_distance: int = 1, metric: int = 0
 ) -> int:
     init_db()
-    with get_session() as s:
+    with projection_write_context(), get_session() as s:
         r = Route(
             vrf_id=vrf_id,
             prefix="0.0.0.0/0",
@@ -149,7 +150,7 @@ def l3_pair(
     assign_device_vrf(b_device, vrf_id)
     # Ensure interfaces exist and are administratively up; create if missing
     init_db()
-    with get_session() as s:
+    with projection_write_context(), get_session() as s:
         # Defensive: ensure we start from a clean transactional state in case a prior helper
         # invocation left the connection in a failed transaction (e.g., due to a uniqueness
         # violation that was caught higher up). SQLite can raise 'InterfaceError: bad parameter'

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from threading import RLock
+from threading import Lock, RLock
 
 from sqlmodel import Session, select
 
@@ -18,7 +18,6 @@ from backend.services.pathfinding import (
     PATHFINDING_STORE,
     DeviceRecord,
     LinkRecord,
-    build_logical_graph,
 )
 
 
@@ -56,52 +55,10 @@ class UpstreamL3Result:
 # - Thread-safe via a module-level lock; function is called during recompute and
 #   request paths (FastAPI), where multiple threads may be active.
 _UPSTREAM_CACHE_LOCK = RLock()
-_UPSTREAM_CACHE: dict[str, object] = {"version": -1, "override_fp": None, "map": {}}
+_UPSTREAM_CACHE: dict[str, object] = {"version": -1, "map": {}}
 
-
-def _compute_override_fingerprint(session: Session) -> tuple[int, int, int, int]:
-    """Return a lightweight fingerprint of admin overrides across devices and links.
-
-    Tuple: (n_dev_up, n_dev_down, n_link_up, n_link_down)
-    Any change toggling overrides will change this tuple, triggering cache invalidation.
-    """
-    try:
-        from backend.models import Link as _Link
-
-        dev_rows = session.exec(select(Device)).all()
-        link_rows = session.exec(select(_Link)).all()
-        n_dev_up = 0
-        n_dev_down = 0
-        for d in dev_rows:
-            v = getattr(d, "admin_override_status", None)
-            if v is None:
-                continue
-            if (hasattr(v, "value") and v.value == "UP") or (
-                not hasattr(v, "value") and str(v) == "UP"
-            ):
-                n_dev_up += 1
-            elif (hasattr(v, "value") and v.value == "DOWN") or (
-                not hasattr(v, "value") and str(v) == "DOWN"
-            ):
-                n_dev_down += 1
-        n_link_up = 0
-        n_link_down = 0
-        for ln in link_rows:
-            v = getattr(ln, "admin_override_status", None)
-            if v is None:
-                continue
-            if (hasattr(v, "value") and v.value == "UP") or (
-                not hasattr(v, "value") and str(v) == "UP"
-            ):
-                n_link_up += 1
-            elif (hasattr(v, "value") and v.value == "DOWN") or (
-                not hasattr(v, "value") and str(v) == "DOWN"
-            ):
-                n_link_down += 1
-        return (n_dev_up, n_dev_down, n_link_up, n_link_down)
-    except Exception:
-        # On any error, return a neutral value that won't spuriously invalidate repeatedly
-        return (-1, -1, -1, -1)
+_LOGICAL_GRAPH_CACHE_LOCK = Lock()
+_LOGICAL_GRAPH_CACHE: dict[str, object] = {"version": -1, "data": None}
 
 
 def _collect_devices_links(
@@ -109,9 +66,15 @@ def _collect_devices_links(
 ) -> tuple[list[DeviceRecord], list[LinkRecord], dict[str, str]]:
     """Collect devices/links and interface->device map with optional per-session cache."""
     use_cache = os.getenv("UNOC_DEP_CACHE", "1") != "0"
+    topo_v = PATHFINDING_STORE.version()
     cache = session.info.get("_dep_cache") if use_cache else None
 
-    if cache and cache.get("devices") is not None and cache.get("links") is not None:
+    if (
+        cache
+        and cache.get("version") == topo_v
+        and cache.get("devices") is not None
+        and cache.get("links") is not None
+    ):
         return cache["devices"], cache["links"], cache["if_to_dev"]
 
     dev_rows = session.exec(select(Device)).all()
@@ -171,12 +134,36 @@ def _collect_devices_links(
 
     if use_cache:
         session.info["_dep_cache"] = {
+            "version": topo_v,
             "devices": devices,
             "links": links,
             "if_to_dev": if_to_dev,
         }
 
     return devices, links, if_to_dev
+
+
+def _get_versioned_logical_graph_snapshot(session: Session):
+    """Return topology inputs and logical graph cached for the current topology version."""
+    while True:
+        topo_v = PATHFINDING_STORE.version()
+        with _LOGICAL_GRAPH_CACHE_LOCK:
+            cached = _LOGICAL_GRAPH_CACHE.get("data")
+            if _LOGICAL_GRAPH_CACHE.get("version") == topo_v and cached is not None:
+                return cached
+
+            devices, links, if_to_dev = _collect_devices_links(session)
+            graph_v, logical_graph = PATHFINDING_STORE.get_logical_graph(
+                devices, links, relaxed=False
+            )
+            if graph_v == topo_v == PATHFINDING_STORE.version():
+                snapshot = (devices, links, if_to_dev, logical_graph)
+                _LOGICAL_GRAPH_CACHE["version"] = topo_v
+                _LOGICAL_GRAPH_CACHE["data"] = snapshot
+                return snapshot
+
+            _LOGICAL_GRAPH_CACHE["version"] = -1
+            _LOGICAL_GRAPH_CACHE["data"] = None
 
 
 def evaluate_upstream_dependencies(
@@ -212,11 +199,10 @@ def has_upstream_l3_or_anchor(session: Session, device: Device) -> UpstreamL3Res
       4. Deterministic tie-breaking: shortest path, then lexicographic path tuple.
     """
     topo_v = PATHFINDING_STORE.version()
-    override_fp = _compute_override_fingerprint(session)
     # Determine if this is a router-class device (CORE/EDGE/BACKBONE). We intentionally
     # avoid caching router outcomes because their L3 state depends on routing tables,
     # neighbors, and interface admin flags which are not reflected in the topology version
-    # or override fingerprint. Non-routers benefit from memoization.
+    # Non-routers benefit from memoization.
     is_router = device.type in {
         DeviceType.CORE_ROUTER,
         DeviceType.EDGE_ROUTER,
@@ -225,12 +211,8 @@ def has_upstream_l3_or_anchor(session: Session, device: Device) -> UpstreamL3Res
     # Topology-versioned cache lookup (non-routers only)
     if not is_router:
         with _UPSTREAM_CACHE_LOCK:
-            if (
-                _UPSTREAM_CACHE.get("version") != topo_v
-                or _UPSTREAM_CACHE.get("override_fp") != override_fp
-            ):
+            if _UPSTREAM_CACHE.get("version") != topo_v:
                 _UPSTREAM_CACHE["version"] = topo_v
-                _UPSTREAM_CACHE["override_fp"] = override_fp
                 _UPSTREAM_CACHE["map"] = {}
             cache_map = _UPSTREAM_CACHE["map"]  # type: ignore[assignment]
             cached = cache_map.get(device.id) if isinstance(cache_map, dict) else None
@@ -255,8 +237,9 @@ def has_upstream_l3_or_anchor(session: Session, device: Device) -> UpstreamL3Res
             )
         else:
             # Build / reuse logical graph
-            devices, links, _if_to_dev = _collect_devices_links(session)
-            logical_g = build_logical_graph(devices, links, relaxed=False)
+            _devices, _links, _if_to_dev, logical_g = _get_versioned_logical_graph_snapshot(
+                session
+            )
             if device.id not in logical_g:
                 result = UpstreamL3Result(False, None, [device.id], ["device_not_in_graph"])
             else:
